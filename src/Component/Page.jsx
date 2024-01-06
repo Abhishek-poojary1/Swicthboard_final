@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
+import button1 from "./assets/2mod.png";
+import button2 from "./assets/but6.png";
+import button3 from "./assets/transp.png";
+import button4 from "./assets/switch7.png";
 const Page = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
+  const [module, setModule] = useState(null);
 
   const handleMenuClick = (menu, event) => {
     event.stopPropagation();
@@ -18,28 +22,14 @@ const Page = () => {
   const closeNav = () => {
     setIsNavOpen(false);
     setSelectedMenu(null);
+    setModule(null);
   };
 
-  // useEffect(() => {
-  //   const handleOutsideClick = (event) => {
-  //     const isSizeComb = event.target.closest(".sizecomb");
-
-  //     if (isNavOpen && !isSizeComb) {
-  //       closeNav();
-  //     }
-  //   };
-
-  //   document.addEventListener("click", handleOutsideClick);
-
-  //   return () => {
-  //     document.removeEventListener("click", handleOutsideClick);
-  //   };
-  // }, [isNavOpen]);
-  const [module, setmodule] = useState(null);
-  const handlemenuclick = (module, event) => {
+  const handleModuleClick = (module, event) => {
     event.stopPropagation();
-    setmodule(module);
+    setModule(module);
   };
+
   return (
     <>
       <div className={`size ${isNavOpen ? "nav-open" : ""}`}>
@@ -78,50 +68,141 @@ const Page = () => {
                 {selectedMenu === "size" && (
                   <div>
                     <div className="heading">Module</div>
-                    <div>
+                    <div className="module-container">
                       <div
                         className={`module ${
                           module === "box1" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlemenuclick("box1", event)}
+                        onClick={(event) => handleModuleClick("box1", event)}
                       >
-                        <div className="box1"></div>1 module
+                        <div
+                          className="box1"
+                          style={{ height: "4px", width: "4px" }}
+                        ></div>
+                        2
                       </div>
                       <div
                         className={`module ${
                           module === "box2" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlemenuclick("box2", event)}
+                        onClick={(event) => handleModuleClick("box2", event)}
                       >
-                        <div style={{ display: "flex" }}>
-                          <div
-                            className="box1"
-                            style={{ borderRight: "2px solid #ededed" }}
-                          ></div>
-                          <div className="box1"></div>
-                        </div>
-                        2 module
+                        <div
+                          className="box1"
+                          style={{ height: "10px", width: "30px" }}
+                        ></div>
+                        4
                       </div>
                       <div
                         className={`module ${
                           module === "box3" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlemenuclick("box3", event)}
+                        onClick={(event) => handleModuleClick("box3", event)}
                       >
-                        <div style={{ display: "flex" }}>
-                          <div
-                            className="box1"
-                            style={{ height: "10px" }}
-                          ></div>
-                          <div className="box1"></div>
-                          <div className="box1"></div>
-                        </div>
-                        3 module
+                        <div
+                          className="box1"
+                          style={{ height: "10px", width: "60px" }}
+                        ></div>
+                        6
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box4" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box4", event)}
+                      >
+                        <div
+                          className="box1"
+                          style={{ height: "10px", width: "90px" }}
+                        ></div>
+                        8
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box5" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box5", event)}
+                      >
+                        <div
+                          className="box1"
+                          style={{ height: "40px", width: "90px" }}
+                        ></div>
+                        12
                       </div>
                     </div>
                   </div>
                 )}
-                {selectedMenu === "module" && <div>Content for Module</div>}
+                {selectedMenu === "module" && (
+                  <div>
+                    <div className="heading">Button custom</div>
+
+                    <div className="module-container">
+                      <div
+                        className={`module ${
+                          module === "box1" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box1", event)}
+                      >
+                        <img src={button1} alt="" style={{ height: "60px" }} />4
+                        switces
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box2" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box2", event)}
+                      >
+                        <img src={button2} alt="" style={{ height: "50px" }} />5
+                        swicthes 1 fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box3" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box3", event)}
+                      >
+                        <img src={button3} alt="" style={{ height: "60px" }} />5
+                        swicth 2-way
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box4" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box4", event)}
+                      >
+                        <img src={button4} alt="" style={{ height: "60px" }} />9
+                        swicth 1-fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box5" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box5", event)}
+                      >
+                        <img src={button3} alt="" style={{ height: "60px" }} />5
+                        swicth 2-way
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box6" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box6", event)}
+                      >
+                        <img src={button3} alt="" style={{ height: "60px" }} />5
+                        swicth 2-way
+                      </div>
+                      <div
+                        className={`module ${
+                          module === "box7" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handleModuleClick("box7", event)}
+                      >
+                        <img src={button3} alt="" style={{ height: "60px" }} />5
+                        swicth 2-way
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {selectedMenu === "color" && <div>Content for Color</div>}
                 {selectedMenu === "wall" && <div>Content for Wall</div>}{" "}
               </div>
