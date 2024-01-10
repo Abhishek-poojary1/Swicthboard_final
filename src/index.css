@@ -78,6 +78,7 @@ button:focus-visible {
   box-sizing: border-box;
   z-index: 1000;
   transition: right 0.3s ease;
+  user-select: none;
 }
 
 .menu-fixed {
@@ -108,7 +109,9 @@ button:focus-visible {
   height: 100%;
   background-color: #ededed;
   right: -20%; /* Initially off-screen to the right */
-  transition: right 0.3s ease;
+  transition: right 1s ease;
+  z-index: 3;
+  user-select: none;
 }
 
 .sizecomb.nav-open {
@@ -136,6 +139,7 @@ button:focus-visible {
   justify-content: space-between;
   padding: 20px;
   font-size: 12px;
+  z-index: 20;
 }
 
 .box1 {
@@ -163,4 +167,28 @@ button:focus-visible {
 
 .module-container::-webkit-scrollbar-thumb {
   background-color: transparent;
+}
+
+.main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  display: flex;
+  position: relative;
+  left: -10%;
+  border: 2px solid black;
+  z-index: 10;
+  border-radius: 3px;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
 }
