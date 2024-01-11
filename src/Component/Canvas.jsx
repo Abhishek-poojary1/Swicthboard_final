@@ -2,7 +2,7 @@ import React from "react";
 import { useColorContext } from "./ColorContext";
 
 const Canvas = ({ module }) => {
-  const { color, selectedModule, selectedSize } = useColorContext();
+  const { color, selectedSize, selectedColor } = useColorContext();
 
   return (
     <div>
@@ -11,6 +11,8 @@ const Canvas = ({ module }) => {
           className="board"
           style={{
             width: selectedSize.width,
+            backgroundColor: selectedColor,
+            border: "2px solid #rgba(106, 104, 104, 0.27)",
             height: selectedSize.height,
             border: "1px solid black",
           }}

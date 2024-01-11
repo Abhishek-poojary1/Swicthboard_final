@@ -21,13 +21,12 @@ const colorOptions = [
 ];
 
 const Page = () => {
-  const { color, setColor, setGlobalSize } = useColorContext();
-  const [selectedColor, setSelectedColor] = useState(color);
+  const { color, setColor, selectedColor, setSelectedColor, setGlobalSize } =
+    useColorContext();
 
   const handleColorChange = (newColor) => {
-    setColor(newColor.hex); // Updated function name
+    setColor(newColor.hex);
   };
-
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [module, setModule] = useState({
@@ -69,10 +68,13 @@ const Page = () => {
     // setGlobalModule(module);
     // setGlobalSize(size);
   };
+
   const handleColorOptionClick = (selectedColor) => {
     setSelectedColor(selectedColor);
-    setColor(selectedColor);
-    closeNav();
+  };
+  const handleWallClick = () => {
+    // Set the back color to the currently selected color
+    setback(selectedColor);
   };
   return (
     <>
@@ -278,12 +280,18 @@ const Page = () => {
               )}
               {selectedMenu === "color" && (
                 <div>
-                  <div className="color">
+                  <div className="color" style={{ display: "flex" }}>
                     <div
                       className="selected-color"
                       style={{ backgroundColor: selectedColor }}
                     ></div>
-                    <div className="color-options">
+                    <div
+                      className="color-options"
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                      }}
+                    >
                       {colorOptions.map((option, index) => (
                         <div
                           key={index}
