@@ -108,13 +108,13 @@ button:focus-visible {
   width: 20%;
   height: 100%;
   background-color: #ededed;
-  right: -20%; /* Initially off-screen to the right */
-  transition: right 1s ease;
+  right: -20%;
+  transition: all 0.6s ease; /* Adjust the duration and easing function as needed */
   z-index: 3;
   user-select: none;
 }
 
-.sizecomb.nav-open {
+.sizecomb.open {
   right: 7%;
 }
 .heading {
@@ -192,3 +192,28 @@ button:focus-visible {
   align-items: center;
   user-select: none;
 }
+/* Add this to your CSS stylesheet or inline styles */
+/* .glossy {
+  position: relative;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.5) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 40px 40px;
+  animation: glossyAnimation 1s infinite linear;
+}
+
+@keyframes glossyAnimation {
+  0% {
+    background-position: 40px 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+} */

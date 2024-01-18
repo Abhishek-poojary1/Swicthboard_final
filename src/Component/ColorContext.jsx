@@ -8,6 +8,7 @@ export const ColorProvider = ({ children }) => {
   const [selectedModule, setSelectedModule] = useState("defaultModule");
   const [selectedSize, setSelectedSize] = useState("defaultSize");
   const [selectedColor, setSelectedColor] = useState(color);
+  const [selectedModuleImage, setSelectedModuleImage] = useState(null);
 
   const setGlobalModule = (module) => {
     setSelectedModule(module);
@@ -17,15 +18,21 @@ export const ColorProvider = ({ children }) => {
     setSelectedSize(size);
   };
 
+  const setGlobalModuleImage = (image) => {
+    setSelectedModuleImage(image);
+  };
+
   const contextValue = {
     color,
-    setColor, // Updated function name
+    setColor,
     selectedModule,
     setGlobalModule,
     selectedSize,
     setGlobalSize,
     selectedColor,
     setSelectedColor,
+    selectedModuleImage,
+    setSelectedModuleImage,
   };
 
   return (

@@ -6,13 +6,14 @@ import button4 from "./assets/switch7.png";
 import button5 from "./assets/2fan.png";
 import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
+import Draggable from "react-draggable";
 
 const colorOptions = [
   "#ff0000", // red
   "#00ff00", // green
   "#0000ff", // blue
   "#ffff00", // yellow
-  "#ff00ff", // magenta
+  "#FFFFFF", // magenta
   "#00ffff", // cyan
   "#800080", // purple
   "#ffa500", // orange
@@ -32,7 +33,6 @@ const Page = () => {
   const [module, setModule] = useState({
     color: "",
   });
-
   const handleMenuClick = (menu, event) => {
     event.stopPropagation();
 
@@ -50,16 +50,16 @@ const Page = () => {
     setModule({ color: "" });
   };
   const { setGlobalModule } = useColorContext();
+  const [boardsize, setboardsize] = useState("");
 
-  const handleModuleClick = (moduleType, size, event) => {
+  const handleModuleClick = (modulesize, size, event) => {
     if (event) {
       event.stopPropagation();
     }
-    setModule({ ...module, type: moduleType });
+    setboardsize(modulesize);
     setGlobalModule(module);
     setGlobalSize(size);
   };
-
   const handlelayoutClick = (moduleType, size, event) => {
     if (event) {
       event.stopPropagation();
@@ -73,9 +73,24 @@ const Page = () => {
     setSelectedColor(selectedColor);
   };
   const handleWallClick = () => {
-    // Set the back color to the currently selected color
+    setSelectedModuleImage(null); // Reset selectedModuleImage when changing color
+
     setback(selectedColor);
   };
+  const { setSelectedModuleImage } = useColorContext(); // Correct function name
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedModuleImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <>
       <div className={`size ${isNavOpen ? "nav-open" : ""}`}>
@@ -106,239 +121,242 @@ const Page = () => {
           Wall
         </div>
       </div>
-      {isNavOpen && (
-        <div className="nav-content">
-          {selectedMenu && (
-            <div className={`sizecomb ${isNavOpen ? "nav-open" : ""}`}>
-              {selectedMenu === "size" && (
-                <div>
-                  <div className="heading">Module</div>
-                  <div className="module-container">
-                    <div
-                      className={`module ${
-                        module.type === "box1" ? "selected" : ""
-                      }`}
-                      onClick={(event) =>
-                        handleModuleClick(
-                          "box1",
-                          { height: "200px", width: "200px" },
-                          event
-                        )
-                      }
-                    >
+      <div className={`sizecomb ${isNavOpen ? "open" : ""}`}>
+        {isNavOpen && (
+          <div className="nav-content">
+            {selectedMenu && (
+              <div className={`sizecomb ${isNavOpen ? "open" : ""}`}>
+                {selectedMenu === "size" && (
+                  <div>
+                    <div className="heading">Module</div>
+                    <div className="module-container">
                       <div
-                        className="box1"
-                        style={{ height: "4px", width: "4px" }}
-                      ></div>
-                      2
-                    </div>
-
-                    <div
-                      className={`module ${
-                        module.type === "box2" ? "selected" : ""
-                      }`}
-                      onClick={(event) =>
-                        handleModuleClick(
-                          "box2",
-                          { height: "200px", width: "400px" },
-                          event
-                        )
-                      }
-                    >
-                      <div
-                        className="box1"
-                        style={{ height: "10px", width: "30px" }}
-                      ></div>
-                      4
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box3" ? "selected" : ""
-                      }`}
-                      onClick={(event) =>
-                        handleModuleClick(
-                          "box3",
-                          { height: "250px", width: "600px" },
-                          event
-                        )
-                      }
-                    >
-                      <div
-                        className="box1"
-                        style={{ height: "20px", width: "60px" }}
-                      ></div>
-                      6
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box4" ? "selected" : ""
-                      }`}
-                      onClick={(event) =>
-                        handleModuleClick(
-                          "box4",
-                          { height: "250px", width: "700px" },
-                          event
-                        )
-                      }
-                    >
-                      <div
-                        className="box1"
-                        style={{ height: "10px", width: "90px" }}
-                      ></div>
-                      8
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box5" ? "selected" : ""
-                      }`}
-                      onClick={(event) =>
-                        handleModuleClick(
-                          "box5",
-                          { height: "450px", width: "700px" },
-                          event
-                        )
-                      }
-                    >
-                      <div
-                        className="box1"
-                        style={{ height: "40px", width: "90px" }}
-                      ></div>
-                      12
-                    </div>
-                  </div>
-                </div>
-              )}
-              {selectedMenu === "module" && (
-                <div>
-                  <div className="heading">Button custom</div>
-                  <div className="module-container">
-                    <div
-                      className={`module ${
-                        module.type === "box1" ? "selected" : ""
-                      }`}
-                      onClick={(event) => handlelayoutClick("box1", event)}
-                    >
-                      <img src={button1} alt="" style={{ height: "60px" }} />4
-                      switches
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box2" ? "selected" : ""
-                      }`}
-                      onClick={(event) => handlelayoutClick("box2", event)}
-                    >
-                      <img src={button2} alt="" style={{ height: "50px" }} />5
-                      switches 1 fan
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box3" ? "selected" : ""
-                      }`}
-                      onClick={(event) => handlelayoutClick("box3", event)}
-                    >
-                      <img src={button3} alt="" style={{ height: "60px" }} />5
-                      switch 2-way
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box4" ? "selected" : ""
-                      }`}
-                      onClick={(event) => handlelayoutClick("box4", event)}
-                    >
-                      <img src={button4} alt="" style={{ height: "60px" }} />9
-                      switch 1-fan
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box5" ? "selected" : ""
-                      }`}
-                      onClick={(event) => handlelayoutClick("box5", event)}
-                    >
-                      <img src={button5} alt="" style={{ height: "60px" }} />8
-                      switch 2-fan
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box6" ? "selected" : ""
-                      }`}
-                      onClick={(event) => handlelayoutClick("box6", event)}
-                    >
-                      <img src={button3} alt="" style={{ height: "60px" }} />5
-                      switch 2-way
-                    </div>
-                    <div
-                      className={`module ${
-                        module.type === "box7" ? "selected" : ""
-                      }`}
-                      onClick={(event) => handlelayoutClick("box7", event)}
-                    >
-                      <img src={button3} alt="" style={{ height: "60px" }} />5
-                      switch 2-way
-                    </div>
-                  </div>
-                </div>
-              )}
-              {selectedMenu === "color" && (
-                <div>
-                  <div className="color" style={{ display: "flex" }}>
-                    <div
-                      className="selected-color"
-                      style={{ backgroundColor: selectedColor }}
-                    ></div>
-                    <div
-                      className="color-options"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-around",
-                      }}
-                    >
-                      {colorOptions.map((option, index) => (
+                        className={`module ${
+                          boardsize === "box1" ? "selected" : ""
+                        }`}
+                        onClick={(event) =>
+                          handleModuleClick(
+                            "box1",
+                            { height: "200px", width: "200px" },
+                            event
+                          )
+                        }
+                      >
                         <div
-                          key={index}
-                          className="color-option"
-                          style={{
-                            backgroundColor: option,
-                            width: "20px",
-                            height: "20px",
-                            border:
-                              selectedColor === option
-                                ? "2px solid #000"
-                                : "none",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleColorOptionClick(option)}
+                          className="box1"
+                          style={{ height: "4px", width: "4px" }}
                         ></div>
-                      ))}
+                        2
+                      </div>
+
+                      <div
+                        className={`module ${
+                          boardsize === "box2" ? "selected" : ""
+                        }`}
+                        onClick={(event) =>
+                          handleModuleClick(
+                            "box2",
+                            { height: "200px", width: "400px" },
+                            event
+                          )
+                        }
+                      >
+                        <div
+                          className="box1"
+                          style={{ height: "10px", width: "30px" }}
+                        ></div>
+                        4
+                      </div>
+                      <div
+                        className={`module ${
+                          boardsize === "box3" ? "selected" : ""
+                        }`}
+                        onClick={(event) =>
+                          handleModuleClick(
+                            "box3",
+                            { height: "250px", width: "600px" },
+                            event
+                          )
+                        }
+                      >
+                        <div
+                          className="box1"
+                          style={{ height: "20px", width: "60px" }}
+                        ></div>
+                        6
+                      </div>
+                      <div
+                        className={`module ${
+                          boardsize === "box4" ? "selected" : ""
+                        }`}
+                        onClick={(event) =>
+                          handleModuleClick(
+                            "box4",
+                            { height: "250px", width: "700px" },
+                            event
+                          )
+                        }
+                      >
+                        <div
+                          className="box1"
+                          style={{ height: "10px", width: "90px" }}
+                        ></div>
+                        8
+                      </div>
+                      <div
+                        className={`module ${
+                          boardsize === "box5" ? "selected" : ""
+                        }`}
+                        onClick={(event) =>
+                          handleModuleClick(
+                            "box5",
+                            { height: "450px", width: "700px" },
+                            event
+                          )
+                        }
+                      >
+                        <div
+                          className="box1"
+                          style={{ height: "40px", width: "90px" }}
+                        ></div>
+                        12
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-              {selectedMenu === "wall" && (
-                <div>
-                  <div className="color">
-                    <SketchPicker
-                      color={color}
-                      disableAlpha
-                      onChange={handleColorChange}
-                    />
+                )}
+                {selectedMenu === "module" && (
+                  <div>
+                    <div className="heading">Button custom</div>
+                    <div className="module-container">
+                      <div
+                        className={`module ${
+                          module.type === "box1" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box1", event)}
+                      >
+                        <img src={button1} alt="" style={{ height: "60px" }} />4
+                        switches
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box2" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box2", event)}
+                      >
+                        <img src={button2} alt="" style={{ height: "50px" }} />5
+                        switches 1 fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box3" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box3", event)}
+                      >
+                        <img src={button3} alt="" style={{ height: "60px" }} />5
+                        switch 2-way
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box4" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box4", event)}
+                      >
+                        <img src={button4} alt="" style={{ height: "60px" }} />9
+                        switch 1-fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box5" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box5", event)}
+                      >
+                        <img src={button5} alt="" style={{ height: "60px" }} />8
+                        switch 2-fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box6" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box6", event)}
+                      >
+                        <img src={button3} alt="" style={{ height: "60px" }} />5
+                        switch 2-way
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box7" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box7", event)}
+                      >
+                        <img src={button3} alt="" style={{ height: "60px" }} />5
+                        switch 2-way
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
-              <div
-                className="overlay"
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  background: "aqua",
-                  cursor: "pointer",
-                  zIndex: "3000",
-                }}
-                onClick={closeNav}
-              ></div>
-            </div>
-          )}
-        </div>
-      )}
+                )}
+                {selectedMenu === "color" && (
+                  <div>
+                    <div className="color" style={{ display: "flex" }}>
+                      <div
+                        className="selected-color"
+                        style={{ backgroundColor: selectedColor }}
+                      ></div>
+                      <div
+                        className="color-options"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        {colorOptions.map((option, index) => (
+                          <div
+                            key={index}
+                            className="color-option"
+                            style={{
+                              backgroundColor: option,
+                              width: "20px",
+                              height: "20px",
+                              border:
+                                selectedColor === option
+                                  ? "2px solid #000"
+                                  : "none",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleColorOptionClick(option)}
+                          ></div>
+                        ))}
+                        <input type="file" onChange={handleFileChange} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {selectedMenu === "wall" && (
+                  <div>
+                    <div className="color">
+                      <SketchPicker
+                        color={color}
+                        disableAlpha
+                        onChange={handleColorChange}
+                      />
+                    </div>
+                  </div>
+                )}
+                <div
+                  className="overlay"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    background: "aqua",
+                    cursor: "pointer",
+                    zIndex: "3000",
+                  }}
+                  onClick={closeNav}
+                ></div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </>
   );
 };
