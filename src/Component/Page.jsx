@@ -64,8 +64,10 @@ const Page = () => {
     if (event) {
       event.stopPropagation();
     }
-    setModule({ ...module, type: moduleType });
-    // setGlobalModule(module);
+    setModule((prevModule) => ({
+      ...prevModule,
+      type: moduleType,
+    })); // setGlobalModule(module);
     // setGlobalSize(size);
   };
 
@@ -85,7 +87,8 @@ const Page = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedModuleImage(reader.result);
+        const imageDataURL = reader.result;
+        setSelectedModuleImage(imageDataURL); // Update selectedModuleImage in ColorContext
       };
       reader.readAsDataURL(file);
     }
@@ -296,16 +299,24 @@ const Page = () => {
                 )}
                 {selectedMenu === "color" && (
                   <div>
-                    <div className="color" style={{ display: "flex" }}>
+                    <div
+                      className="color"
+                      style={{ display: "flex", flexDirection: "column" }}
+                    >
                       <div
                         className="selected-color"
-                        style={{ backgroundColor: selectedColor }}
+                        style={{
+                          backgroundColor: selectedColor,
+                          display: "flex",
+                          justifyContent: "space-around",
+                        }}
                       ></div>
                       <div
                         className="color-options"
                         style={{
                           display: "flex",
-                          justifyContent: "space-around",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
                         }}
                       >
                         {colorOptions.map((option, index) => (
