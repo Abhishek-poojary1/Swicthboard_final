@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 import button1 from "./assets/2m4l.png";
-import button2 from "./assets/but6.png";
-import button3 from "./assets/transp.png";
-import button4 from "./assets/switch7.png";
 import button5 from "./assets/2fan.png";
 import socket from "./assets/socket.jpg";
 import s14l from "./assets/4l+1s.png";
@@ -28,8 +25,14 @@ const colorOptions = [
 ];
 
 const Page = () => {
-  const { color, setColor, selectedColor, setSelectedColor, setGlobalSize } =
-    useColorContext();
+  const {
+    color,
+    setColor,
+    selectedColor,
+    setSelectedColor,
+    setGlobalSize,
+    setGlobalimage,
+  } = useColorContext();
 
   const handleColorChange = (newColor) => {
     setColor(newColor.hex);
@@ -62,30 +65,73 @@ const Page = () => {
     if (event) {
       event.stopPropagation();
     }
+    let moduleImageURL = ""; // Set the appropriate image URL based on the module type
+
+    // Set the selected module image in the ColorContext
+    setSelectedModuleImage(moduleImageURL);
     setboardsize(modulesize);
     setGlobalModule(module);
     setGlobalSize(size);
   };
   const handlelayoutClick = (moduleType, size, event) => {
+    let moduleImageURL = "";
+
     if (event) {
       event.stopPropagation();
     }
+    switch (moduleType) {
+      case "box1":
+        moduleImageURL = button1;
+        break;
+      case "box2":
+        moduleImageURL = socket;
+        break;
+      case "box3":
+        moduleImageURL = s14l;
+        break;
+      case "box4":
+        moduleImageURL = l4f2;
+        break;
+      case "box5":
+        moduleImageURL = l5f1;
+        break;
+      case "box6":
+        moduleImageURL = l6;
+        break;
+      case "box7":
+        moduleImageURL = l10;
+        break;
+      case "box8":
+        moduleImageURL = button5;
+        break;
+      case "box9":
+        moduleImageURL = l9;
+        break;
+      case "box10":
+        moduleImageURL = s14l;
+        break;
+      // Add cases for other module types as needed
+      default:
+        // Set a default image URL or handle unknown types
+        moduleImageURL = ""; // Set a default image URL
+    }
+    setGlobalimage(moduleImageURL);
     setModule((prevModule) => ({
       ...prevModule,
       type: moduleType,
-    })); // setGlobalModule(module);
+    }));
+    // setGlobalModule(module);
     // setGlobalSize(size);
   };
-
   const handleColorOptionClick = (selectedColor) => {
     setSelectedColor(selectedColor);
   };
   const handleWallClick = () => {
-    setSelectedModuleImage(null); // Reset selectedModuleImage when changing color
+    setSelectedModuleImage(null);
 
     setback(selectedColor);
   };
-  const { setSelectedModuleImage } = useColorContext(); // Correct function name
+  const { setSelectedModuleImage } = useColorContext();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -250,39 +296,12 @@ const Page = () => {
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box8" ? "selected" : ""
+                          module.type === "box2" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box8", event)}
+                        onClick={(event) => handlelayoutClick("box2", event)}
                       >
                         <img src={socket} alt="" style={{ height: "40px" }} />
                         socket
-                      </div>
-                      <div
-                        className={`module ${
-                          module.type === "box10" ? "selected" : ""
-                        }`}
-                        onClick={(event) => handlelayoutClick("box10", event)}
-                      >
-                        <img src={s14l} alt="" style={{ height: "50px" }} />3
-                        lights 1 socket
-                      </div>
-                      <div
-                        className={`module ${
-                          module.type === "box9" ? "selected" : ""
-                        }`}
-                        onClick={(event) => handlelayoutClick("box9", event)}
-                      >
-                        <img src={l4f2} alt="" style={{ height: "50px" }} />4
-                        switches 2 fan
-                      </div>
-                      <div
-                        className={`module ${
-                          module.type === "box11" ? "selected" : ""
-                        }`}
-                        onClick={(event) => handlelayoutClick("box11", event)}
-                      >
-                        <img src={l5f1} alt="" style={{ height: "50px" }} />5
-                        switches 1 fan
                       </div>
                       <div
                         className={`module ${
@@ -290,8 +309,8 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box3", event)}
                       >
-                        <img src={l6} alt="" style={{ height: "40px" }} />6
-                        lights
+                        <img src={s14l} alt="" style={{ height: "50px" }} />3
+                        lights 1 socket
                       </div>
                       <div
                         className={`module ${
@@ -299,8 +318,8 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box4", event)}
                       >
-                        <img src={l10} alt="" style={{ height: "60px" }} />
-                        10 lights
+                        <img src={l4f2} alt="" style={{ height: "50px" }} />4
+                        switches 2 fan
                       </div>
                       <div
                         className={`module ${
@@ -308,8 +327,8 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box5", event)}
                       >
-                        <img src={button5} alt="" style={{ height: "60px" }} />8
-                        switch 2-fan
+                        <img src={l5f1} alt="" style={{ height: "50px" }} />5
+                        switches 1 fan
                       </div>
                       <div
                         className={`module ${
@@ -317,14 +336,41 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box6", event)}
                       >
-                        <img src={l9} alt="" style={{ height: "70px" }} />9
-                        switch 1-fan
+                        <img src={l6} alt="" style={{ height: "40px" }} />6
+                        lights
                       </div>
                       <div
                         className={`module ${
                           module.type === "box7" ? "selected" : ""
                         }`}
                         onClick={(event) => handlelayoutClick("box7", event)}
+                      >
+                        <img src={l10} alt="" style={{ height: "60px" }} />
+                        10 lights
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box8" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box8", event)}
+                      >
+                        <img src={button5} alt="" style={{ height: "60px" }} />8
+                        switch 2-fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box9" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box9", event)}
+                      >
+                        <img src={l9} alt="" style={{ height: "70px" }} />9
+                        switch 1-fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box10" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box10", event)}
                       >
                         <img src={l9} alt="" style={{ height: "40px" }} />9
                         switch 1-fan
