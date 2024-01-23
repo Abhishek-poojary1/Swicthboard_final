@@ -1,12 +1,18 @@
 import React, { createContext, useContext, useState } from "react";
-import button1 from "./assets/2mod.png";
+import button1 from "./assets/2m4l.png";
 import button2 from "./assets/but6.png";
 import button3 from "./assets/transp.png";
 import button4 from "./assets/switch7.png";
 import button5 from "./assets/2fan.png";
+import socket from "./assets/socket.jpg";
+import s14l from "./assets/4l+1s.png";
+import l4f2 from "./assets/4l+2f.png";
+import l5f1 from "./assets/5l+1f.png";
+import l6 from "./assets/4m6l.png";
+import l9 from "./assets/l9+1f.png";
+import l10 from "./assets/l10.png";
 import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
-import Draggable from "react-draggable";
 
 const colorOptions = [
   "#ff0000", // red
@@ -18,7 +24,7 @@ const colorOptions = [
   "#800080", // purple
   "#ffa500", // orange
   "#008000", // olive
-  "#a52a2a", // brown
+  "#a52a2a",
 ];
 
 const Page = () => {
@@ -93,7 +99,9 @@ const Page = () => {
       reader.readAsDataURL(file);
     }
   };
-
+  const butfun = () => {
+    setSelectedModuleImage(null); // Update selectedModuleImage in ColorContext
+  };
   return (
     <>
       <div className={`size ${isNavOpen ? "nav-open" : ""}`}>
@@ -184,7 +192,7 @@ const Page = () => {
                       >
                         <div
                           className="box1"
-                          style={{ height: "20px", width: "60px" }}
+                          style={{ height: "20px", width: "40px" }}
                         ></div>
                         6
                       </div>
@@ -237,16 +245,43 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box1", event)}
                       >
-                        <img src={button1} alt="" style={{ height: "60px" }} />4
+                        <img src={button1} alt="" style={{ height: "40px" }} />4
                         switches
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box2" ? "selected" : ""
+                          module.type === "box8" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box2", event)}
+                        onClick={(event) => handlelayoutClick("box8", event)}
                       >
-                        <img src={button2} alt="" style={{ height: "50px" }} />5
+                        <img src={socket} alt="" style={{ height: "40px" }} />
+                        socket
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box10" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box10", event)}
+                      >
+                        <img src={s14l} alt="" style={{ height: "50px" }} />3
+                        lights 1 socket
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box9" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box9", event)}
+                      >
+                        <img src={l4f2} alt="" style={{ height: "50px" }} />4
+                        switches 2 fan
+                      </div>
+                      <div
+                        className={`module ${
+                          module.type === "box11" ? "selected" : ""
+                        }`}
+                        onClick={(event) => handlelayoutClick("box11", event)}
+                      >
+                        <img src={l5f1} alt="" style={{ height: "50px" }} />5
                         switches 1 fan
                       </div>
                       <div
@@ -255,8 +290,8 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box3", event)}
                       >
-                        <img src={button3} alt="" style={{ height: "60px" }} />5
-                        switch 2-way
+                        <img src={l6} alt="" style={{ height: "40px" }} />6
+                        lights
                       </div>
                       <div
                         className={`module ${
@@ -264,8 +299,8 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box4", event)}
                       >
-                        <img src={button4} alt="" style={{ height: "60px" }} />9
-                        switch 1-fan
+                        <img src={l10} alt="" style={{ height: "60px" }} />
+                        10 lights
                       </div>
                       <div
                         className={`module ${
@@ -282,8 +317,8 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box6", event)}
                       >
-                        <img src={button3} alt="" style={{ height: "60px" }} />5
-                        switch 2-way
+                        <img src={l9} alt="" style={{ height: "70px" }} />9
+                        switch 1-fan
                       </div>
                       <div
                         className={`module ${
@@ -291,8 +326,8 @@ const Page = () => {
                         }`}
                         onClick={(event) => handlelayoutClick("box7", event)}
                       >
-                        <img src={button3} alt="" style={{ height: "60px" }} />5
-                        switch 2-way
+                        <img src={l9} alt="" style={{ height: "40px" }} />9
+                        switch 1-fan
                       </div>
                     </div>
                   </div>
@@ -337,6 +372,7 @@ const Page = () => {
                           ></div>
                         ))}
                         <input type="file" onChange={handleFileChange} />
+                        <button onClick={butfun}>cancle</button>
                       </div>
                     </div>
                   </div>
