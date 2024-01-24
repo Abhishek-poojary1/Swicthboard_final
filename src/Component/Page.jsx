@@ -32,6 +32,8 @@ const Page = () => {
     setSelectedColor,
     setGlobalSize,
     setGlobalimage,
+    setSelectedModuleImage,
+    setframecolor,
   } = useColorContext();
 
   const handleColorChange = (newColor) => {
@@ -40,8 +42,10 @@ const Page = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [module, setModule] = useState({
+    type: "module1", // Set a default module type
     color: "",
   });
+
   const handleMenuClick = (menu, event) => {
     event.stopPropagation();
 
@@ -60,19 +64,59 @@ const Page = () => {
   };
   const { setGlobalModule } = useColorContext();
   const [boardsize, setboardsize] = useState("");
+  const supportedModules = {
+    box1: ["module1", "module2"],
+    box2: ["module1", "module2", "module3"],
+    box3: ["module1", "module2", "module3", "module4", "module5", "module6"],
+    box4: [
+      "module1",
+      "module2",
+      "module3",
+      "module4",
+      "module5",
+      "module6",
+      "module7",
+      "module8",
+      "module9",
+      "module10",
+    ],
+    box5: [
+      "module1",
+      "module2",
+      "module3",
+      "module4",
+      "module5",
+      "module6",
+      "module7",
+      "module8",
+      "module9",
+      "module10",
+    ],
+  };
 
   const handleModuleClick = (modulesize, size, event) => {
     if (event) {
       event.stopPropagation();
     }
-    let moduleImageURL = ""; // Set the appropriate image URL based on the module type
 
-    // Set the selected module image in the ColorContext
-    setSelectedModuleImage(moduleImageURL);
-    setboardsize(modulesize);
-    setGlobalModule(module);
-    setGlobalSize(size);
+    // Set a default module type if module.type is undefined
+    const moduleType = module.type || "module1";
+
+    if (supportedModules[modulesize].includes(moduleType)) {
+      // The module is supported, proceed with the logic
+      let moduleImageURL = ""; // Set the appropriate image URL based on the module type
+
+      // Set the selected module image in the ColorContext
+      setSelectedModuleImage(moduleImageURL);
+      setboardsize(modulesize);
+      setGlobalModule({ type: moduleType });
+      setGlobalSize(size);
+    } else {
+      // The module is not supported for the selected size, you can show a message or handle it accordingly
+      alert(`Module ${moduleType} is not supported for size ${modulesize}`);
+    }
   };
+
   const handlelayoutClick = (moduleType, size, event) => {
     let moduleImageURL = "";
 
@@ -80,58 +124,63 @@ const Page = () => {
       event.stopPropagation();
     }
     switch (moduleType) {
-      case "box1":
+      case "module1":
         moduleImageURL = button1;
         break;
-      case "box2":
+      case "module2":
         moduleImageURL = socket;
         break;
-      case "box3":
+      case "module3":
         moduleImageURL = s14l;
         break;
-      case "box4":
+      case "module4":
         moduleImageURL = l4f2;
         break;
-      case "box5":
+      case "module5":
         moduleImageURL = l5f1;
         break;
-      case "box6":
+      case "module6":
         moduleImageURL = l6;
         break;
-      case "box7":
+      case "module7":
         moduleImageURL = l10;
         break;
-      case "box8":
+      case "module8":
         moduleImageURL = button5;
         break;
-      case "box9":
+      case "module9":
         moduleImageURL = l9;
         break;
-      case "box10":
+      case "module10":
         moduleImageURL = s14l;
         break;
-      // Add cases for other module types as needed
       default:
         // Set a default image URL or handle unknown types
         moduleImageURL = ""; // Set a default image URL
     }
     setGlobalimage(moduleImageURL);
+
+    // Use the latest module type from the state
     setModule((prevModule) => ({
       ...prevModule,
       type: moduleType,
     }));
-    // setGlobalModule(module);
+
+    // Set the selected module image in the ColorContext
+    setSelectedModuleImage(moduleImageURL);
+
+    // setGlobalModule({ type: moduleType });
     // setGlobalSize(size);
   };
+
   const handleColorOptionClick = (selectedColor) => {
     setSelectedColor(selectedColor);
   };
-  const handleWallClick = () => {
-    setSelectedModuleImage(null);
-
-    setback(selectedColor);
+  const handleframecolor = (selectedColor) => {
+    setframecolor(selectedColor);
   };
-  const { setSelectedModuleImage } = useColorContext();
+
+  const { setGlobalmoduleimage } = useColorContext();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -140,14 +189,15 @@ const Page = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageDataURL = reader.result;
-        setSelectedModuleImage(imageDataURL); // Update selectedModuleImage in ColorContext
+        setGlobalmoduleimage(imageDataURL); // Update selectedModuleImage in ColorContext
       };
       reader.readAsDataURL(file);
     }
   };
   const butfun = () => {
-    setSelectedModuleImage(null); // Update selectedModuleImage in ColorContext
+    setGlobalmoduleimage(null); // Update selectedModuleImage in ColorContext
   };
+
   return (
     <>
       <div className={`size ${isNavOpen ? "nav-open" : ""}`}>
@@ -287,90 +337,92 @@ const Page = () => {
                     <div className="module-container">
                       <div
                         className={`module ${
-                          module.type === "box1" ? "selected" : ""
+                          module.type === "module1" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box1", event)}
+                        onClick={(event) => handlelayoutClick("module1", event)}
                       >
                         <img src={button1} alt="" style={{ height: "40px" }} />4
                         switches
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box2" ? "selected" : ""
+                          module.type === "module2" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box2", event)}
+                        onClick={(event) => handlelayoutClick("module2", event)}
                       >
                         <img src={socket} alt="" style={{ height: "40px" }} />
                         socket
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box3" ? "selected" : ""
+                          module.type === "module3" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box3", event)}
+                        onClick={(event) => handlelayoutClick("module3", event)}
                       >
                         <img src={s14l} alt="" style={{ height: "50px" }} />3
                         lights 1 socket
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box4" ? "selected" : ""
+                          module.type === "module4" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box4", event)}
+                        onClick={(event) => handlelayoutClick("module4", event)}
                       >
                         <img src={l4f2} alt="" style={{ height: "50px" }} />4
                         switches 2 fan
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box5" ? "selected" : ""
+                          module.type === "module5" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box5", event)}
+                        onClick={(event) => handlelayoutClick("module5", event)}
                       >
                         <img src={l5f1} alt="" style={{ height: "50px" }} />5
                         switches 1 fan
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box6" ? "selected" : ""
+                          module.type === "module6" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box6", event)}
+                        onClick={(event) => handlelayoutClick("module6", event)}
                       >
                         <img src={l6} alt="" style={{ height: "40px" }} />6
                         lights
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box7" ? "selected" : ""
+                          module.type === "module7" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box7", event)}
+                        onClick={(event) => handlelayoutClick("module7", event)}
                       >
                         <img src={l10} alt="" style={{ height: "60px" }} />
                         10 lights
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box8" ? "selected" : ""
+                          module.type === "module8" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box8", event)}
+                        onClick={(event) => handlelayoutClick("module8", event)}
                       >
                         <img src={button5} alt="" style={{ height: "60px" }} />8
                         switch 2-fan
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box9" ? "selected" : ""
+                          module.type === "module9" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box9", event)}
+                        onClick={(event) => handlelayoutClick("module9", event)}
                       >
                         <img src={l9} alt="" style={{ height: "70px" }} />9
                         switch 1-fan
                       </div>
                       <div
                         className={`module ${
-                          module.type === "box10" ? "selected" : ""
+                          module.type === "module10" ? "selected" : ""
                         }`}
-                        onClick={(event) => handlelayoutClick("box10", event)}
+                        onClick={(event) =>
+                          handlelayoutClick("module10", event)
+                        }
                       >
                         <img src={l9} alt="" style={{ height: "40px" }} />9
                         switch 1-fan
@@ -382,7 +434,12 @@ const Page = () => {
                   <div>
                     <div
                       className="color"
-                      style={{ display: "flex", flexDirection: "column" }}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-around",
+                        gap: "20px",
+                      }}
                     >
                       <div
                         className="selected-color"
@@ -398,25 +455,49 @@ const Page = () => {
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "space-between",
+                          gap: "20px",
                         }}
                       >
-                        {colorOptions.map((option, index) => (
-                          <div
-                            key={index}
-                            className="color-option"
-                            style={{
-                              backgroundColor: option,
-                              width: "20px",
-                              height: "20px",
-                              border:
-                                selectedColor === option
-                                  ? "2px solid #000"
-                                  : "none",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleColorOptionClick(option)}
-                          ></div>
-                        ))}
+                        outersurface color
+                        <div className="colorop">
+                          {colorOptions.map((option, index) => (
+                            <div
+                              key={index}
+                              className="color-option"
+                              style={{
+                                backgroundColor: option,
+                                width: "20px",
+                                height: "20px",
+                                border:
+                                  selectedColor === option
+                                    ? "2px solid #000"
+                                    : "none",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => handleColorOptionClick(option)}
+                            ></div>
+                          ))}
+                        </div>
+                        outer frame color
+                        <div className="colorop">
+                          {colorOptions.map((option, index) => (
+                            <div
+                              key={index}
+                              className="color-option"
+                              style={{
+                                backgroundColor: option,
+                                width: "20px",
+                                height: "20px",
+                                border:
+                                  selectedColor === option
+                                    ? "2px solid #000"
+                                    : "none",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => handleframecolor(option)}
+                            ></div>
+                          ))}
+                        </div>
                         <input type="file" onChange={handleFileChange} />
                         <button onClick={butfun}>cancle</button>
                       </div>
@@ -437,8 +518,8 @@ const Page = () => {
                 <div
                   className="overlay"
                   style={{
-                    width: "100px",
-                    height: "100px",
+                    width: "100%",
+                    height: "40px",
                     background: "aqua",
                     cursor: "pointer",
                     zIndex: "3000",

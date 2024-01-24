@@ -72,7 +72,7 @@ button:focus-visible {
   right: 0;
   width: 7%; /* Adjust the width as needed */
   height: 100%;
-  background-color: #f0f0f0;
+  background-color: #f4f1f1;
   border-left: 1px solid #ccc;
   border-radius: 10px;
   box-sizing: border-box;
@@ -88,7 +88,7 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: #ebe1e1;
+  background-color: #f5eeee;
   border: 2px solid #615e5e28;
   transition: 0.3s;
 }
@@ -191,4 +191,9 @@ button:focus-visible {
   justify-content: center;
   align-items: center;
   user-select: none;
+}
+
+.colorop {
+  display: flex;
+  justify-content: space-around;
 }

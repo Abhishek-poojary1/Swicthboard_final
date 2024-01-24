@@ -10,6 +10,7 @@ export const ColorProvider = ({ children }) => {
   const [selectedColor, setSelectedColor] = useState(color);
   const [selectedModuleImage, setSelectedModuleImage] = useState(null);
   const [selimage, setselimage] = useState("");
+  const [frameclr, setframeclr] = useState("");
   const setGlobalModule = (module) => {
     setSelectedModule(module);
   };
@@ -23,6 +24,10 @@ export const ColorProvider = ({ children }) => {
   };
   const setGlobalimage = (img) => {
     setselimage(img);
+  };
+
+  const setframecolor = (color) => {
+    setframeclr(color);
   };
   const contextValue = {
     color,
@@ -39,6 +44,9 @@ export const ColorProvider = ({ children }) => {
     selimage,
     setselimage,
     setGlobalimage,
+    frameclr,
+    setframeclr,
+    setframecolor,
   };
 
   return (

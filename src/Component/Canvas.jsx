@@ -1,91 +1,114 @@
-import React from "react";
-import Draggable from "react-draggable";
+import React, { useRef } from "react";
 import { useColorContext } from "./ColorContext";
+import { DndProvider, useDrag } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import html2canvas from "html2canvas";
+import { saveAs } from "file-saver";
+
+const DraggableImage = ({ image }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: "IMAGE",
+    item: { image },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
+  return (
+    <div
+      ref={drag}
+      className="background-image"
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        cursor: "move",
+      }}
+    ></div>
+  );
+};
 
 const Canvas = () => {
-  const { color, selectedSize, selectedColor, selectedModuleImage, selimage } =
-    useColorContext();
-  const draggableRef = useRef();
+  const {
+    color,
+    selectedSize,
+    selectedColor,
+    selectedModuleImage,
+    selimage,
+    frameclr,
+  } = useColorContext();
+  const canvasRef = useRef();
+  console.log("Selected Module Image:", selectedModuleImage);
+  const handleDownload = () => {
+    if (!canvasRef.current) return;
 
-  const getBackgroundSize = () => {
-    // Check the selected module type and return the corresponding background size
-    switch (selectedModuleImage) {
-      case "box1":
-        console.log("box1");
-        return "20% 30%";
-      case "box2":
-        return "50% 70%";
-      // Add cases for other module types as needed
-      default:
-        return "cover"; // Set a default background size
-    }
+    html2canvas(canvasRef.current).then((canvas) => {
+      canvas.toBlob((blob) => {
+        saveAs(blob, "canvas.png");
+      });
+    });
   };
 
   return (
-    <div>
-      <div
-        className="main glossy"
-        style={{
-          backgroundColor: color,
-        }}
-      >
+    <DndProvider backend={HTML5Backend}>
+      <div>
         <div
-          className="board glossy"
+          className="main glossy"
           style={{
-            width: selectedSize.width,
-            height: selectedSize.height,
-            position: "relative",
-            backgroundColor: selectedColor,
-            overflow: "hidden",
-            boxShadow: "10px 4px 18px rgba(0, 0, 0, 0.5)",
+            backgroundColor: color,
           }}
         >
-          {selectedModuleImage && (
-            <Draggable bounds="parent">
-              <div
-                className="background-image"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundImage: `url(${selectedModuleImage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  boxShadow: "0 4px 8px rgba(106, 104, 104, 0.5)",
-                  border: "2px solid rgba(106, 104, 104, 0.27)",
-                  position: "absolute",
-                  // Apply frosted glass effect
-                  backdropFilter: "blur(5px)",
-                  zIndex: 1, // Set a higher z-index to place it above the foreground image
-                }}
-              ></div>
-            </Draggable>
-          )}
+          <div
+            className="board glossy"
+            style={{
+              width: selectedSize.width,
+              height: selectedSize.height,
+              position: "relative",
+              backgroundColor: selectedColor,
+              backgroundImage: `url(${selectedModuleImage})`, // Set the background image
+              borderColor: frameclr,
+              overflow: "hidden",
+              boxShadow: "10px 4px 18px rgba(0, 0, 0, 0.5)",
+            }}
+            ref={canvasRef}
+          >
+            {selectedModuleImage && (
+              <DraggableImage image={selectedModuleImage} />
+            )}
 
-          {/* Foreground Image */}
-          {selimage && (
-            <Draggable bounds="parent">
+            {selimage && (
               <div
-                className="foreground-image"
-                style={{
-                  width: "100%", // Set the desired width
-                  height: "100%",
-                  backgroundSize: "20% 30%", // Set the desired background size
-                  backgroundImage: `url(${selimage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  boxShadow: "0 4px 8px rgba(106, 104, 104, 0.5)",
-                  border: "2px solid rgba(106, 104, 104, 0.27)",
-                  position: "absolute",
-                  // Apply frosted glass effect
-                  backdropFilter: "blur(5px)",
-                  zIndex: 2, // Set a higher z-index to place it above the background image
-                }}
-              ></div>
-            </Draggable>
-          )}
+                className="sel"
+                style={{ alignContent: "center", justifyContent: "center" }}
+              >
+                <img src={selimage} alt="" style={{ height: "140px" }} />
+              </div>
+            )}
+          </div>
+        </div>
+        <div style={{ position: "relative", display: "flex" }}>
+          <button
+            style={{
+              height: "30px",
+              width: "80px",
+              position: "relative",
+              zIndex: "100",
+            }}
+            onClick={handleDownload}
+          >
+            Download
+          </button>
+          <button
+            style={{
+              height: "30px",
+              width: "80px",
+              position: "relative",
+              zIndex: "100",
+            }}
+          >
+            send files{" "}
+          </button>
         </div>
       </div>
-    </div>
+    </DndProvider>
   );
 };
 
