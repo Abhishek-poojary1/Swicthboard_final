@@ -63,7 +63,7 @@ const Canvas = () => {
               height: selectedSize.height,
               position: "relative",
               backgroundColor: selectedColor,
-              backgroundImage: `url(${selectedModuleImage})`, // Set the background image
+              backgroundImage: `url(${selectedModuleImage})`,
               borderColor: frameclr,
               overflow: "hidden",
               boxShadow: "10px 4px 18px rgba(0, 0, 0, 0.5)",
