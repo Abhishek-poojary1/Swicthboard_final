@@ -50,35 +50,47 @@ const Canvas = () => {
 
   const constantImage = "src/Component/assets/s3.png";
   const renderChildDivs = () => {
-    if (selectedSize.size === "2") {
-      if (selimage === socket) {
-        // If the selected image is the socket, display only the socket image
-        return (
-          <div className="child-div">
-            <div className="subdiv">
-              <img src={selimage} style={{ height: "50px" }} alt="" />
-            </div>
-          </div>
-        );
-      } else {
-        // If the selected image is not the socket, display lights and possibly the constant image
+    // Check if the selected size is 2 and if there are selected lights
+    if (selectedSize.size === "2" && selectedLights.length > 0) {
+      // Check if the socket is among the selected lights
+      const socketSelected = selectedLights.some(
+        (light) => light.name === socket
+      );
+
+      // Filter out the socket from the selected lights
+      const lightsWithoutSocket = selectedLights.filter(
+        (light) => light.name !== socket
+      );
+
+      // Render the constant image only if lights are selected and the socket is not selected
+      if (lightsWithoutSocket.length > 0) {
         return (
           <div className="child-div">
             <div style={{ display: "flex", flexDirection: "column" }}>
-              {selectedLights.slice(0, 2).map((light, index) => (
+              {lightsWithoutSocket.slice(0, 2).map((light, index) => (
                 <div key={index} className="subdiv">
                   <img src={light.name} style={{ height: "50px" }} alt="" />
                 </div>
               ))}
             </div>
-            {selimage == light && (
-              <div className="subdiv">
-                <img src={constantImage} style={{ height: "50px" }} alt="" />
-                {console.log(constantImage)}
-              </div>
-            )}
+            <div className="subdiv">
+              <img src={constantImage} style={{ height: "50px" }} alt="" />
+            </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              {selectedLights.slice(2, 4).map((light, index) => (
+              {lightsWithoutSocket.slice(2, 4).map((light, index) => (
+                <div key={index} className="subdiv">
+                  <img src={light.name} style={{ height: "50px" }} alt="" />
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      } else {
+        // Render only the selected lights if the socket is not selected
+        return (
+          <div className="child-div">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {selectedLights.map((light, index) => (
                 <div key={index} className="subdiv">
                   <img src={light.name} style={{ height: "50px" }} alt="" />
                 </div>
@@ -88,7 +100,6 @@ const Canvas = () => {
         );
       }
     }
-    // Render no child divs for other sizes or when no lights or socket is selected
     return null;
   };
 
