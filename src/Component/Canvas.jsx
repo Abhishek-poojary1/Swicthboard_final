@@ -4,7 +4,9 @@ import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
-const socket = "src/Component/assets/socket.jpg";
+
+const socket = "/src/Component/assets/socket.jpg";
+
 const DraggableImage = ({ image }) => {
   const [{ isDragging }, drag] = useDrag({
     type: "IMAGE",
@@ -32,12 +34,11 @@ const Canvas = () => {
     selectedSize,
     selectedColor,
     selectedModuleImage,
-    selimage,
     frameclr,
-    light,
     selectedLights,
   } = useColorContext();
   const canvasRef = useRef();
+
   const handleDownload = () => {
     if (!canvasRef.current) return;
 
@@ -50,20 +51,17 @@ const Canvas = () => {
 
   const constantImage = "src/Component/assets/s3.png";
   const renderChildDivs = () => {
-    // Check if the selected size is 2 and if there are selected lights
     if (selectedSize.size === "2" && selectedLights.length > 0) {
-      // Check if the socket is among the selected lights
       const socketSelected = selectedLights.some(
-        (light) => light.name === socket
+        (light) => light.name.trim() === socket.trim()
       );
-
-      // Filter out the socket from the selected lights
+      console.log(selectedLights);
       const lightsWithoutSocket = selectedLights.filter(
-        (light) => light.name !== socket
+        (light) => light.name.trim() !== socket.trim()
       );
 
-      // Render the constant image only if lights are selected and the socket is not selected
-      if (lightsWithoutSocket.length > 0) {
+      if (!socketSelected) {
+        console.log("socketSelected", socketSelected);
         return (
           <div className="child-div">
             <div style={{ display: "flex", flexDirection: "column" }}>
@@ -73,9 +71,7 @@ const Canvas = () => {
                 </div>
               ))}
             </div>
-            <div className="subdiv">
-              <img src={constantImage} style={{ height: "50px" }} alt="" />
-            </div>
+            <img src={constantImage} alt="" style={{ height: "50px" }} />
             <div style={{ display: "flex", flexDirection: "column" }}>
               {lightsWithoutSocket.slice(2, 4).map((light, index) => (
                 <div key={index} className="subdiv">
@@ -86,21 +82,27 @@ const Canvas = () => {
           </div>
         );
       } else {
-        // Render only the selected lights if the socket is not selected
+        // Render socket image if socket is selected
         return (
           <div className="child-div">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {selectedLights.map((light, index) => (
-                <div key={index} className="subdiv">
-                  <img src={light.name} style={{ height: "50px" }} alt="" />
-                </div>
-              ))}
-            </div>
+            <img src={socket} alt="Socket" style={{ height: "50px" }} />
           </div>
         );
       }
     }
-    return null;
+
+    // Render lights if socket is not selected or for other scenarios
+    return (
+      <div className="child-div">
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {selectedLights.map((light, index) => (
+            <div key={index} className="subdiv">
+              <img src={light.name} style={{ height: "50px" }} alt="" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -153,7 +155,7 @@ const Canvas = () => {
               zIndex: "100",
             }}
           >
-            send files
+            Send Files
           </button>
         </div>
       </div>

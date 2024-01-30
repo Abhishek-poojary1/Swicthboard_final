@@ -12,25 +12,27 @@ const Controls = () => {
     if (imageName === socket) {
       // If the socket is selected, clear all other lights and images
       setSelectedLights([{ name: socket, value: socketValue }]);
+      setLightsValue(0); // Reset lights count to 0
       setSelectedImages([]);
       setlightimage(socket); // Set selimage to socket
     } else if (imageName === lights) {
       // If lights is selected after socket, remove socket and set lights image
-      if (selectedImages.length > 0 && selectedImages[0].name === socket) {
-        setSelectedImages([]);
-        setSelectedLights([{ name: lights, value: lightsValue }]);
-        setlightimage(lights); // Set selimage to lights
-      } else {
-        // If a light is selected without selecting socket, set the constant image and add the light to selected images
-        setSelectedImages([]);
-        // setlightimage(constantImage); // Set selimage to constant image
+      setSocketValue(0);
+      setSelectedImages([]);
+      const lightsToSet = [];
+      // Create an array of lights to set based on lightsValue
+      for (let i = 1; i <= lightsValue; i++) {
+        lightsToSet.push({ name: lights, value: i });
       }
+      setSelectedLights(lightsToSet);
+      setlightimage(lights); // Set selimage to lights
     } else {
       // If neither socket nor lights is selected, display the constant image
       setSelectedImages([]);
       // setlightimage(constantImage); // Set selimage to constant image
     }
   };
+
   const handleInputChange = (id, event) => {
     const inputValue = event.target.value;
     let maxValue = 10; // Default maximum value
