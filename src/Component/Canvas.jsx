@@ -4,7 +4,7 @@ import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
-
+const socket = "src/Component/assets/socket.jpg";
 const DraggableImage = ({ image }) => {
   const [{ isDragging }, drag] = useDrag({
     type: "IMAGE",
@@ -34,9 +34,10 @@ const Canvas = () => {
     selectedModuleImage,
     selimage,
     frameclr,
+    light,
+    selectedLights,
   } = useColorContext();
   const canvasRef = useRef();
-  console.log("Selected Module Image:", selectedModuleImage);
   const handleDownload = () => {
     if (!canvasRef.current) return;
 
@@ -45,6 +46,50 @@ const Canvas = () => {
         saveAs(blob, "canvas.png");
       });
     });
+  };
+
+  const constantImage = "src/Component/assets/s3.png";
+  const renderChildDivs = () => {
+    if (selectedSize.size === "2") {
+      if (selimage === socket) {
+        // If the selected image is the socket, display only the socket image
+        return (
+          <div className="child-div">
+            <div className="subdiv">
+              <img src={selimage} style={{ height: "50px" }} alt="" />
+            </div>
+          </div>
+        );
+      } else {
+        // If the selected image is not the socket, display lights and possibly the constant image
+        return (
+          <div className="child-div">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {selectedLights.slice(0, 2).map((light, index) => (
+                <div key={index} className="subdiv">
+                  <img src={light.name} style={{ height: "50px" }} alt="" />
+                </div>
+              ))}
+            </div>
+            {selimage == light && (
+              <div className="subdiv">
+                <img src={constantImage} style={{ height: "50px" }} alt="" />
+                {console.log(constantImage)}
+              </div>
+            )}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {selectedLights.slice(2, 4).map((light, index) => (
+                <div key={index} className="subdiv">
+                  <img src={light.name} style={{ height: "50px" }} alt="" />
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+    }
+    // Render no child divs for other sizes or when no lights or socket is selected
+    return null;
   };
 
   return (
@@ -74,14 +119,7 @@ const Canvas = () => {
               <DraggableImage image={selectedModuleImage} />
             )}
 
-            {selimage && (
-              <div
-                className="sel"
-                style={{ alignContent: "center", justifyContent: "center" }}
-              >
-                <img src={selimage} alt="" style={{ height: "140px" }} />
-              </div>
-            )}
+            {renderChildDivs()}
           </div>
         </div>
         <div style={{ position: "relative", display: "flex" }}>
@@ -104,7 +142,7 @@ const Canvas = () => {
               zIndex: "100",
             }}
           >
-            send files{" "}
+            send files
           </button>
         </div>
       </div>

@@ -10,6 +10,7 @@ import l9 from "./assets/l9+1f.png";
 import l10 from "./assets/l10.png";
 import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
+import Controls from "./Controls";
 
 const colorOptions = [
   "#ff0000", // red
@@ -107,7 +108,6 @@ const Page = () => {
       let moduleImageURL = ""; // Set the appropriate image URL based on the module type
 
       // Set the selected module image in the ColorContext
-      setSelectedModuleImage(moduleImageURL);
       setboardsize(modulesize);
       setGlobalModule({ type: moduleType });
       setGlobalSize(size);
@@ -213,7 +213,7 @@ const Page = () => {
           }`}
           onClick={(event) => handleMenuClick("module", event)}
         >
-          Module
+          controls
         </div>
         <div
           className={`menu-fixed ${selectedMenu === "color" ? "selected" : ""}`}
@@ -244,7 +244,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box1",
-                            { height: "200px", width: "200px" },
+                            { height: "200px", width: "200px", size: "2" },
                             event
                           )
                         }
@@ -263,7 +263,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box2",
-                            { height: "200px", width: "400px" },
+                            { height: "200px", width: "400px", size: "4" },
                             event
                           )
                         }
@@ -281,7 +281,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box3",
-                            { height: "250px", width: "600px" },
+                            { height: "250px", width: "600px", size: "6" },
                             event
                           )
                         }
@@ -299,7 +299,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box4",
-                            { height: "250px", width: "700px" },
+                            { height: "250px", width: "700px", size: "8" },
                             event
                           )
                         }
@@ -317,7 +317,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box5",
-                            { height: "450px", width: "700px" },
+                            { height: "450px", width: "700px", size: "12" },
                             event
                           )
                         }
@@ -331,11 +331,7 @@ const Page = () => {
                     </div>
                   </div>
                 )}
-                {selectedMenu === "module" && (
-                  <div>
-                    <div className="fk">hjklfjdafjdfsdsfdkdfsj</div>
-                  </div>
-                )}
+                {selectedMenu === "module" && <Controls />}
                 {selectedMenu === "color" && (
                   <div>
                     <div

@@ -11,10 +11,15 @@ export const ColorProvider = ({ children }) => {
   const [selectedModuleImage, setSelectedModuleImage] = useState(null);
   const [selimage, setselimage] = useState("");
   const [frameclr, setframeclr] = useState("");
+  const [light, setlight] = useState("");
+  const [selectedLights, setSelectedLights] = useState([]); // Add this state
+
   const setGlobalModule = (module) => {
     setSelectedModule(module);
   };
-
+  const setlightimage = (img) => {
+    setlight(img);
+  };
   const setGlobalSize = (size) => {
     setSelectedSize(size);
   };
@@ -47,6 +52,12 @@ export const ColorProvider = ({ children }) => {
     frameclr,
     setframeclr,
     setframecolor,
+    setlightimage,
+    light,
+    setlight,
+    selectedLights,
+    setSelectedLights,
+    setlightimage,
   };
 
   return (
