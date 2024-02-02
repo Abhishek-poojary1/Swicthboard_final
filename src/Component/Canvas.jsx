@@ -55,16 +55,16 @@ const Canvas = () => {
       const socketSelected = selectedLights.some(
         (light) => light.name.trim() === socket.trim()
       );
-      console.log(selectedLights);
       const lightsWithoutSocket = selectedLights.filter(
         (light) => light.name.trim() !== socket.trim()
       );
 
       if (!socketSelected) {
-        console.log("socketSelected", socketSelected);
         return (
           <div className="child-div">
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "60px" }}
+            >
               {lightsWithoutSocket.slice(0, 2).map((light, index) => (
                 <div key={index} className="subdiv">
                   <img src={light.name} style={{ height: "50px" }} alt="" />
@@ -72,7 +72,9 @@ const Canvas = () => {
               ))}
             </div>
             <img src={constantImage} alt="" style={{ height: "50px" }} />
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "60px" }}
+            >
               {lightsWithoutSocket.slice(2, 4).map((light, index) => (
                 <div key={index} className="subdiv">
                   <img src={light.name} style={{ height: "50px" }} alt="" />
@@ -85,12 +87,50 @@ const Canvas = () => {
         // Render socket image if socket is selected
         return (
           <div className="child-div">
-            <img src={socket} alt="Socket" style={{ height: "50px" }} />
+            <img src={socket} alt="Socket" style={{ height: "150px" }} />
           </div>
         );
       }
-    }
+    } else if (selectedSize.size === "4") {
+      return (
+        <div className="child-div">
+          <div style={{ display: "flex", gap: "20px" }}>
+            <div className="butin">
+              {selectedLights.slice(0, 2).map((light, index) => (
+                <div key={index} className="alldiv">
+                  <img src={light.name} style={{ height: "50px" }} alt="" />
+                </div>
+              ))}
+            </div>
+            <div className="butin">
+              {selectedLights.slice(2, 4).map((light, index) => (
+                <div key={index} className="alldiv">
+                  <img src={light.name} style={{ height: "50px" }} alt="" />
+                </div>
+              ))}
+            </div>
+            <div className="butin">
+              {selectedLights.slice(4, 6).map((light, index) => (
+                <div key={index} className="alldiv">
+                  <img src={light.name} style={{ height: "50px" }} alt="" />
+                </div>
+              ))}
+            </div>
 
+            <div
+              className="master"
+              style={{
+                alignContent: "flex-end",
+                display: "flex",
+                flexWrap: "wrap",
+              }}
+            >
+              <img src={constantImage} alt="" style={{ height: "50px" }} />
+            </div>
+          </div>
+        </div>
+      );
+    }
     // Render lights if socket is not selected or for other scenarios
     return (
       <div className="child-div">
@@ -121,18 +161,21 @@ const Canvas = () => {
               height: selectedSize.height,
               position: "relative",
               backgroundColor: selectedColor,
-              backgroundImage: `url(${selectedModuleImage})`,
+              // backgroundImage: `url(${selectedModuleImage})`,
+              backgroundSize: "cover", // This will make the image cover the entire background
+              backgroundPosition: "center", // This will center the background image
               borderColor: frameclr,
               overflow: "hidden",
               boxShadow: "10px 4px 18px rgba(0, 0, 0, 0.5)",
             }}
             ref={canvasRef}
           >
-            {selectedModuleImage && (
-              <DraggableImage image={selectedModuleImage} />
-            )}
-
             {renderChildDivs()}
+            <img
+              src={selectedModuleImage}
+              style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}
+              alt=""
+            />
           </div>
         </div>
         <div style={{ position: "relative", display: "flex" }}>

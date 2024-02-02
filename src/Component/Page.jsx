@@ -1,16 +1,10 @@
 import React, { createContext, useContext, useState } from "react";
-import button1 from "./assets/2m4l.png";
-import button5 from "./assets/2fan.png";
-import socket from "./assets/socket.jpg";
-import s14l from "./assets/4l+1s.png";
-import l4f2 from "./assets/4l+2f.png";
-import l5f1 from "./assets/5l+1f.png";
-import l6 from "./assets/4m6l.png";
-import l9 from "./assets/l9+1f.png";
-import l10 from "./assets/l10.png";
+import { useRef } from "react";
+
 import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
 import Controls from "./Controls";
+import ImageCropper from "./Imagecrop";
 
 const colorOptions = [
   "#ff0000", // red
@@ -117,85 +111,11 @@ const Page = () => {
     }
   };
 
-  const handlelayoutClick = (moduleType, size, event) => {
-    let moduleImageURL = "";
-
-    if (event) {
-      event.stopPropagation();
-    }
-    switch (moduleType) {
-      case "module1":
-        moduleImageURL = button1;
-        break;
-      case "module2":
-        moduleImageURL = socket;
-        break;
-      case "module3":
-        moduleImageURL = s14l;
-        break;
-      case "module4":
-        moduleImageURL = l4f2;
-        break;
-      case "module5":
-        moduleImageURL = l5f1;
-        break;
-      case "module6":
-        moduleImageURL = l6;
-        break;
-      case "module7":
-        moduleImageURL = l10;
-        break;
-      case "module8":
-        moduleImageURL = button5;
-        break;
-      case "module9":
-        moduleImageURL = l9;
-        break;
-      case "module10":
-        moduleImageURL = s14l;
-        break;
-      default:
-        // Set a default image URL or handle unknown types
-        moduleImageURL = ""; // Set a default image URL
-    }
-    setGlobalimage(moduleImageURL);
-
-    // Use the latest module type from the state
-    setModule((prevModule) => ({
-      ...prevModule,
-      type: moduleType,
-    }));
-
-    // Set the selected module image in the ColorContext
-    setSelectedModuleImage(moduleImageURL);
-
-    // setGlobalModule({ type: moduleType });
-    // setGlobalSize(size);
-  };
-
   const handleColorOptionClick = (selectedColor) => {
     setSelectedColor(selectedColor);
   };
   const handleframecolor = (selectedColor) => {
     setframecolor(selectedColor);
-  };
-
-  const { setGlobalmoduleimage } = useColorContext();
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageDataURL = reader.result;
-        setGlobalmoduleimage(imageDataURL); // Update selectedModuleImage in ColorContext
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  const butfun = () => {
-    setGlobalmoduleimage(null); // Update selectedModuleImage in ColorContext
   };
 
   return (
@@ -244,7 +164,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box1",
-                            { height: "200px", width: "200px", size: "2" },
+                            { height: "250px", width: "250px", size: "2" },
                             event
                           )
                         }
@@ -263,7 +183,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box2",
-                            { height: "200px", width: "400px", size: "4" },
+                            { height: "250px", width: "470px", size: "4" },
                             event
                           )
                         }
@@ -281,7 +201,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box3",
-                            { height: "250px", width: "600px", size: "6" },
+                            { height: "250px", width: "650px", size: "6" },
                             event
                           )
                         }
@@ -299,7 +219,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box4",
-                            { height: "250px", width: "700px", size: "8" },
+                            { height: "250px", width: "800px", size: "8" },
                             event
                           )
                         }
@@ -317,7 +237,7 @@ const Page = () => {
                         onClick={(event) =>
                           handleModuleClick(
                             "box5",
-                            { height: "450px", width: "700px", size: "12" },
+                            { height: "450px", width: "800px", size: "12" },
                             event
                           )
                         }
@@ -420,8 +340,7 @@ const Page = () => {
                             </div>
                           ))}
                         </div>
-                        <input type="file" onChange={handleFileChange} />
-                        <button onClick={butfun}>cancel</button>
+                        <ImageCropper />
                       </div>
                     </div>
                   </div>

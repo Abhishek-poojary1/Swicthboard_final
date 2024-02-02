@@ -66,6 +66,15 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+/* Import Tailwind CSS base styles */
+@import "tailwindcss/base";
+
+/* Import Tailwind CSS component styles */
+@import "tailwindcss/components";
+
+/* Import Tailwind CSS utility classes */
+@import "tailwindcss/utilities";
+
 .size {
   position: fixed;
   top: 0;
@@ -183,7 +192,7 @@ button:focus-visible {
 
 .board {
   display: flex;
-  position: relative;
+  position: absolute;
   left: -10%;
   border: 2px solid black;
   z-index: 10;
@@ -226,6 +235,9 @@ button:focus-visible {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  gap: 14px;
+  z-index: 3;
+  position: absolute;
 }
 .subdiv {
   display: flex;
@@ -233,4 +245,35 @@ button:focus-visible {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.alldiv {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.butin {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.imagecrop-container {
+  position: relative; /* Ensure positioning context for absolute positioning */
+}
+
+.ReactCrop {
+  position: absolute; /* Position the crop mask */
+  top: 0;
+  left: 0;
+  z-index: 10; /* Ensure the mask appears above the image */
+}
+
+.center-image {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  position: relative; /* Ensure positioning context for z-index */
+  z-index: 1; /* Ensure the image is behind the crop mask */
 }

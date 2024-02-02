@@ -3,18 +3,27 @@ import { useColorContext } from "./ColorContext";
 import lights from "./assets/1.png";
 import socket from "./assets/socket.jpg"; // Import the socket image
 // import constantImage from "./assets/s3.png";
+import fan from "./assets/6.png";
 const Controls = () => {
   const { setlightimage, setSelectedLights, selectedSize } = useColorContext();
   const [lightsValue, setLightsValue] = useState(0);
   const [socketValue, setSocketValue] = useState(0);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [fanValue, setFanValue] = useState(0); // State for fan value
+
   const handleImageClick = (imageName) => {
     if (imageName === socket) {
-      // If the socket is selected, clear all other lights and images
-      setSelectedLights([{ name: socket, value: socketValue }]);
-      setLightsValue(0); // Reset lights count to 0
-      setSelectedImages([]);
-      setlightimage(socket); // Set selimage to socket
+      if (selectedSize.size === "4") {
+        // If the size is 4, only update socketValue and set the socket image
+        setSocketValue(socketValue === 0 ? 1 : 0);
+        setlightimage(socket);
+      } else {
+        // If the size is not 4, clear all other lights and images, then set the socket image
+        setSelectedLights([{ name: socket, value: socketValue }]);
+        setLightsValue(0);
+        setSelectedImages([]);
+        setlightimage(socket);
+      }
     } else if (imageName === lights) {
       // If lights is selected after socket, remove socket and set lights image
       setSocketValue(0);
@@ -25,7 +34,7 @@ const Controls = () => {
         lightsToSet.push({ name: lights, value: i });
       }
       setSelectedLights(lightsToSet);
-      setlightimage(lights); // Set selimage to lights
+      setlightimage(lights);
     } else {
       // If neither socket nor lights is selected, display the constant image
       setSelectedImages([]);
@@ -39,19 +48,31 @@ const Controls = () => {
 
     if (selectedSize.size === "2" && id === "lights") {
       maxValue = 4; // Set the maximum value to 4 when the selected size is 2
+    } else if (selectedSize.size === "4" && id === "lights") {
+      maxValue = 6; // Set the maximum value to 6 when the selected size is 4
+    } else if (selectedSize.size === "2" && id === "socket") {
+      maxValue = 1; // Set the maximum value to 1 when the selected size is 2 for socket
     }
 
-    const newValue = Math.max(0, Math.min(maxValue, inputValue)); // Allow zero value for socket count
+    const newValue = Math.max(0, Math.min(maxValue, inputValue));
 
     if (id === "lights") {
       setLightsValue(newValue);
+      if (newValue > 0) {
+        const lightsToSet = [];
+        for (let i = 1; i <= newValue; i++) {
+          lightsToSet.push({ name: lights, value: i });
+        }
+        setSelectedLights(lightsToSet);
+      } else {
+        setSelectedLights([]);
+      }
     } else if (id === "socket") {
       setSocketValue(newValue);
       if (newValue === 0) {
-        // If socket count is reduced to zero, remove the socket image
         setSelectedImages([]);
         setSelectedLights([]);
-        setlightimage(null); // Set selimage to null
+        setlightimage(null);
       }
     }
   };
@@ -60,28 +81,38 @@ const Controls = () => {
     const currentValue = id === "lights" ? lightsValue : socketValue;
     let maxValue = 10; // Default maximum value
 
-    if (selectedSize.size === "2" && id === "socket") {
-      // Limit socket count to 1 for selected size 2
-      maxValue = 1;
-    } else if (selectedSize.size === "2" && id === "lights") {
-      // Limit lights count to 4 for selected size 2
-      maxValue = 4;
+    if (selectedSize.size === "2" && id === "lights") {
+      maxValue = 4; // Set the maximum value to 4 when the selected size is 2
+    } else if (selectedSize.size === "4" && id === "lights") {
+      maxValue = 6; // Set the maximum value to 6 when the selected size is 4
+    } else if (selectedSize.size === "2" && id === "socket") {
+      maxValue = 1; // Set the maximum value to 1 when the selected size is 2 for socket
     }
 
     if (currentValue < maxValue) {
-      const newValue = Math.min(maxValue, currentValue + 1);
+      const newValue = currentValue + 1;
       if (id === "lights") {
         setLightsValue(newValue);
-        setSelectedLights((prevSelectedLights) => [
-          ...prevSelectedLights,
-          { name: lights, value: newValue },
-        ]);
+        if (newValue > 0) {
+          const lightsToSet = [];
+          for (let i = 1; i <= newValue; i++) {
+            lightsToSet.push({ name: lights, value: i });
+          }
+          setSelectedLights(lightsToSet);
+        } else {
+          setSelectedLights([]);
+        }
       } else if (id === "socket") {
         setSocketValue(newValue);
-        setSelectedLights([{ name: socket, value: newValue }]);
+        if (newValue > 0) {
+          setSelectedLights([{ name: socket, value: newValue }]);
+        } else {
+          setSelectedLights([]);
+        }
       }
     }
   };
+
   useEffect(() => {
     if (socketValue === 0) {
       setSelectedImages([]);
@@ -128,7 +159,10 @@ const Controls = () => {
       event.preventDefault();
     }
   };
-
+  const handleFanClick = () => {
+    setSelectedImages([fan]); // Set selected images to include fan image
+    setlightimage(fan); // Set selected light image to fan image
+  };
   return (
     <div>
       <div style={{ display: "grid" }}>
@@ -167,6 +201,26 @@ const Controls = () => {
             />
             <button onClick={() => handleIncrement("socket")}>+</button>
           </div>
+          <div className="boxcon" onClick={handleFanClick}>
+            {" "}
+            {/* Add onClick handler for fan */}
+            <label htmlFor="fan" className="label">
+              Fan
+            </label>
+            <button onClick={() => handleDecrement("fan")}>-</button>
+            <input
+              type="number"
+              id="fan"
+              className="controls"
+              value={fanValue}
+              min={1}
+              max={5}
+              onKeyDown={handleKeyDown}
+              onChange={(e) => handleInputChange("fan", e)}
+            />
+            <button onClick={() => handleIncrement("fan")}>+</button>
+          </div>
+
           {/* Add more input boxes as needed */}
         </div>
       </div>
