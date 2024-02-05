@@ -13,7 +13,10 @@ export const ColorProvider = ({ children }) => {
   const [frameclr, setframeclr] = useState("");
   const [light, setlight] = useState("");
   const [selectedLights, setSelectedLights] = useState([]); // Add this state
-
+  const [img, setimg] = useState("");
+  const setimgglob = (e) => {
+    setimg(e);
+  };
   const setGlobalModule = (module) => {
     setSelectedModule(module);
   };
@@ -58,6 +61,9 @@ export const ColorProvider = ({ children }) => {
     selectedLights,
     setSelectedLights,
     setlightimage,
+    img,
+    setimgglob,
+    setimg,
   };
 
   return (

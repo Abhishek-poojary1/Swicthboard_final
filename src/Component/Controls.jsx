@@ -79,14 +79,27 @@ const Controls = () => {
 
   const handleIncrement = (id) => {
     const currentValue = id === "lights" ? lightsValue : socketValue;
-    let maxValue = 10; // Default maximum value
-
+    let maxValue = 20;
     if (selectedSize.size === "2" && id === "lights") {
-      maxValue = 4; // Set the maximum value to 4 when the selected size is 2
+      maxValue = 4;
     } else if (selectedSize.size === "4" && id === "lights") {
-      maxValue = 6; // Set the maximum value to 6 when the selected size is 4
+      maxValue = 6;
+    } else if (selectedSize.size === "6" && id === "lights") {
+      maxValue = 10;
+    } else if (selectedSize.size === "8" && id === "lights") {
+      maxValue = 10;
+    } else if (selectedSize.size === "12" && id === "lights") {
+      maxValue = 20;
     } else if (selectedSize.size === "2" && id === "socket") {
-      maxValue = 1; // Set the maximum value to 1 when the selected size is 2 for socket
+      maxValue = 1;
+    } else if (selectedSize.size === "4" && id === "socket") {
+      maxValue = 1;
+    } else if (selectedSize.size === "6" && id === "socket") {
+      maxValue = 2;
+    } else if (selectedSize.size === "8" && id === "socket") {
+      maxValue = 2;
+    } else if (selectedSize.size === "12" && id === "socket") {
+      maxValue = 3;
     }
 
     if (currentValue < maxValue) {
@@ -117,7 +130,7 @@ const Controls = () => {
     if (socketValue === 0) {
       setSelectedImages([]);
       setSelectedLights([]);
-      setlightimage(null); // Remove the socket image
+      setlightimage(null);
     }
   }, [socketValue]);
   const handleDecrement = (id) => {
@@ -134,34 +147,30 @@ const Controls = () => {
       }
     } else if (id === "socket") {
       if (socketValue > 1) {
-        // If socket count is greater than 1, decrement normally
         setSocketValue((prevValue) => prevValue - 1);
       } else if (socketValue === 1) {
-        // If socket count is 1, remove the socket
         if (selectedSize.size === "2") {
           setSocketValue(0);
           setSelectedImages([]);
           setSelectedLights([]);
-          setlightimage(null); // Remove the socket image
+          setlightimage(null);
         }
       } else if (socketValue === 0) {
-        // If socket count is already 0, make sure the socket image is removed
         setSelectedImages([]);
         setSelectedLights([]);
-        setlightimage(null); // Remove the socket image
+        setlightimage(null);
       }
     }
   };
 
   const handleKeyDown = (event) => {
-    // Allow only arrow key interactions
     if (![38, 40].includes(event.keyCode)) {
       event.preventDefault();
     }
   };
   const handleFanClick = () => {
-    setSelectedImages([fan]); // Set selected images to include fan image
-    setlightimage(fan); // Set selected light image to fan image
+    setSelectedImages([fan]);
+    setlightimage(fan);
   };
   return (
     <div>

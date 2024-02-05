@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
-import { useRef } from "react";
+import { useState } from "react";
+// import { useRef } from "react";
 
 import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
@@ -283,7 +283,7 @@ const Page = () => {
                         outersurface color
                         <div className="colorop">
                           {colorOptions.map((option, index) => (
-                            <div>
+                            <div key={index}>
                               <div
                                 className="selected-color"
                                 style={{
@@ -313,7 +313,7 @@ const Page = () => {
                         outer frame color
                         <div className="colorop">
                           {colorOptions.map((option, index) => (
-                            <div>
+                            <div key={index}>
                               <div
                                 className="selected-color"
                                 style={{

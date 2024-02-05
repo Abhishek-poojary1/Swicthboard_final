@@ -199,6 +199,7 @@ button:focus-visible {
   border-radius: 3px;
   justify-content: center;
   align-items: center;
+  align-content: center;
   user-select: none;
 }
 
@@ -237,7 +238,7 @@ button:focus-visible {
   align-items: center;
   gap: 14px;
   z-index: 3;
-  position: absolute;
+  /* position: absolute; */
 }
 .subdiv {
   display: flex;
@@ -259,14 +260,19 @@ button:focus-visible {
 }
 
 .imagecrop-container {
-  position: relative; /* Ensure positioning context for absolute positioning */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
-.ReactCrop {
-  position: absolute; /* Position the crop mask */
-  top: 0;
-  left: 0;
-  z-index: 10; /* Ensure the mask appears above the image */
+.center-container {
+  position: relative;
+  /* top: -299px;
+    right: 600px;
+    height: 400px;
+    width: 500px; */
 }
 
 .center-image {
@@ -274,6 +280,16 @@ button:focus-visible {
   max-width: 100%;
   max-height: 100%;
   margin: 0 auto;
-  position: relative; /* Ensure positioning context for z-index */
-  z-index: 1; /* Ensure the image is behind the crop mask */
+}
+.mainchild {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+}
+
+titite {
+  display: flex;
 }
