@@ -12,8 +12,11 @@ export const ColorProvider = ({ children }) => {
   const [selimage, setselimage] = useState("");
   const [frameclr, setframeclr] = useState("");
   const [light, setlight] = useState("");
-  const [selectedLights, setSelectedLights] = useState([]); // Add this state
+  const [selectedimage, setSelectedimage] = useState([]); // Add this state
   const [img, setimg] = useState("");
+  const setSelectedLights = (e) => {
+    setSelectedimage(e);
+  };
   const setimgglob = (e) => {
     setimg(e);
   };
@@ -58,9 +61,10 @@ export const ColorProvider = ({ children }) => {
     setlightimage,
     light,
     setlight,
-    selectedLights,
+    selectedimage,
+    setSelectedimage,
     setSelectedLights,
-    setlightimage,
+
     img,
     setimgglob,
     setimg,

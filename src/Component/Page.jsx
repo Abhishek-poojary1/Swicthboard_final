@@ -5,6 +5,7 @@ import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
 import Controls from "./Controls";
 import ImageCropper from "./Imagecrop";
+import Jod from "./Jod";
 
 const colorOptions = [
   "#ff0000", // red
@@ -251,7 +252,7 @@ const Page = () => {
                     </div>
                   </div>
                 )}
-                {selectedMenu === "module" && <Controls />}
+                {selectedMenu === "module" && <Jod />}
                 {selectedMenu === "color" && (
                   <div>
                     <div

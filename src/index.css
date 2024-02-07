@@ -210,8 +210,8 @@ button:focus-visible {
 .inputcontrols {
   display: flex;
   flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   justify-self: center;
 }
 
@@ -288,8 +288,4 @@ button:focus-visible {
   justify-content: center;
   align-items: center;
   justify-self: center;
-}
-
-titite {
-  display: flex;
 }

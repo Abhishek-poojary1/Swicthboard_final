@@ -10,35 +10,36 @@ const Controls = () => {
   const [socketValue, setSocketValue] = useState(0);
   const [selectedImages, setSelectedImages] = useState([]);
   const [fanValue, setFanValue] = useState(0); // State for fan value
-
   const handleImageClick = (imageName) => {
     if (imageName === socket) {
-      if (selectedSize.size === "4") {
-        // If the size is 4, only update socketValue and set the socket image
+      if (selectedSize.size === "2") {
         setSocketValue(socketValue === 0 ? 1 : 0);
-        setlightimage(socket);
-      } else {
-        // If the size is not 4, clear all other lights and images, then set the socket image
-        setSelectedLights([{ name: socket, value: socketValue }]);
+        setSelectedLights([{ name: socket, value: socketValue === 0 ? 1 : 0 }]);
         setLightsValue(0);
         setSelectedImages([]);
-        setlightimage(socket);
+        setlightimage(socket); // Here you set the socket image
+      } else {
+        setSocketValue(socketValue === 0 ? 1 : 0);
+        setSelectedImages([]);
+        const lightsToSet = [];
+        for (let i = 1; i <= lightsValue; i++) {
+          lightsToSet.push({ name: lights, value: i });
+        }
+        setSelectedLights(lightsToSet);
+        setlightimage(socket); // Here you also set the socket image
       }
     } else if (imageName === lights) {
-      // If lights is selected after socket, remove socket and set lights image
       setSocketValue(0);
       setSelectedImages([]);
       const lightsToSet = [];
-      // Create an array of lights to set based on lightsValue
       for (let i = 1; i <= lightsValue; i++) {
         lightsToSet.push({ name: lights, value: i });
       }
       setSelectedLights(lightsToSet);
       setlightimage(lights);
     } else {
-      // If neither socket nor lights is selected, display the constant image
       setSelectedImages([]);
-      // setlightimage(constantImage); // Set selimage to constant image
+      setSocketValue(0);
     }
   };
 
@@ -104,35 +105,51 @@ const Controls = () => {
 
     if (currentValue < maxValue) {
       const newValue = currentValue + 1;
-      if (id === "lights") {
-        setLightsValue(newValue);
-        if (newValue > 0) {
-          const lightsToSet = [];
-          for (let i = 1; i <= newValue; i++) {
-            lightsToSet.push({ name: lights, value: i });
-          }
+      // if (id === "lights") {
+      //   setLightsValue(newValue);
+      //   if (newValue > 0) {
+      //     const lightsToSet = [];
+      //     for (let i = 1; i <= newValue; i++) {
+      //       lightsToSet.push({ name: lights, value: i });
+      //     }
+      //     setSelectedLights(lightsToSet);
+      //   } else {
+      //     setSelectedLights([]);
+      //   }
+      // } else if (id === "socket") {
+      //   setSocketValue(newValue);
+      //   if (newValue > 0) {
+      //     setSelectedLights([{ name: socket, value: newValue }]);
+      //   } else {
+      //     setSelectedLights([]);
+      //   }
+      // }
+      const lightsToSet = [];
+      for (let i = 1; i <= newValue; i++) {
+        if (id === "lights") {
+          setLightsValue(newValue);
+          lightsToSet.push({ name: lights, value: i });
           setSelectedLights(lightsToSet);
-        } else {
-          setSelectedLights([]);
-        }
-      } else if (id === "socket") {
-        setSocketValue(newValue);
-        if (newValue > 0) {
-          setSelectedLights([{ name: socket, value: newValue }]);
-        } else {
-          setSelectedLights([]);
+        } else if (id === "socket") {
+          //   setSocketValue(newValue);
+          lightsToSet.push({ name: socket, value: i });
+          setSelectedLights(lightsToSet);
+        } else if (id === "fan") {
+          //   setSocketValue(newValue);
+          lightsToSet.push({ name: fan, value: i });
+          setSelectedLights(lightsToSet);
         }
       }
     }
   };
 
-  useEffect(() => {
-    if (socketValue === 0) {
-      setSelectedImages([]);
-      setSelectedLights([]);
-      setlightimage(null);
-    }
-  }, [socketValue]);
+  // useEffect(() => {
+  //   if (socketValue === 0) {
+  //     setSelectedImages([]);
+  //     setSelectedLights([]);
+  //     setlightimage(null);
+  //   }
+  // }, [socketValue, setSelectedLights, setlightimage]);
   const handleDecrement = (id) => {
     if (id === "lights") {
       if (lightsValue > 1) {
@@ -229,8 +246,6 @@ const Controls = () => {
             />
             <button onClick={() => handleIncrement("fan")}>+</button>
           </div>
-
-          {/* Add more input boxes as needed */}
         </div>
       </div>
     </div>

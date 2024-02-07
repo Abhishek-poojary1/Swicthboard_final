@@ -37,11 +37,10 @@ const Canvas = () => {
     selectedColor,
     // selectedModuleImage,
     frameclr,
-    selectedLights,
+    selectedimage,
     img,
   } = useColorContext();
   const canvasRef = useRef();
-
   const handleDownload = () => {
     if (!canvasRef.current) return;
 
@@ -54,14 +53,15 @@ const Canvas = () => {
 
   const constantImage = "src/Component/assets/s3.png";
   const renderChildDivs = () => {
-    if (selectedLights.length > 0) {
-      const socketSelected = selectedLights.some(
-        (light) => light.name.trim() === socket.trim()
+    console.log(selectedimage);
+    if (selectedimage.length > 0) {
+      const socketSelected = selectedimage.some(
+        (light) => light.name === socket
       );
-      const lightsWithoutSocket = selectedLights.filter(
-        (light) => light.name.trim() !== socket.trim()
+      const lightsWithoutSocket = selectedimage.filter(
+        (light) => light.name !== socket
       );
-      if (selectedLights.length <= 4) {
+      if (selectedimage.length <= 4) {
         if (!socketSelected) {
           return (
             <div className="child-div">
@@ -109,21 +109,21 @@ const Canvas = () => {
           <div className="child-div">
             <div style={{ display: "flex", gap: "20px" }}>
               <div className="butin">
-                {selectedLights.slice(0, 2).map((light, index) => (
+                {selectedimage.slice(0, 2).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(2, 4).map((light, index) => (
+                {selectedimage.slice(2, 4).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(4, 6).map((light, index) => (
+                {selectedimage.slice(4, 6).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
@@ -148,35 +148,35 @@ const Canvas = () => {
           <div className="child-div">
             <div style={{ display: "flex", gap: "20px" }}>
               <div className="butin">
-                {selectedLights.slice(0, 2).map((light, index) => (
+                {selectedimage.slice(0, 2).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(2, 4).map((light, index) => (
+                {selectedimage.slice(2, 4).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(4, 6).map((light, index) => (
+                {selectedimage.slice(4, 6).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(6, 8).map((light, index) => (
+                {selectedimage.slice(6, 8).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(8, 10).map((light, index) => (
+                {selectedimage.slice(8, 10).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
@@ -201,35 +201,35 @@ const Canvas = () => {
           <div className="child-div">
             <div style={{ display: "flex", gap: "20px" }}>
               <div className="butin">
-                {selectedLights.slice(0, 2).map((light, index) => (
+                {selectedimage.slice(0, 2).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(2, 4).map((light, index) => (
+                {selectedimage.slice(2, 4).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(4, 6).map((light, index) => (
+                {selectedimage.slice(4, 6).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(6, 8).map((light, index) => (
+                {selectedimage.slice(6, 8).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
                 ))}
               </div>
               <div className="butin">
-                {selectedLights.slice(8, 10).map((light, index) => (
+                {selectedimage.slice(8, 10).map((light, index) => (
                   <div key={index} className="alldiv">
                     <img src={light.name} style={{ height: "50px" }} alt="" />
                   </div>
@@ -255,35 +255,35 @@ const Canvas = () => {
             <div className="child-div">
               <div style={{ display: "flex", gap: "20px" }}>
                 <div className="butin">
-                  {selectedLights.slice(0, 2).map((light, index) => (
+                  {selectedimage.slice(0, 2).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(2, 4).map((light, index) => (
+                  {selectedimage.slice(2, 4).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(4, 6).map((light, index) => (
+                  {selectedimage.slice(4, 6).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(6, 8).map((light, index) => (
+                  {selectedimage.slice(6, 8).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(8, 10).map((light, index) => (
+                  {selectedimage.slice(8, 10).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
@@ -305,35 +305,35 @@ const Canvas = () => {
             <div className="child-div">
               <div style={{ display: "flex", gap: "20px" }}>
                 <div className="butin">
-                  {selectedLights.slice(10, 12).map((light, index) => (
+                  {selectedimage.slice(10, 12).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(12, 14).map((light, index) => (
+                  {selectedimage.slice(12, 14).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(14, 16).map((light, index) => (
+                  {selectedimage.slice(14, 16).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(16, 18).map((light, index) => (
+                  {selectedimage.slice(16, 18).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="butin">
-                  {selectedLights.slice(18, 20).map((light, index) => (
+                  {selectedimage.slice(18, 20).map((light, index) => (
                     <div key={index} className="alldiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
@@ -361,7 +361,7 @@ const Canvas = () => {
     return (
       <div className="child-div">
         <div style={{ display: "flex", flexDirection: "column" }}>
-          {selectedLights.map((light, index) => (
+          {selectedimage.map((light, index) => (
             <div key={index} className="subdiv">
               <img src={light.name} style={{ height: "50px" }} alt="" />
             </div>
@@ -374,7 +374,6 @@ const Canvas = () => {
   const ASPECT_RATIO = 1;
   const MIN_DIMENSION = 150;
   const [crop, setCrop] = useState();
-  console.log(img);
   const onImageLoad = (e) => {
     const { width, height } = e.currentTarget;
     const cropwithinpercent = (MIN_DIMENSION / width) * 100;
