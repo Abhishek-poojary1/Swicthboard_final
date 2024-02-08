@@ -55,15 +55,21 @@ const Jod = () => {
     setSelectedImages(updatedImages);
     setSelectedLights(updatedImages);
   };
-
   const handleDecrement = (type) => {
     let filteredImages = [...selectedImages];
 
     switch (type) {
       case "lights": {
         if (lightsCount > 0) {
-          filteredImages.pop(); // Remove the last added light
-          setLightsCount((prevCount) => Math.max(prevCount - 1, 2)); // Ensure it doesn't go below 2
+          if (lightsCount === 4) {
+            // Remove the last two added lights when going from 4 to 2
+            filteredImages.pop();
+            filteredImages.pop();
+            setLightsCount(2); // Set the count directly to 2
+          } else {
+            filteredImages.pop(); // Remove the last added light
+            setLightsCount((prevCount) => Math.max(prevCount - 1, 0)); // Decrement lights count
+          }
         }
         break;
       }
