@@ -20,8 +20,8 @@ const Jod = () => {
       break;
     case "4":
       maxLights = 6;
-      maxSockets = 2;
-      maxFans = 0;
+      maxSockets = 1; // Changed from 2 to 1
+      maxFans = 2;
       break;
     case "6":
     case "8":
@@ -41,20 +41,18 @@ const Jod = () => {
   const [lightsCount, setLightsCount] = useState(0);
   const [socketCount, setSocketCount] = useState(0);
   const [fanCount, setFanCount] = useState(0);
-
   useEffect(() => {
-    // Automatically adjust lights to 4 if 3 lights are selected
-    if (selectedSize.size === "2" && lightsCount === 3) {
-      handleImageClick(lights);
-      setLightsCount(4);
-    }
-  }, [lightsCount, selectedSize.size]);
+    // Calculate the total count of all selected controls
+    const totalCount = selectedImages.length;
+    console.log("Total count:", totalCount);
+  }, [selectedImages]);
 
   const handleImageClick = (imageName) => {
     const updatedImages = [...selectedImages, { name: imageName }];
     setSelectedImages(updatedImages);
     setSelectedLights(updatedImages);
   };
+
   const handleDecrement = (type) => {
     let filteredImages = [...selectedImages];
 
@@ -96,6 +94,33 @@ const Jod = () => {
     setSelectedLights(filteredImages);
   };
 
+  const handleLightsIncrement = () => {
+    if (lightsCount < maxLights) {
+      handleImageClick(lights);
+      setLightsCount((prevCount) => prevCount + 1);
+    }
+  };
+
+  const handleSocketIncrement = () => {
+    if (socketCount < maxSockets) {
+      handleImageClick(socket);
+      setSocketCount((prevCount) => prevCount + 1);
+    }
+  };
+
+  const handleFanIncrement = () => {
+    if (fanCount < maxFans) {
+      handleImageClick(fan);
+      setFanCount((prevCount) => prevCount + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedSize.size === "2" && lightsCount === 3) {
+      handleLightsIncrement();
+    }
+  }, [lightsCount, selectedSize.size]);
+
   return (
     <div>
       <div>
@@ -115,12 +140,7 @@ const Jod = () => {
               readOnly
             />
             <button
-              onClick={() => {
-                if (lightsCount < maxLights) {
-                  handleImageClick(lights);
-                  setLightsCount((prevCount) => prevCount + 1);
-                }
-              }}
+              onClick={handleLightsIncrement}
               disabled={lightsCount >= maxLights || socketCount > 0}
             >
               +
@@ -141,12 +161,7 @@ const Jod = () => {
               readOnly
             />
             <button
-              onClick={() => {
-                if (socketCount < maxSockets) {
-                  handleImageClick(socket);
-                  setSocketCount((prevCount) => prevCount + 1);
-                }
-              }}
+              onClick={handleSocketIncrement}
               disabled={socketCount >= maxSockets || lightsCount > 0}
             >
               +
@@ -167,13 +182,10 @@ const Jod = () => {
               readOnly
             />
             <button
-              onClick={() => {
-                if (fanCount < maxFans) {
-                  handleImageClick(fan);
-                  setFanCount((prevCount) => prevCount + 1);
-                }
-              }}
-              disabled={fanCount >= maxFans}
+              onClick={handleFanIncrement}
+              disabled={
+                fanCount >= maxFans || (lightsCount === 5 && fanCount === 1)
+              }
             >
               +
             </button>

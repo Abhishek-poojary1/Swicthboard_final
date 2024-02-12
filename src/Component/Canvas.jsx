@@ -53,7 +53,6 @@ const Canvas = () => {
 
   const constantImage = "src/Component/assets/s3.png";
   const renderChildDivs = () => {
-    console.log(selectedimage);
     if (selectedimage.length > 0) {
       const socketSelected = selectedimage.some(
         (light) => light.name === socket
@@ -100,7 +99,7 @@ const Canvas = () => {
           // Render socket image if socket is selected
           return (
             <div className="child-div">
-              <img src={socket} alt="Socket" style={{ height: "150px" }} />
+              <img src={socket} alt="Socket" style={{ height: "50px" }} />
             </div>
           );
         }
