@@ -3,49 +3,63 @@ import lights from "./assets/1.png";
 import socket from "./assets/socket.jpg";
 import fan from "./assets/6.png";
 import { useColorContext } from "./ColorContext";
-
 const Jod = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const { setSelectedLights, selectedSize } = useColorContext();
 
-  let maxLights = 0;
-  let maxSockets = 0;
-  let maxFans = 0;
-
-  switch (selectedSize.size) {
-    case "2":
-      maxLights = 4;
-      maxSockets = 1;
-      maxFans = 0;
-      break;
-    case "4":
-      maxLights = 6;
-      maxSockets = 1; // Changed from 2 to 1
-      maxFans = 2;
-      break;
-    case "6":
-    case "8":
-      maxLights = 10;
-      maxSockets = 2;
-      maxFans = 0;
-      break;
-    case "12":
-      maxLights = 20;
-      maxSockets = 3;
-      maxFans = 0;
-      break;
-    default:
-      break;
-  }
-
+  const [maxLights, setMaxLights] = useState(0);
+  const [maxSockets, setMaxSockets] = useState(0);
+  const [maxFans, setMaxFans] = useState(0);
   const [lightsCount, setLightsCount] = useState(0);
   const [socketCount, setSocketCount] = useState(0);
   const [fanCount, setFanCount] = useState(0);
+  const [lightsDisable, setLightsDisable] = useState(false);
+  const [socketDisable, setSocketDisable] = useState(false);
+  const [fanDisable, setFanDisable] = useState(false);
+
   useEffect(() => {
-    // Calculate the total count of all selected controls
-    const totalCount = selectedImages.length;
-    console.log("Total count:", totalCount);
-  }, [selectedImages]);
+    switch (selectedSize.size) {
+      case "2":
+        setMaxLights(4);
+        setMaxSockets(1);
+        setMaxFans(0);
+        break;
+      case "4":
+        setMaxLights(6);
+        setMaxSockets(1);
+        setMaxFans(2);
+        break;
+      case "6":
+      case "8":
+        setMaxLights(10);
+        setMaxSockets(2);
+        setMaxFans(2);
+        break;
+      case "12":
+        setMaxLights(20);
+        setMaxSockets(3);
+        setMaxFans(4);
+        break;
+      default:
+        break;
+    }
+  }, [selectedSize]);
+
+  useEffect(() => {
+    setLightsDisable(lightsCount === maxLights || socketCount > 0);
+    setSocketDisable(
+      socketCount === maxSockets ||
+        (selectedSize.size === "2" && lightsCount > 0) ||
+        (selectedSize.size === "4" && lightsCount > 3) ||
+        (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
+        (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2)
+    );
+    setFanDisable(
+      lightsCount === maxLights ||
+        selectedSize.size === "2" ||
+        (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1)
+    );
+  }, [lightsCount, maxLights, socketCount, maxSockets, selectedSize, fanCount]);
 
   const handleImageClick = (imageName) => {
     const updatedImages = [...selectedImages, { name: imageName }];
@@ -57,37 +71,58 @@ const Jod = () => {
     let filteredImages = [...selectedImages];
 
     switch (type) {
-      case "lights": {
+      case "lights":
         if (lightsCount > 0) {
-          if (lightsCount === 4) {
-            // Remove the last two added lights when going from 4 to 2
-            filteredImages.pop();
-            filteredImages.pop();
-            setLightsCount(2); // Set the count directly to 2
-          } else {
-            filteredImages.pop(); // Remove the last added light
+          // Find the index of the last added light
+          const lastLightIndex = filteredImages
+            .slice()
+            .reverse()
+            .findIndex((image) => image.name === lights);
+          if (lastLightIndex !== -1) {
+            // Remove the last added light
+            filteredImages.splice(
+              filteredImages.length - 1 - lastLightIndex,
+              1
+            );
             setLightsCount((prevCount) => Math.max(prevCount - 1, 0)); // Decrement lights count
+            setSocketDisable(false); // Enable socket button when lights count decreases
           }
         }
         break;
-      }
-      case "socket": {
+      case "socket":
         if (socketCount > 0) {
-          filteredImages.pop(); // Remove the last added socket
-          setSocketCount((prevCount) => Math.max(prevCount - 1, 0));
+          // Find the index of the last added socket
+          const lastSocketIndex = filteredImages
+            .slice()
+            .reverse()
+            .findIndex((image) => image.name === socket);
+          if (lastSocketIndex !== -1) {
+            // Remove the last added socket
+            filteredImages.splice(
+              filteredImages.length - 1 - lastSocketIndex,
+              1
+            );
+            setSocketCount((prevCount) => Math.max(prevCount - 1, 0)); // Decrement socket count
+            setLightsDisable(false); // Enable lights button when socket count decreases
+          }
         }
         break;
-      }
-      case "fan": {
+      case "fan":
         if (fanCount > 0) {
-          filteredImages.pop(); // Remove the last added fan
-          setFanCount((prevCount) => Math.max(prevCount - 1, 0));
+          // Find the index of the last added fan
+          const lastFanIndex = filteredImages
+            .slice()
+            .reverse()
+            .findIndex((image) => image.name === fan);
+          if (lastFanIndex !== -1) {
+            // Remove the last added fan
+            filteredImages.splice(filteredImages.length - 1 - lastFanIndex, 1);
+            setFanCount((prevCount) => Math.max(prevCount - 1, 0)); // Decrement fan count
+          }
         }
         break;
-      }
-      default: {
+      default:
         break;
-      }
     }
 
     setSelectedImages(filteredImages);
@@ -102,9 +137,15 @@ const Jod = () => {
   };
 
   const handleSocketIncrement = () => {
-    if (socketCount < maxSockets) {
+    if (selectedSize.size === "2" && socketCount < maxSockets) {
       handleImageClick(socket);
       setSocketCount((prevCount) => prevCount + 1);
+      setLightsDisable(true); // Disable lights button when socket is selected
+    } else if (selectedSize.size === "4" && socketCount < maxSockets) {
+      if (lightsCount === 3 && fanCount === 0) {
+        handleImageClick(socket);
+        setSocketCount((prevCount) => prevCount + 1);
+      }
     }
   };
 
@@ -114,12 +155,6 @@ const Jod = () => {
       setFanCount((prevCount) => prevCount + 1);
     }
   };
-
-  useEffect(() => {
-    if (selectedSize.size === "2" && lightsCount === 3) {
-      handleLightsIncrement();
-    }
-  }, [lightsCount, selectedSize.size]);
 
   return (
     <div>
@@ -139,10 +174,7 @@ const Jod = () => {
               value={lightsCount}
               readOnly
             />
-            <button
-              onClick={handleLightsIncrement}
-              disabled={lightsCount >= maxLights || socketCount > 0}
-            >
+            <button onClick={handleLightsIncrement} disabled={lightsDisable}>
               +
             </button>
           </div>
@@ -160,10 +192,7 @@ const Jod = () => {
               value={socketCount}
               readOnly
             />
-            <button
-              onClick={handleSocketIncrement}
-              disabled={socketCount >= maxSockets || lightsCount > 0}
-            >
+            <button onClick={handleSocketIncrement} disabled={socketDisable}>
               +
             </button>
           </div>
@@ -181,12 +210,7 @@ const Jod = () => {
               value={fanCount}
               readOnly
             />
-            <button
-              onClick={handleFanIncrement}
-              disabled={
-                fanCount >= maxFans || (lightsCount === 5 && fanCount === 1)
-              }
-            >
+            <button onClick={handleFanIncrement} disabled={fanDisable}>
               +
             </button>
           </div>
