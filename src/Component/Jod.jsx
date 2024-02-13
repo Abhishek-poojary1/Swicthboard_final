@@ -46,18 +46,25 @@ const Jod = () => {
   }, [selectedSize]);
 
   useEffect(() => {
-    setLightsDisable(lightsCount === maxLights || socketCount > 0);
+    setLightsDisable(
+      lightsCount === maxLights ||
+        (selectedSize.size === "2" && socketCount > 0) ||
+        (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
+        (selectedSize.size === "4" && socketCount === 1 && lightsCount === 3)
+    );
     setSocketDisable(
       socketCount === maxSockets ||
         (selectedSize.size === "2" && lightsCount > 0) ||
         (selectedSize.size === "4" && lightsCount > 3) ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
-        (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2)
+        (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
+        (selectedSize.size === "4" && fanCount > 0)
     );
     setFanDisable(
       lightsCount === maxLights ||
         selectedSize.size === "2" ||
-        (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1)
+        (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
+        (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2)
     );
   }, [lightsCount, maxLights, socketCount, maxSockets, selectedSize, fanCount]);
 
@@ -142,10 +149,8 @@ const Jod = () => {
       setSocketCount((prevCount) => prevCount + 1);
       setLightsDisable(true); // Disable lights button when socket is selected
     } else if (selectedSize.size === "4" && socketCount < maxSockets) {
-      if (lightsCount === 3 && fanCount === 0) {
-        handleImageClick(socket);
-        setSocketCount((prevCount) => prevCount + 1);
-      }
+      handleImageClick(socket);
+      setSocketCount((prevCount) => prevCount + 1);
     }
   };
 

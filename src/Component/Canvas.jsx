@@ -4,31 +4,9 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
-import Imagecrop from "./Imagecrop";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 
 const socket = "/src/Component/assets/socket.jpg";
-
-// const DraggableImage = ({ image }) => {
-//   const [{ isDragging }, drag] = useDrag({
-//     type: "IMAGE",
-//     item: { image },
-//     collect: (monitor) => ({
-//       isDragging: !!monitor.isDragging(),
-//     }),
-//   });
-
-//   return (
-//     <div
-//       ref={drag}
-//       className="background-image"
-//       style={{
-//         opacity: isDragging ? 0.5 : 1,
-//         cursor: "move",
-//       }}
-//     ></div>
-//   );
-// };
 
 const Canvas = () => {
   const {
@@ -57,311 +35,86 @@ const Canvas = () => {
       const socketSelected = selectedimage.some(
         (light) => light.name === socket
       );
-      const lightsWithoutSocket = selectedimage.filter(
-        (light) => light.name !== socket
-      );
-      if (selectedimage.length <= 4) {
-        if (!socketSelected) {
-          return (
-            <div className="child-div">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "60px",
-                }}
-              >
-                {lightsWithoutSocket.slice(0, 2).map((light, index) => (
-                  <div key={index} className="subdiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              {lightsWithoutSocket.length > 2 && ( // Check if there are more than 2 lights without socket
-                <img src={constantImage} alt="" style={{ height: "50px" }} />
-              )}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "60px",
-                }}
-              >
-                {lightsWithoutSocket.slice(2, 4).map((light, index) => (
-                  <div key={index} className="subdiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
+
+      // If selected size is 2 and socket is selected, render only socket
+      if (selectedSize.size === "2" && socketSelected) {
+        return (
+          <div className="child-div">
+            <img src={socket} alt="Socket" style={{ height: "50px" }} />
+          </div>
+        );
+      } else {
+        // Render all selected items for other selected sizes
+        let lightsToDisplay = selectedimage.map((light, index) => (
+          <div key={index} className="subdiv" style={{ marginRight: "10px" }}>
+            <img src={light.name} style={{ height: "50px" }} alt="" />
+          </div>
+        ));
+
+        // If selected lights are less than 4, place the constant image in the middle
+        if (selectedimage.length < 4) {
+          const constantImage = (
+            <div
+              key="constant"
+              className="subdiv"
+              style={{ marginRight: "10px" }}
+            >
+              <img
+                src="src/Component/assets/s3.png"
+                style={{ height: "50px" }}
+                alt=""
+              />
             </div>
           );
-        } else {
-          // Render socket image if socket is selected
-          return (
-            <div className="child-div">
-              <img src={socket} alt="Socket" style={{ height: "50px" }} />
+          // Calculate the position to insert the constant image
+          const insertPosition = Math.ceil(lightsToDisplay.length / 2);
+          // Insert the constant image separately
+          lightsToDisplay.splice(insertPosition, 0, constantImage);
+        }
+
+        // Render lights in sets of 2
+        const rows = [];
+        for (let i = 0; i < lightsToDisplay.length; i += 2) {
+          rows.push(
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                marginBottom: "10px",
+                flexDirection: "column",
+                justifyContent: "space-around",
+              }}
+            >
+              {lightsToDisplay.slice(i, i + 2)}
             </div>
           );
         }
-      } else if (selectedSize.size === "4") {
-        return (
-          <div className="child-div">
-            <div style={{ display: "flex", gap: "20px" }}>
-              <div className="butin">
-                {selectedimage.slice(0, 2).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(2, 4).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(4, 6).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
 
-              <div
-                className="master"
-                style={{
-                  alignContent: "flex-end",
-                  display: "flex",
-                  flexWrap: "wrap",
-                }}
-              >
-                <img src={constantImage} alt="" style={{ height: "50px" }} />
-              </div>
-            </div>
+        // Render the constant image in a separate div
+        const constantImageDiv = (
+          <div key="constant-div" className="constant-div">
+            {lightsToDisplay.find((element) => element.key === "constant")}
           </div>
         );
-      } else if (selectedSize.size === "6") {
+
         return (
           <div className="child-div">
-            <div style={{ display: "flex", gap: "20px" }}>
-              <div className="butin">
-                {selectedimage.slice(0, 2).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(2, 4).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(4, 6).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(6, 8).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(8, 10).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-
-              <div
-                className="master"
-                style={{
-                  alignContent: "flex-end",
-                  display: "flex",
-                  flexWrap: "wrap",
-                }}
-              >
-                <img src={constantImage} alt="" style={{ height: "50px" }} />
-              </div>
-            </div>
-          </div>
-        );
-      } else if (selectedSize.size === "8") {
-        return (
-          <div className="child-div">
-            <div style={{ display: "flex", gap: "20px" }}>
-              <div className="butin">
-                {selectedimage.slice(0, 2).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(2, 4).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(4, 6).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(6, 8).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-              <div className="butin">
-                {selectedimage.slice(8, 10).map((light, index) => (
-                  <div key={index} className="alldiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
-                  </div>
-                ))}
-              </div>
-
-              <div
-                className="master"
-                style={{
-                  alignContent: "flex-end",
-                  display: "flex",
-                  flexWrap: "wrap",
-                }}
-              >
-                <img src={constantImage} alt="" style={{ height: "50px" }} />
-              </div>
-            </div>
-          </div>
-        );
-      } else if (selectedSize.size === "12") {
-        return (
-          <div>
-            <div className="child-div">
-              <div style={{ display: "flex", gap: "20px" }}>
-                <div className="butin">
-                  {selectedimage.slice(0, 2).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(2, 4).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(4, 6).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(6, 8).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(8, 10).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-
-                <div
-                  className="master"
-                  style={{
-                    alignContent: "flex-end",
-                    display: "flex",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <img src={constantImage} alt="" style={{ height: "50px" }} />
-                </div>
-              </div>
-            </div>
-            <div className="child-div">
-              <div style={{ display: "flex", gap: "20px" }}>
-                <div className="butin">
-                  {selectedimage.slice(10, 12).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(12, 14).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(14, 16).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(16, 18).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="butin">
-                  {selectedimage.slice(18, 20).map((light, index) => (
-                    <div key={index} className="alldiv">
-                      <img src={light.name} style={{ height: "50px" }} alt="" />
-                    </div>
-                  ))}
-                </div>
-
-                <div
-                  className="master"
-                  style={{
-                    alignContent: "flex-end",
-                    display: "flex",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <img src={constantImage} alt="" style={{ height: "50px" }} />
-                </div>
-              </div>
-            </div>
+            {constantImageDiv}
+            {rows}
           </div>
         );
       }
     }
-
-    // Render lights if socket is not selected or for other scenarios
+    // Render lights if no controls are selected
     return (
       <div className="child-div">
         <div style={{ display: "flex", flexDirection: "column" }}>
           {selectedimage.map((light, index) => (
-            <div key={index} className="subdiv">
+            <div
+              key={index}
+              className="subdiv"
+              style={{ marginBottom: "10px" }}
+            >
               <img src={light.name} style={{ height: "50px" }} alt="" />
             </div>
           ))}
