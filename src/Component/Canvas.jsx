@@ -1,12 +1,14 @@
-import { useRef, useContext, useState } from "react";
+import { useRef, useState } from "react";
 import { useColorContext } from "./ColorContext";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
-
+import dimup from "./assets/7.png";
+import dimdown from "./assets/8.png";
 const socket = "/src/Component/assets/socket.jpg";
+const fan = "/src/Component/assets/6.png";
 
 const Canvas = () => {
   const {
@@ -30,97 +32,160 @@ const Canvas = () => {
   };
 
   const constantImage = "src/Component/assets/s3.png";
+  console.log(selectedimage);
   const renderChildDivs = () => {
     if (selectedimage.length > 0) {
       const socketSelected = selectedimage.some(
         (light) => light.name === socket
       );
+      const fanselected = selectedimage.some((light) => light.name === fan);
 
-      // If selected size is 2 and socket is selected, render only socket
-      if (selectedSize.size === "2" && socketSelected) {
-        return (
-          <div className="child-div">
-            <img src={socket} alt="Socket" style={{ height: "50px" }} />
-          </div>
-        );
+      if (selectedimage.length <= 4) {
+        if (!socketSelected) {
+          const lightsWithoutSocket = selectedimage.filter(
+            (light) => light.name !== socket
+          );
+          return (
+            <div className="child-div">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "60px",
+                }}
+              >
+                {lightsWithoutSocket.slice(0, 2).map((light, index) => (
+                  <div key={index} className="subdiv">
+                    <img src={light.name} style={{ height: "50px" }} alt="" />
+                  </div>
+                ))}
+              </div>
+              {lightsWithoutSocket.length > 2 && ( // Check if there are more than 2 lights without socket
+                <img src={constantImage} alt="" style={{ height: "50px" }} />
+              )}
+              {lightsWithoutSocket.length > 2 && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "60px",
+                  }}
+                >
+                  {lightsWithoutSocket.slice(2, 4).map((light, index) => (
+                    <div key={index} className="subdiv">
+                      <img src={light.name} style={{ height: "50px" }} alt="" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        } else {
+          // Render all selected items including the socket
+          return (
+            <div className="child-div">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "20px", // Adjust the gap between sets of images vertically
+                }}
+              >
+                {selectedimage
+                  .reduce((rows, light, index) => {
+                    if (index % 2 === 0) rows.push([]);
+                    rows[rows.length - 1].push(
+                      <div key={index} className="subdiv">
+                        <img
+                          src={light.name}
+                          style={{ height: "50px" }}
+                          alt=""
+                        />
+                      </div>
+                    );
+                    return rows;
+                  }, [])
+                  .map((row, rowIndex) => (
+                    <div
+                      key={rowIndex}
+                      style={{ display: "flex", gap: "20px" }}
+                    >
+                      {row}
+                    </div>
+                  ))}
+              </div>
+              <img src={constantImage} alt="" style={{ height: "50px" }} />
+            </div>
+          );
+        }
       } else {
-        // Render all selected items for other selected sizes
-        let lightsToDisplay = selectedimage.map((light, index) => (
-          <div key={index} className="subdiv" style={{ marginRight: "10px" }}>
-            <img src={light.name} style={{ height: "50px" }} alt="" />
-          </div>
-        ));
-
-        // If selected lights are less than 4, place the constant image in the middle
-        if (selectedimage.length < 4) {
-          const constantImage = (
-            <div
-              key="constant"
-              className="subdiv"
-              style={{ marginRight: "10px" }}
-            >
-              <img
-                src="src/Component/assets/s3.png"
-                style={{ height: "50px" }}
-                alt=""
-              />
-            </div>
-          );
-          // Calculate the position to insert the constant image
-          const insertPosition = Math.ceil(lightsToDisplay.length / 2);
-          // Insert the constant image separately
-          lightsToDisplay.splice(insertPosition, 0, constantImage);
-        }
-
-        // Render lights in sets of 2
-        const rows = [];
-        for (let i = 0; i < lightsToDisplay.length; i += 2) {
-          rows.push(
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                marginBottom: "10px",
-                flexDirection: "column",
-                justifyContent: "space-around",
-              }}
-            >
-              {lightsToDisplay.slice(i, i + 2)}
-            </div>
-          );
-        }
-
-        // Render the constant image in a separate div
-        const constantImageDiv = (
-          <div key="constant-div" className="constant-div">
-            {lightsToDisplay.find((element) => element.key === "constant")}
-          </div>
-        );
-
+        // Render all selected items if more than 4
         return (
           <div className="child-div">
-            {constantImageDiv}
-            {rows}
+            <div style={{ display: "flex", gap: "10px" }}>
+              <div
+                style={{
+                  display: "flex",
+
+                  gap: "20px", // Adjust the gap between sets of images vertically
+                }}
+              >
+                {selectedimage
+                  .reduce((rows, light, index) => {
+                    if (index % 2 === 0) rows.push([]);
+                    rows[rows.length - 1].push(
+                      <div key={index} className="subdiv">
+                        <img
+                          src={light.name}
+                          style={{ height: "50px" }}
+                          alt=""
+                        />
+                      </div>
+                    );
+                    return rows;
+                  }, [])
+                  .map((row, rowIndex) => (
+                    <div
+                      key={rowIndex}
+                      style={{
+                        display: "flex",
+                        gap: "20px",
+                        flexDirection: "column",
+                      }}
+                    >
+                      {row}
+                    </div>
+                  ))}
+              </div>
+              {fanselected && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    gap: "5px",
+                    marginLeft: "5px",
+                  }}
+                >
+                  <img src={dimup} alt="" style={{ height: "45px" }} />
+                  <img src={dimdown} alt="" style={{ height: "45px" }} />
+                </div>
+              )}
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "unset",
+                  alignSelf: "flex-end",
+                }}
+              >
+                {" "}
+                <img src={constantImage} alt="" style={{ height: "50px" }} />
+              </div>
+            </div>
           </div>
         );
       }
     }
-    // Render lights if no controls are selected
-    return (
-      <div className="child-div">
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {selectedimage.map((light, index) => (
-            <div
-              key={index}
-              className="subdiv"
-              style={{ marginBottom: "10px" }}
-            >
-              <img src={light.name} style={{ height: "50px" }} alt="" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
   };
 
   const ASPECT_RATIO = 1;

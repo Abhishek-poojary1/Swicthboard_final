@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import lights from "./assets/1.png";
 import socket from "./assets/socket.jpg";
 import fan from "./assets/6.png";
@@ -50,6 +50,7 @@ const Jod = () => {
       lightsCount === maxLights ||
         (selectedSize.size === "2" && socketCount > 0) ||
         (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
+        (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
         (selectedSize.size === "4" && socketCount === 1 && lightsCount === 3)
     );
     setSocketDisable(
@@ -64,6 +65,7 @@ const Jod = () => {
       lightsCount === maxLights ||
         selectedSize.size === "2" ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
+        (selectedSize.size === "4" && lightsCount === 3 && socketCount === 1) ||
         (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2)
     );
   }, [lightsCount, maxLights, socketCount, maxSockets, selectedSize, fanCount]);
@@ -149,6 +151,15 @@ const Jod = () => {
       setSocketCount((prevCount) => prevCount + 1);
       setLightsDisable(true); // Disable lights button when socket is selected
     } else if (selectedSize.size === "4" && socketCount < maxSockets) {
+      handleImageClick(socket);
+      setSocketCount((prevCount) => prevCount + 1);
+    } else if (selectedSize.size === "6" && socketCount < maxSockets) {
+      handleImageClick(socket);
+      setSocketCount((prevCount) => prevCount + 1);
+    } else if (selectedSize.size === "8" && socketCount < maxSockets) {
+      handleImageClick(socket);
+      setSocketCount((prevCount) => prevCount + 1);
+    } else if (selectedSize.size === "12" && socketCount < maxSockets) {
       handleImageClick(socket);
       setSocketCount((prevCount) => prevCount + 1);
     }
