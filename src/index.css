@@ -245,6 +245,7 @@ button:focus-visible {
   height: 100%;
   flex-direction: column;
   justify-content: center;
+  gap: 30px;
   align-items: center;
 }
 .alldiv {

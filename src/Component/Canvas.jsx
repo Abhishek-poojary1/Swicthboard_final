@@ -81,111 +81,106 @@ const Canvas = () => {
             </div>
           );
         } else {
-          // Render all selected items including the socket
-          return (
-            <div className="child-div">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "20px", // Adjust the gap between sets of images vertically
-                }}
-              >
-                {selectedimage
-                  .reduce((rows, light, index) => {
-                    if (index % 2 === 0) rows.push([]);
-                    rows[rows.length - 1].push(
-                      <div key={index} className="subdiv">
-                        <img
-                          src={light.name}
-                          style={{ height: "50px" }}
-                          alt=""
-                        />
-                      </div>
-                    );
-                    return rows;
-                  }, [])
-                  .map((row, rowIndex) => (
-                    <div
-                      key={rowIndex}
-                      style={{ display: "flex", gap: "20px" }}
-                    >
-                      {row}
-                    </div>
-                  ))}
+          if (selectedSize.size === "2") {
+            return (
+              <div>
+                <img src={socket} alt="" style={{ height: "150px " }} />
               </div>
-              <img src={constantImage} alt="" style={{ height: "50px" }} />
-            </div>
-          );
+            );
+          } else {
+            return renderall();
+          }
+          // Render all selected items including the socket
         }
       } else {
         // Render all selected items if more than 4
-        return (
-          <div className="child-div">
-            <div style={{ display: "flex", gap: "10px" }}>
-              <div
-                style={{
-                  display: "flex",
-
-                  gap: "20px", // Adjust the gap between sets of images vertically
-                }}
-              >
-                {selectedimage
-                  .reduce((rows, light, index) => {
-                    if (index % 2 === 0) rows.push([]);
-                    rows[rows.length - 1].push(
-                      <div key={index} className="subdiv">
-                        <img
-                          src={light.name}
-                          style={{ height: "50px" }}
-                          alt=""
-                        />
-                      </div>
-                    );
-                    return rows;
-                  }, [])
-                  .map((row, rowIndex) => (
-                    <div
-                      key={rowIndex}
-                      style={{
-                        display: "flex",
-                        gap: "20px",
-                        flexDirection: "column",
-                      }}
-                    >
-                      {row}
-                    </div>
-                  ))}
-              </div>
-              {fanselected && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    gap: "5px",
-                    marginLeft: "5px",
-                  }}
-                >
-                  <img src={dimup} alt="" style={{ height: "45px" }} />
-                  <img src={dimdown} alt="" style={{ height: "45px" }} />
-                </div>
-              )}
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "unset",
-                  alignSelf: "flex-end",
-                }}
-              >
-                {" "}
-                <img src={constantImage} alt="" style={{ height: "50px" }} />
-              </div>
-            </div>
-          </div>
-        );
+        return renderall();
       }
     }
+  };
+  const renderall = () => {
+    // Find the index of the socket image in the selectedimage array
+    const socketIndex = selectedimage.findIndex(
+      (light) => light.name === socket
+    );
+
+    // Remove the socket image from the selectedimage array
+    const filteredImages = selectedimage.filter(
+      (light) => light.name !== socket
+    );
+
+    const fanselected = filteredImages.some((light) => light.name === fan);
+
+    return (
+      <div className="child-div">
+        <div style={{ display: "flex", gap: "30px" }}>
+          {/* Render the socket image */}
+          {socketIndex !== -1 && (
+            <div>
+              <img
+                src={selectedimage[socketIndex].name}
+                alt=""
+                style={{ height: "150px" }}
+              />
+            </div>
+          )}
+
+          <div
+            style={{
+              display: "flex",
+              gap: "20px", // Adjust the gap between sets of images vertically
+            }}
+          >
+            {filteredImages
+              .reduce((rows, light, index) => {
+                if (index % 2 === 0) rows.push([]);
+                rows[rows.length - 1].push(
+                  <div key={index} className="subdiv">
+                    <img src={light.name} style={{ height: "50px" }} alt="" />
+                  </div>
+                );
+                return rows;
+              }, [])
+              .map((row, rowIndex) => (
+                <div
+                  key={rowIndex}
+                  style={{
+                    display: "flex",
+                    gap: "20px",
+                    flexDirection: "column",
+                  }}
+                >
+                  {row}
+                </div>
+              ))}
+          </div>
+          {fanselected && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: "5px",
+                marginLeft: "5px",
+              }}
+            >
+              <img src={dimup} alt="" style={{ height: "45px" }} />
+              <img src={dimdown} alt="" style={{ height: "45px" }} />
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "unset",
+              alignSelf: "flex-end",
+            }}
+          >
+            {" "}
+            <img src={constantImage} alt="" style={{ height: "50px" }} />
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const ASPECT_RATIO = 1;
