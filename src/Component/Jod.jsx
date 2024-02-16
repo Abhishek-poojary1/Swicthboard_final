@@ -65,7 +65,7 @@ const Jod = () => {
       lightsCount === maxLights ||
         selectedSize.size === "2" ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
-        (selectedSize.size === "4" && lightsCount === 3 && socketCount === 1) ||
+        (selectedSize.size === "4" && socketCount === 1) ||
         (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2)
     );
   }, [lightsCount, maxLights, socketCount, maxSockets, selectedSize, fanCount]);

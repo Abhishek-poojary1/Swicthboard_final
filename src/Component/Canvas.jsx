@@ -9,7 +9,7 @@ import dimup from "./assets/7.png";
 import dimdown from "./assets/8.png";
 const socket = "/src/Component/assets/socket.jpg";
 const fan = "/src/Component/assets/6.png";
-
+import socketbutton from "./assets/5.png";
 const Canvas = () => {
   const {
     color,
@@ -99,24 +99,42 @@ const Canvas = () => {
     }
   };
   const renderall = () => {
-    // Find the index of the socket image in the selectedimage array
+    // Find the index of the socket image in the selectedImages array
     const socketIndex = selectedimage.findIndex(
       (light) => light.name === socket
     );
 
-    // Remove the socket image from the selectedimage array
-    const filteredImages = selectedimage.filter(
-      (light) => light.name !== socket
-    );
+    let filteredImages = selectedimage.filter((light) => light.name !== socket);
 
-    const fanselected = filteredImages.some((light) => light.name === fan);
+    // If socket is selected, add the socket button to the beginning of the filteredImages array
+    if (socketIndex !== -1) {
+      // Add the socket button at the second position
+      filteredImages.splice(1, 0, { name: socketbutton });
+    }
+
+    // Find all instances of the fan images in the selectedImages array
+    const fanObjects = filteredImages.filter((light) => light.name === fan);
+
+    const fanSelected = fanObjects.length > 0;
+
+    // If fan is selected, remove all instances from the array and add them to the end
+    if (fanSelected) {
+      filteredImages = filteredImages.filter((light) => light.name !== fan);
+      filteredImages.push(...fanObjects);
+    }
 
     return (
       <div className="child-div">
         <div style={{ display: "flex", gap: "30px" }}>
           {/* Render the socket image */}
           {socketIndex !== -1 && (
-            <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <img
                 src={selectedimage[socketIndex].name}
                 alt=""
@@ -131,30 +149,72 @@ const Canvas = () => {
               gap: "20px", // Adjust the gap between sets of images vertically
             }}
           >
-            {filteredImages
-              .reduce((rows, light, index) => {
-                if (index % 2 === 0) rows.push([]);
-                rows[rows.length - 1].push(
-                  <div key={index} className="subdiv">
-                    <img src={light.name} style={{ height: "50px" }} alt="" />
+            {filteredImages.length > 4 ? (
+              filteredImages
+                .reduce((rows, light, index) => {
+                  if (index % 2 === 0) rows.push([]);
+                  rows[rows.length - 1].push(
+                    <div key={index} className="subdiv">
+                      <img src={light.name} style={{ height: "50px" }} alt="" />
+                    </div>
+                  );
+                  return rows;
+                }, [])
+                .map((row, rowIndex) => (
+                  <div
+                    key={rowIndex}
+                    style={{
+                      display: "flex",
+                      gap: "20px",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {row}
                   </div>
-                );
-                return rows;
-              }, [])
-              .map((row, rowIndex) => (
+                ))
+            ) : (
+              <div className="socketsizw">
                 <div
-                  key={rowIndex}
                   style={{
                     display: "flex",
-                    gap: "20px",
                     flexDirection: "column",
+                    gap: "60px",
                   }}
                 >
-                  {row}
+                  {filteredImages.slice(0, 2).map((light, index) => (
+                    <div key={index} className="subdiv">
+                      <img src={light.name} style={{ height: "50px" }} alt="" />
+                    </div>
+                  ))}
                 </div>
-              ))}
+                {filteredImages.length > 2 && ( // Check if there are more than 2 lights without socket
+                  <img src={constantImage} alt="" style={{ height: "50px" }} />
+                )}
+                {filteredImages.length > 2 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "60px",
+                    }}
+                  >
+                    {filteredImages.slice(2, 4).map((light, index) => (
+                      <div key={index} className="subdiv">
+                        <img
+                          src={light.name}
+                          style={{ height: "50px" }}
+                          alt=""
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-          {fanselected && (
+
+          {/* Render fan controls for each fan instance if fan is selected */}
+          {fanSelected && (
             <div
               style={{
                 display: "flex",
@@ -168,6 +228,7 @@ const Canvas = () => {
               <img src={dimdown} alt="" style={{ height: "45px" }} />
             </div>
           )}
+
           <div
             style={{
               display: "flex",
@@ -175,8 +236,9 @@ const Canvas = () => {
               alignSelf: "flex-end",
             }}
           >
-            {" "}
-            <img src={constantImage} alt="" style={{ height: "50px" }} />
+            {filteredImages.length > 4 && (
+              <img src={constantImage} alt="" style={{ height: "50px" }} />
+            )}
           </div>
         </div>
       </div>
