@@ -32,7 +32,6 @@ const Canvas = () => {
   };
 
   const constantImage = "src/Component/assets/s3.png";
-  console.log(selectedimage);
   const renderChildDivs = () => {
     if (selectedimage.length > 0) {
       const socketSelected = selectedimage.some(
@@ -100,15 +99,14 @@ const Canvas = () => {
   };
   const renderall = () => {
     // Find the index of the socket image in the selectedImages array
-    const socketIndex = selectedimage.findIndex(
-      (light) => light.name === socket
-    );
+    const socketIndexes = selectedimage
+      .map((light, index) => (light.name === socket ? index : null))
+      .filter((index) => index !== null);
 
     let filteredImages = selectedimage.filter((light) => light.name !== socket);
 
     // If socket is selected, add the socket button to the beginning of the filteredImages array
-    if (socketIndex !== -1) {
-      // Add the socket button at the second position
+    if (socketIndexes.length > 0) {
       filteredImages.splice(1, 0, { name: socketbutton });
     }
 
@@ -126,22 +124,15 @@ const Canvas = () => {
     return (
       <div className="child-div">
         <div style={{ display: "flex", gap: "30px" }}>
-          {/* Render the socket image */}
-          {socketIndex !== -1 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+          {socketIndexes.map((index) => (
+            <div key={index}>
               <img
-                src={selectedimage[socketIndex].name}
-                alt=""
+                src={selectedimage[index].name}
+                alt="Socket"
                 style={{ height: "150px" }}
               />
             </div>
-          )}
+          ))}
 
           <div
             style={{
@@ -150,28 +141,42 @@ const Canvas = () => {
             }}
           >
             {filteredImages.length > 4 ? (
-              filteredImages
-                .reduce((rows, light, index) => {
-                  if (index % 2 === 0) rows.push([]);
-                  rows[rows.length - 1].push(
+              filteredImages.length > 10 ? (
+                <div className="socketsizw">
+                  {filteredImages.slice(0, 10).map((light, index) => (
                     <div key={index} className="subdiv">
                       <img src={light.name} style={{ height: "50px" }} alt="" />
                     </div>
-                  );
-                  return rows;
-                }, [])
-                .map((row, rowIndex) => (
-                  <div
-                    key={rowIndex}
-                    style={{
-                      display: "flex",
-                      gap: "20px",
-                      flexDirection: "column",
-                    }}
-                  >
-                    {row}
-                  </div>
-                ))
+                  ))}
+                </div>
+              ) : (
+                filteredImages
+                  .reduce((rows, light, index) => {
+                    if (index % 2 === 0) rows.push([]);
+                    rows[rows.length - 1].push(
+                      <div key={index} className="subdiv">
+                        <img
+                          src={light.name}
+                          style={{ height: "50px" }}
+                          alt=""
+                        />
+                      </div>
+                    );
+                    return rows;
+                  }, [])
+                  .map((row, rowIndex) => (
+                    <div
+                      key={rowIndex}
+                      style={{
+                        display: "flex",
+                        gap: "20px",
+                        flexDirection: "column",
+                      }}
+                    >
+                      {row}
+                    </div>
+                  ))
+              )
             ) : (
               <div className="socketsizw">
                 <div
@@ -187,7 +192,8 @@ const Canvas = () => {
                     </div>
                   ))}
                 </div>
-                {filteredImages.length > 2 && ( // Check if there are more than 2 lights without socket
+                {filteredImages.length > 2 && (
+                  // Check if there are more than 2 lights without socket
                   <img src={constantImage} alt="" style={{ height: "50px" }} />
                 )}
                 {filteredImages.length > 2 && (

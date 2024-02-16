@@ -32,7 +32,7 @@ const Jod = () => {
       case "6":
       case "8":
         setMaxLights(10);
-        setMaxSockets(2);
+        setMaxSockets(1);
         setMaxFans(2);
         break;
       case "12":
@@ -51,7 +51,26 @@ const Jod = () => {
         (selectedSize.size === "2" && socketCount > 0) ||
         (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
-        (selectedSize.size === "4" && socketCount === 1 && lightsCount === 3)
+        (selectedSize.size === "4" && socketCount === 1 && lightsCount === 3) ||
+        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 7) ||
+        (selectedSize.size === "6" &&
+          fanCount === 2 &&
+          socketCount === 1 &&
+          lightsCount === 3) ||
+        (selectedSize.size === "6" &&
+          fanCount === 1 &&
+          socketCount === 1 &&
+          lightsCount === 3) ||
+        (selectedSize.size === "6" &&
+          fanCount === 2 &&
+          socketCount === 1 &&
+          lightsCount === 5) ||
+        (selectedSize.size === "6" &&
+          fanCount === 1 &&
+          socketCount === 1 &&
+          lightsCount === 6) ||
+        (selectedSize.size === "6" && fanCount === 2 && lightsCount === 8) ||
+        (selectedSize.size === "6" && fanCount === 1 && lightsCount === 9)
     );
     setSocketDisable(
       socketCount === maxSockets ||
@@ -59,14 +78,32 @@ const Jod = () => {
         (selectedSize.size === "4" && lightsCount > 3) ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
         (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
-        (selectedSize.size === "4" && fanCount > 0)
+        (selectedSize.size === "4" && fanCount > 0) ||
+        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 7) ||
+        (selectedSize.size === "6" && lightsCount > 7) ||
+        (selectedSize.size === "6" &&
+          fanCount === 2 &&
+          socketCount === 1 &&
+          lightsCount === 5) ||
+        (selectedSize.size === "6" &&
+          fanCount === 1 &&
+          socketCount === 1 &&
+          lightsCount === 6) ||
+        (selectedSize.size !== "12" && lightsCount === 10)
     );
     setFanDisable(
       lightsCount === maxLights ||
         selectedSize.size === "2" ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
         (selectedSize.size === "4" && socketCount === 1) ||
-        (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2)
+        (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
+        (selectedSize.size === "6" && fanCount === 1 && lightsCount === 9) ||
+        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 7) ||
+        (selectedSize.size === "6" && fanCount === 2) ||
+        (selectedSize.size === "6" &&
+          fanCount === 1 &&
+          socketCount === 1 &&
+          lightsCount === 6)
     );
   }, [lightsCount, maxLights, socketCount, maxSockets, selectedSize, fanCount]);
 

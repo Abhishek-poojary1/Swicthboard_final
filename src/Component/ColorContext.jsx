@@ -40,6 +40,7 @@ export const ColorProvider = ({ children }) => {
   const setframecolor = (color) => {
     setframeclr(color);
   };
+
   const contextValue = {
     color,
     setColor,
