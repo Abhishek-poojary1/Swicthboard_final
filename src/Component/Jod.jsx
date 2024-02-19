@@ -4,20 +4,34 @@ import socket from "./assets/socket.jpg";
 import fan from "./assets/6.png";
 import { useColorContext } from "./ColorContext";
 const Jod = () => {
-  const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImages, setSelectedImages] = useState(() => {
+    // Initialize selectedImages state based on localStorage
+    const storedImages = JSON.parse(localStorage.getItem("selectedImages"));
+    return storedImages || [];
+  });
   const { setSelectedLights, selectedSize } = useColorContext();
 
   const [maxLights, setMaxLights] = useState(0);
   const [maxSockets, setMaxSockets] = useState(0);
   const [maxFans, setMaxFans] = useState(0);
-  const [lightsCount, setLightsCount] = useState(0);
-  const [socketCount, setSocketCount] = useState(0);
-  const [fanCount, setFanCount] = useState(0);
+  const [lightsCount, setLightsCount] = useState(
+    parseInt(localStorage.getItem("lightsCount")) || 0
+  );
+  const [socketCount, setSocketCount] = useState(
+    parseInt(localStorage.getItem("socketCount")) || 0
+  );
+  const [fanCount, setFanCount] = useState(
+    parseInt(localStorage.getItem("fanCount")) || 0
+  );
   const [lightsDisable, setLightsDisable] = useState(false);
   const [socketDisable, setSocketDisable] = useState(false);
   const [fanDisable, setFanDisable] = useState(false);
 
   useEffect(() => {
+    localStorage.setItem("selectedImages", JSON.stringify(selectedImages));
+    localStorage.setItem("lightsCount", lightsCount);
+    localStorage.setItem("socketCount", socketCount);
+    localStorage.setItem("fanCount", fanCount);
     switch (selectedSize.size) {
       case "2":
         setMaxLights(4);
@@ -43,7 +57,7 @@ const Jod = () => {
       default:
         break;
     }
-  }, [selectedSize]);
+  }, [selectedSize, fanCount, lightsCount, socketCount, selectedImages]);
 
   useEffect(() => {
     setLightsDisable(
@@ -107,6 +121,23 @@ const Jod = () => {
     );
   }, [lightsCount, maxLights, socketCount, maxSockets, selectedSize, fanCount]);
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("selectedImages");
+      localStorage.setItem("lightsCount", 0);
+      localStorage.setItem("socketCount", 0);
+      localStorage.setItem("fanCount", 0);
+      setLightsCount(0);
+      setSocketCount(0);
+      setFanCount(0);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   const handleImageClick = (imageName) => {
     const updatedImages = [...selectedImages, { name: imageName }];
     setSelectedImages(updatedImages);
