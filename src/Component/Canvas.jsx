@@ -37,7 +37,6 @@ const Canvas = () => {
       const socketSelected = selectedimage.some(
         (light) => light.name === socket
       );
-      const fanselected = selectedimage.some((light) => light.name === fan);
 
       if (selectedimage.length <= 4) {
         if (!socketSelected) {
@@ -59,6 +58,7 @@ const Canvas = () => {
                   </div>
                 ))}
               </div>
+
               {lightsWithoutSocket.length > 2 && ( // Check if there are more than 2 lights without socket
                 <img src={constantImage} alt="" style={{ height: "50px" }} />
               )}
@@ -146,11 +146,16 @@ const Canvas = () => {
                 gap: "20px",
               }}
             >
-              <div className="socketsizw">
-                {firstTenImages
-                  .reduce((rows, light, index) => {
-                    if (index % 2 === 0) rows.push([]);
-                    rows[rows.length - 1].push(
+              {filteredImages.length <= 4 && (
+                <div className="socketsizw">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "60px",
+                    }}
+                  >
+                    {filteredImages.slice(0, 2).map((light, index) => (
                       <div key={index} className="subdiv">
                         <img
                           src={light.name}
@@ -158,22 +163,66 @@ const Canvas = () => {
                           alt=""
                         />
                       </div>
-                    );
-                    return rows;
-                  }, [])
-                  .map((row, rowIndex) => (
+                    ))}
+                  </div>
+                  {filteredImages.length > 2 && (
+                    <img
+                      src={constantImage}
+                      alt=""
+                      style={{ height: "50px" }}
+                    />
+                  )}
+                  {filteredImages.length > 2 && (
                     <div
-                      key={rowIndex}
                       style={{
                         display: "flex",
-                        gap: "20px",
                         flexDirection: "column",
+                        gap: "60px",
                       }}
                     >
-                      {row}
+                      {filteredImages.slice(2, 4).map((light, index) => (
+                        <div key={index} className="subdiv">
+                          <img
+                            src={light.name}
+                            style={{ height: "50px" }}
+                            alt=""
+                          />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-              </div>
+                  )}
+                </div>
+              )}
+              {filteredImages.length > 4 && (
+                <div className="socketsizw">
+                  {firstTenImages
+                    .reduce((rows, light, index) => {
+                      if (index % 2 === 0) rows.push([]);
+                      rows[rows.length - 1].push(
+                        <div key={index} className="subdiv">
+                          <img
+                            src={light.name}
+                            style={{ height: "50px" }}
+                            alt=""
+                          />
+                        </div>
+                      );
+                      return rows;
+                    }, [])
+                    .map((row, rowIndex) => (
+                      <div
+                        key={rowIndex}
+                        style={{
+                          display: "flex",
+                          gap: "20px",
+                          flexDirection: "column",
+                        }}
+                      >
+                        {row}
+                      </div>
+                    ))}
+                </div>
+              )}
             </div>
             {fanSelected && (
               <div

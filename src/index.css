@@ -159,7 +159,7 @@ button:focus-visible {
 }
 
 .module.selected {
-  background-color: rgb(155, 227, 48);
+  background-color: rgb(194, 244, 119);
 }
 
 .module-container {
@@ -301,4 +301,29 @@ button:focus-visible {
   justify-content: center;
   align-items: center;
   gap: 14px;
+}
+.buttonofjod {
+  background: transparents;
+}
+.joddiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.label-container {
+  min-width: 100px; /* Adjust according to your layout */
+}
+
+label {
+  display: flex;
+  width: 100px; /* Adjust the width according to your layout */
+  text-align: right;
+}
+
+input {
+  background: transparent;
+  border: none;
+  outline: none;
 }

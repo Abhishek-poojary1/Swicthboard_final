@@ -84,7 +84,10 @@ const Jod = () => {
           socketCount === 1 &&
           lightsCount === 6) ||
         (selectedSize.size === "6" && fanCount === 2 && lightsCount === 8) ||
-        (selectedSize.size === "6" && fanCount === 1 && lightsCount === 9)
+        (selectedSize.size === "6" && fanCount === 1 && lightsCount === 9) ||
+        (selectedSize.size === "8" && fanCount === 1 && lightsCount === 9) ||
+        (selectedSize.size === "8" && fanCount === 2 && lightsCount === 8) ||
+        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7)
     );
     setSocketDisable(
       socketCount === maxSockets ||
@@ -124,12 +127,9 @@ const Jod = () => {
   useEffect(() => {
     const handleBeforeUnload = () => {
       localStorage.removeItem("selectedImages");
-      localStorage.setItem("lightsCount", 0);
-      localStorage.setItem("socketCount", 0);
-      localStorage.setItem("fanCount", 0);
-      setLightsCount(0);
-      setSocketCount(0);
-      setFanCount(0);
+      localStorage.removeItem("lightsCount");
+      localStorage.removeItem("socketCount");
+      localStorage.removeItem("fanCount");
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -138,6 +138,7 @@ const Jod = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
   const handleImageClick = (imageName) => {
     const updatedImages = [...selectedImages, { name: imageName }];
     setSelectedImages(updatedImages);
@@ -242,63 +243,80 @@ const Jod = () => {
 
   return (
     <div>
-      <div>
+      <div className="joddiv">
         <div>
-          <div>
-            <label>Lights</label>
-            <button
-              onClick={() => handleDecrement("lights")}
-              disabled={lightsCount === 0}
-            >
-              -
-            </button>
-            <input
-              type="number"
-              className="inputofcont"
-              value={lightsCount}
-              readOnly
-            />
-            <button onClick={handleLightsIncrement} disabled={lightsDisable}>
-              +
-            </button>
-          </div>
-          <div>
-            <label>Socket</label>
-            <button
-              onClick={() => handleDecrement("socket")}
-              disabled={socketCount === 0}
-            >
-              -
-            </button>
-            <input
-              type="number"
-              className="inputofcont"
-              value={socketCount}
-              readOnly
-            />
-            <button onClick={handleSocketIncrement} disabled={socketDisable}>
-              +
-            </button>
-          </div>
-          <div>
-            <label>Fan</label>
-            <button
-              onClick={() => handleDecrement("fan")}
-              disabled={fanCount === 0}
-            >
-              -
-            </button>
-            <input
-              type="number"
-              className="inputofcont"
-              value={fanCount}
-              readOnly
-            />
-            <button onClick={handleFanIncrement} disabled={fanDisable}>
-              +
-            </button>
-          </div>
+          <label>Lights</label>
         </div>
+        <button
+          onClick={() => handleDecrement("lights")}
+          disabled={lightsCount === 0}
+          className="buttonofjod"
+        >
+          -
+        </button>
+        <input
+          type="number"
+          className="inputofcont"
+          value={lightsCount}
+          readOnly
+        />
+        <button
+          onClick={handleLightsIncrement}
+          className="buttonofjod"
+          disabled={lightsDisable}
+        >
+          +
+        </button>
+      </div>
+      <div className="joddiv">
+        <div>
+          <label>Socket</label>
+        </div>
+        <button
+          onClick={() => handleDecrement("socket")}
+          disabled={socketCount === 0}
+          className="buttonofjod"
+        >
+          -
+        </button>
+        <input
+          type="number"
+          className="inputofcont"
+          value={socketCount}
+          readOnly
+        />
+        <button
+          onClick={handleSocketIncrement}
+          className="buttonofjod"
+          disabled={socketDisable}
+        >
+          +
+        </button>
+      </div>
+      <div className="joddiv">
+        <div>
+          <label>Fan</label>
+        </div>
+        <button
+          onClick={() => handleDecrement("fan")}
+          disabled={fanCount === 0}
+          className="buttonofjod"
+        >
+          -
+        </button>
+        <input
+          type="number"
+          className="inputofcont"
+          value={fanCount}
+          readOnly
+        />
+        <button
+          onClick={handleFanIncrement}
+          className="buttonofjod"
+          disabled={fanDisable}
+        >
+          +
+        </button>
       </div>
     </div>
   );
