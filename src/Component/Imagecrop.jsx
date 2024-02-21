@@ -24,6 +24,7 @@ const Imagecrop = () => {
 
   const cancelCrop = () => {
     setimg(null);
+    setimgglob(null);
   };
 
   return (

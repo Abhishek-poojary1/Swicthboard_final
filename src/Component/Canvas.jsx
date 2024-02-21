@@ -104,8 +104,15 @@ const Canvas = () => {
 
     let filteredImages = selectedimage.filter((light) => light.name !== socket);
 
-    if (socketIndexes.length > 0) {
+    if (socketIndexes.length === 1) {
       filteredImages.splice(1, 0, { name: socketbutton });
+    } else if (socketIndexes.length === 2) {
+      filteredImages.splice(1, 0, { name: socketbutton });
+      filteredImages.splice(5, 0, { name: socketbutton });
+    } else if (socketIndexes.length === 3) {
+      filteredImages.splice(1, 0, { name: socketbutton });
+      filteredImages.splice(5, 0, { name: socketbutton });
+      filteredImages.splice(9, 0, { name: socketbutton });
     }
 
     const fanObjects = filteredImages.filter((light) => light.name === fan);
@@ -130,16 +137,18 @@ const Canvas = () => {
         }}
       >
         <div className="child-div">
-          <div style={{ display: "flex", gap: "30px", marginTop: "35px" }}>
-            {socketIndexes.map((index) => (
-              <div key={index}>
-                <img
-                  src={selectedimage[index].name}
-                  alt="Socket"
-                  style={{ height: "150px" }}
-                />
-              </div>
-            ))}
+          <div style={{ display: "flex", gap: "30px", marginTop: "60px" }}>
+            {selectedSize.size !== "12" &&
+              socketIndexes.map((index) => (
+                <div key={index}>
+                  <img
+                    src={selectedimage[index].name}
+                    alt="Socket"
+                    style={{ height: "150px" }}
+                  />
+                </div>
+              ))}
+
             <div
               style={{
                 display: "flex",
@@ -229,9 +238,10 @@ const Canvas = () => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-between",
-                  gap: "5px",
+                  justifyContent: "center",
+                  gap: "30px",
                   marginLeft: "5px",
+                  alignItems: "center",
                 }}
               >
                 <img src={dimup} alt="" style={{ height: "45px" }} />
@@ -243,6 +253,8 @@ const Canvas = () => {
                 display: "flex",
                 flexWrap: "unset",
                 alignSelf: "flex-end",
+                ...(socketIndexes.length > 0 &&
+                  selectedSize.size !== "12" && { marginBottom: "15px" }), // Add the condition here
               }}
             >
               {filteredImages.length > 4 && (
@@ -301,6 +313,24 @@ const Canvas = () => {
             />
           )}
         </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "120%",
+          }}
+        >
+          {selectedSize.size === "12" &&
+            socketIndexes.map((index) => (
+              <div key={index}>
+                <img
+                  src={selectedimage[index].name}
+                  alt="Socket"
+                  style={{ height: "150px" }}
+                />
+              </div>
+            ))}
+        </div>
       </div>
     );
   };
@@ -339,9 +369,9 @@ const Canvas = () => {
               height: selectedSize.height,
               position: "relative",
               backgroundColor: selectedColor,
-              // backgroundImage: `url(${selectedModuleImage})`,
-              backgroundSize: "cover", // This will make the image cover the entire background
-              backgroundPosition: "center", // This will center the background image
+              backgroundImage: `url(${img})`, // Set the uploaded image as the background
+              backgroundSize: "cover",
+              backgroundPosition: "center",
               borderColor: frameclr,
               overflow: "hidden",
               boxShadow: "10px 4px 18px rgba(0, 0, 0, 0.5)",
@@ -349,28 +379,7 @@ const Canvas = () => {
             ref={canvasRef}
           >
             {renderChildDivs()}
-
-            {img && ( // Add a check for 'crop' state
-              <div className="center-container">
-                <ReactCrop
-                  crop={crop}
-                  onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
-                  keepSelection
-                  aspect={ASPECT_RATIO}
-                  minWidth={MIN_DIMENSION}
-                >
-                  <img
-                    src={img}
-                    alt="upload"
-                    onLoad={onImageLoad}
-                    className="center-image"
-                  />
-                  {console.log("kkff")}
-                </ReactCrop>
-              </div>
-            )}
           </div>
-          {img && <button>crop</button>}
         </div>
         <div style={{ position: "relative", display: "flex" }}>
           <button

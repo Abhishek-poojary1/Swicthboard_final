@@ -87,7 +87,15 @@ const Jod = () => {
         (selectedSize.size === "6" && fanCount === 1 && lightsCount === 9) ||
         (selectedSize.size === "8" && fanCount === 1 && lightsCount === 9) ||
         (selectedSize.size === "8" && fanCount === 2 && lightsCount === 8) ||
-        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7)
+        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7) ||
+        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7) ||
+        (selectedSize.size === "12" &&
+          socketCount === 3 &&
+          lightsCount === 7) ||
+        (selectedSize.size === "12" &&
+          socketCount === 2 &&
+          lightsCount === 8) ||
+        (selectedSize.size === "12" && socketCount === 3 && lightsCount === 9)
     );
     setSocketDisable(
       socketCount === maxSockets ||
@@ -106,10 +114,20 @@ const Jod = () => {
           fanCount === 1 &&
           socketCount === 1 &&
           lightsCount === 6) ||
-        (selectedSize.size !== "12" && lightsCount === 10)
+        (selectedSize.size === "8" && lightsCount === 10) ||
+        (selectedSize.size === "8" && lightsCount === 7 && fanCount === 1) ||
+        (selectedSize.size === "8" && lightsCount === 8 && fanCount === 2) ||
+        (selectedSize.size === "8" && lightsCount === 9) ||
+        (selectedSize.size !== "12" && lightsCount === 10) ||
+        (selectedSize.size === "12" &&
+          socketCount === 3 &&
+          lightsCount === 10) ||
+        (selectedSize.size === "12" && lightsCount === 20) ||
+        (selectedSize.size === "12" && socketCount === 2 && lightsCount === 8)
     );
     setFanDisable(
       lightsCount === maxLights ||
+        fanCount === maxFans ||
         selectedSize.size === "2" ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
         (selectedSize.size === "4" && socketCount === 1) ||
@@ -120,9 +138,26 @@ const Jod = () => {
         (selectedSize.size === "6" &&
           fanCount === 1 &&
           socketCount === 1 &&
-          lightsCount === 6)
+          lightsCount === 6) ||
+        (selectedSize.size === "8" &&
+          socketCount === 1 &&
+          lightsCount === 7 &&
+          fanCount === 2) ||
+        (selectedSize.size === "12" &&
+          socketCount === 3 &&
+          lightsCount === 9) ||
+        (selectedSize.size === "12" && socketCount === 3 && fanCount === 2) ||
+        (selectedSize.size === "12" && socketCount === 2 && lightsCount === 8)
     );
-  }, [lightsCount, maxLights, socketCount, maxSockets, selectedSize, fanCount]);
+  }, [
+    lightsCount,
+    maxLights,
+    socketCount,
+    maxSockets,
+    selectedSize,
+    fanCount,
+    maxFans,
+  ]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {

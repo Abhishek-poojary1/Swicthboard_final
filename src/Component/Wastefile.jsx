@@ -414,3 +414,24 @@
       </div>
     );
   };
+  -----------------------------------------------------------
+  {img && ( // Add a check for 'crop' state
+  <div className="center-container">
+    <ReactCrop
+      crop={crop}
+      onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
+      keepSelection
+      aspect={ASPECT_RATIO}
+      minWidth={MIN_DIMENSION}
+    >
+      <img
+        src={img}
+        alt="upload"
+        onLoad={onImageLoad}
+        className="center-image"
+      />
+    </ReactCrop>
+  </div>
+)}-
+-----------------
+{img && <button>crop</button>}

@@ -270,12 +270,19 @@ button:focus-visible {
 
 .center-container {
   position: relative;
-  /* top: -299px;
-    right: 600px;
-    height: 400px;
-    width: 500px; */
+  /* Add styles for positioning and dimensions if needed */
+  background-size: cover;
+  background-position: center;
 }
 
+.center-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 .center-image {
   display: block;
   max-width: 100%;
