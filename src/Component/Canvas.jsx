@@ -97,6 +97,17 @@ const Canvas = () => {
       }
     }
   };
+
+  // if (
+  //   fanSelected &&
+  //   selectedSize.size !== "12" &&
+  //   filteredImages.length <= 10
+  // ) {
+  //   // If fan selected and selectedSize is not '12' and total images are less than or equal to 10
+  //   filteredImages = filteredImages.filter((light) => light.name !== fan);
+  //   filteredImages.push(...fanObjects);
+  // }
+
   const renderall = () => {
     const socketIndexes = selectedimage
       .map((light, index) => (light.name === socket ? index : null))
@@ -118,13 +129,44 @@ const Canvas = () => {
     const fanObjects = filteredImages.filter((light) => light.name === fan);
     const fanSelected = fanObjects.length > 0;
 
-    if (fanSelected) {
-      filteredImages = filteredImages.filter((light) => light.name !== fan);
-      filteredImages.push(...fanObjects);
+    // First array
+    // Get total number of fans selected
+
+    // Determine how many fans per array
+    const fansPerArray = 2;
+
+    // First array
+    let firstArray = filteredImages.slice(0, 10);
+
+    // Get first 'fansPerArray' number of fans
+    const firstArrayFans = fanObjects.slice(0, fansPerArray);
+
+    // Second array
+    let secondArray = filteredImages.slice(10);
+
+    // Get remaining fans
+    const secondArrayFans = fanObjects.slice(fansPerArray);
+    const secondfan = secondArray.find((light) => light.name === fan);
+    function distributeFans(array, fans) {
+      // Remove existing fans
+      array = array.filter((image) => !fanObjects.includes(image));
+
+      // Calculate index to start inserting fans
+      const startIndex = array.length - fans.length + 2;
+
+      // Add back fans with gap
+      for (let i = 0; i < fans.length; i++) {
+        array.splice(startIndex + i + i * 2, 0, fans[i]);
+      }
+
+      return array;
     }
 
-    const firstTenImages = filteredImages.slice(0, 10);
-    const remainingImages = filteredImages.slice(10);
+    // Distribute fans in the first array
+    firstArray = distributeFans(firstArray, firstArrayFans);
+
+    // Distribute fans in the second array
+    secondArray = distributeFans(secondArray, secondArrayFans);
 
     return (
       <div
@@ -204,7 +246,7 @@ const Canvas = () => {
               )}
               {filteredImages.length > 4 && (
                 <div className="socketsizw">
-                  {firstTenImages
+                  {firstArray
                     .reduce((rows, light, index) => {
                       if (index % 2 === 0) rows.push([]);
                       rows[rows.length - 1].push(
@@ -264,7 +306,7 @@ const Canvas = () => {
           </div>
         </div>
         <div style={{ display: "flex", gap: "30px" }}>
-          {remainingImages.length > 0 && (
+          {secondArray.length > 0 && (
             <div
               className="notsocket"
               style={{
@@ -276,7 +318,7 @@ const Canvas = () => {
                 gap: "14px",
               }}
             >
-              {remainingImages
+              {secondArray
                 .reduce((rows, light, index) => {
                   if (index % 2 === 0) rows.push([]);
                   rows[rows.length - 1].push(
@@ -300,7 +342,22 @@ const Canvas = () => {
                 ))}
             </div>
           )}{" "}
-          {remainingImages.length > 0 && (
+          {secondfan && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: "30px",
+                marginLeft: "5px",
+                alignItems: "center",
+              }}
+            >
+              <img src={dimup} alt="" style={{ height: "45px" }} />
+              <img src={dimdown} alt="" style={{ height: "45px" }} />
+            </div>
+          )}
+          {secondArray.length > 0 && (
             <img
               src={constantImage}
               alt=""

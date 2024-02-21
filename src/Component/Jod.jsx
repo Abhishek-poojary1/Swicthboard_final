@@ -95,7 +95,10 @@ const Jod = () => {
         (selectedSize.size === "12" &&
           socketCount === 2 &&
           lightsCount === 8) ||
-        (selectedSize.size === "12" && socketCount === 3 && lightsCount === 9)
+        (selectedSize.size === "12" &&
+          socketCount === 3 &&
+          lightsCount === 9) ||
+        (selectedSize.size === "12" && lightsCount === 16 && fanCount === 4)
     );
     setSocketDisable(
       socketCount === maxSockets ||
@@ -123,7 +126,10 @@ const Jod = () => {
           socketCount === 3 &&
           lightsCount === 10) ||
         (selectedSize.size === "12" && lightsCount === 20) ||
-        (selectedSize.size === "12" && socketCount === 2 && lightsCount === 8)
+        (selectedSize.size === "12" &&
+          socketCount === 2 &&
+          lightsCount === 8) ||
+        (selectedSize.size === "12" && lightsCount === 16 && fanCount === 4)
     );
     setFanDisable(
       lightsCount === maxLights ||
@@ -147,7 +153,10 @@ const Jod = () => {
           socketCount === 3 &&
           lightsCount === 9) ||
         (selectedSize.size === "12" && socketCount === 3 && fanCount === 2) ||
-        (selectedSize.size === "12" && socketCount === 2 && lightsCount === 8)
+        (selectedSize.size === "12" &&
+          socketCount === 2 &&
+          lightsCount === 8) ||
+        (selectedSize.size === "12" && socketCount === 3 && lightsCount === 7)
     );
   }, [
     lightsCount,
