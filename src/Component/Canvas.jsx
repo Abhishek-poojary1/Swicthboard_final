@@ -130,44 +130,57 @@ const Canvas = () => {
     const fanSelected = fanObjects.length > 0;
 
     // First array
-    // Get total number of fans selected
-
-    // Determine how many fans per array
-    const fansPerArray = 2;
-
-    // First array
     let firstArray = filteredImages.slice(0, 10);
 
-    // Get first 'fansPerArray' number of fans
-    const firstArrayFans = fanObjects.slice(0, fansPerArray);
-
     // Second array
-    let secondArray = filteredImages.slice(10);
+    let secondArray = filteredImages.slice(10, 20);
 
-    // Get remaining fans
-    const secondArrayFans = fanObjects.slice(fansPerArray);
     const secondfan = secondArray.find((light) => light.name === fan);
-    function distributeFans(array, fans) {
-      // Remove existing fans
-      array = array.filter((image) => !fanObjects.includes(image));
 
-      // Calculate index to start inserting fans
-      const startIndex = array.length - fans.length + 2;
+    // Remove fan objects from firstArray if count is more than 2
+    let moveFan = true;
+    while (moveFan) {
+      moveFan = false; // Assume no more fan objects need to be moved
 
-      // Add back fans with gap
-      for (let i = 0; i < fans.length; i++) {
-        array.splice(startIndex + i + i * 2, 0, fans[i]);
+      // Filter out fan objects from firstArray
+      const firstFans = firstArray.filter((light) => light.name === fan);
+
+      // Filter out fan objects from secondArray
+      const secondFanCount = secondArray.filter((light) => light.name === fan);
+
+      // Move fan objects from firstArray to secondArray if count is more than 2
+      if (firstFans.length > 2) {
+        secondArray.push(
+          firstArray.splice(
+            firstArray.findIndex((light) => light.name === fan),
+            1
+          )[0]
+        );
+        moveFan = true; // Set flag to indicate that fan was moved
       }
 
-      return array;
+      // Move fan objects from secondArray to firstArray if count is more than 2
+      if (secondFanCount.length > 2) {
+        firstArray.push(
+          secondArray.splice(
+            secondArray.findIndex((light) => light.name === fan),
+            1
+          )[0]
+        );
+        moveFan = true; // Set flag to indicate that fan was moved
+      }
     }
 
-    // Distribute fans in the first array
-    firstArray = distributeFans(firstArray, firstArrayFans);
+    // Move all fan objects to the end of each array
+    const firstFanss = firstArray.filter((light) => light.name === fan);
+    firstArray = firstArray
+      .filter((light) => light.name !== fan)
+      .concat(firstFanss);
 
-    // Distribute fans in the second array
-    secondArray = distributeFans(secondArray, secondArrayFans);
-
+    const secondFans = secondArray.filter((light) => light.name === fan);
+    secondArray = secondArray
+      .filter((light) => light.name !== fan)
+      .concat(secondFans);
     return (
       <div
         style={{
