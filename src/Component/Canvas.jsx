@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useColorContext } from "./ColorContext";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -11,7 +11,7 @@ const socket = "/src/Component/assets/socket.jpg";
 const fan = "/src/Component/assets/6.png";
 const bulb = "/src/Component/assets/1.png";
 import socketbutton from "./assets/5.png";
-import CollectionDisplay from "./CollectionDisplay";
+
 const Canvas = () => {
   const {
     color,
@@ -21,69 +21,46 @@ const Canvas = () => {
     frameclr,
     selectedimage,
     img,
-
-    setCollectionData,
   } = useColorContext();
+
   const canvasRef = useRef();
-
   const [collectionItems, setCollectionItems] = useState([]);
-
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("collectionData"));
-    if (storedData) {
-      setCollectionData(storedData);
-    }
-  }, []);
-
-  useEffect(() => {
-    updateCollectionItems();
-  }, [selectedimage]);
-
-  const updateCollectionItems = () => {
-    const socketCount = selectedimage.filter(
-      (item) => item.name === socket
-    ).length;
-    const fanCount = selectedimage.filter((item) => item.name === fan).length;
-    const bulbCount = selectedimage.filter((item) => item.name === bulb).length;
-
-    const newCollectionItems = [
-      {
-        type: "socket",
-        count: socketCount,
-        items: selectedimage.filter((item) => item.name === socket),
-      },
-      {
-        type: "fan",
-        count: fanCount,
-        items: selectedimage.filter((item) => item.name === fan),
-      },
-      {
-        type: "bulb",
-        count: bulbCount,
-        items: selectedimage.filter((item) => item.name === bulb),
-      },
-    ];
-
-    setCollectionItems(newCollectionItems);
-  };
 
   const handleAddToCollection = () => {
     if (!canvasRef.current) return;
 
     html2canvas(canvasRef.current).then((canvas) => {
-      const collectionData = {
-        collectionItems,
-        canvasDataURL: canvas.toDataURL(),
+      const imageDataURL = canvas.toDataURL();
+
+      const collectionItem = {
+        imageDataURL: imageDataURL,
+        // You can add more data about the collection item if needed
       };
 
-      localStorage.setItem("collectionData", JSON.stringify(collectionData));
-      setCollectionData(collectionData);
+      setCollectionItems((prevItems) => [...prevItems, collectionItem]);
     });
   };
 
+  const handleDownloadCollection = () => {
+    collectionItems.forEach((item, index) => {
+      const blob = dataURLtoBlob(item.imageDataURL);
+      saveAs(blob, `collection_item_${index}.png`);
+    });
+  };
+
+  const dataURLtoBlob = (dataURL) => {
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
   const handleDownload = () => {
     if (!canvasRef.current) return;
-
     html2canvas(canvasRef.current).then((canvas) => {
       canvas.toBlob((blob) => {
         saveAs(blob, "untitled.png");
@@ -490,7 +467,6 @@ const Canvas = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div>
-        <CollectionDisplay />
         <div
           className="main glossy"
           style={{
@@ -541,6 +517,30 @@ const Canvas = () => {
           >
             add to collection
           </button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            zIndex: "10",
+            position: "relative",
+            flexDirection: "column",
+          }}
+        >
+          <h2>Saved Collection</h2>
+          {collectionItems.map((item, index) => (
+            <div key={index}>
+              <img
+                src={item.imageDataURL}
+                alt={`Collection Item ${index}`}
+                style={{ height: "100px" }}
+              />
+            </div>
+          ))}
+          {collectionItems.length > 0 && (
+            <button onClick={handleDownloadCollection}>
+              Download Collection
+            </button>
+          )}
         </div>
       </div>
     </DndProvider>
