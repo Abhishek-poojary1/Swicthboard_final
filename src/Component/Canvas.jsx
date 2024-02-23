@@ -11,7 +11,7 @@ const socket = "/src/Component/assets/socket.jpg";
 const fan = "/src/Component/assets/6.png";
 const bulb = "/src/Component/assets/1.png";
 import socketbutton from "./assets/5.png";
-
+import colection from "./assets/collection.png";
 const Canvas = () => {
   const {
     color,
@@ -24,6 +24,7 @@ const Canvas = () => {
   } = useColorContext();
 
   const canvasRef = useRef();
+  const [showCollection, setShowCollection] = useState(true); // State variable to track the visibility of the collection
   const [collectionItems, setCollectionItems] = useState([]);
 
   const handleAddToCollection = () => {
@@ -34,11 +35,11 @@ const Canvas = () => {
 
       const collectionItem = {
         imageDataURL: imageDataURL,
-        // You can add more data about the collection item if needed
       };
 
       setCollectionItems((prevItems) => [...prevItems, collectionItem]);
     });
+    setShowCollection((prevVisibility) => !prevVisibility);
   };
 
   const handleDownloadCollection = () => {
@@ -47,7 +48,11 @@ const Canvas = () => {
       saveAs(blob, `collection_item_${index}.png`);
     });
   };
-
+  const removeFromCollection = (indexToRemove) => {
+    setCollectionItems((prevItems) => {
+      return prevItems.filter((item, index) => index !== indexToRemove);
+    });
+  };
   const dataURLtoBlob = (dataURL) => {
     const arr = dataURL.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -58,6 +63,10 @@ const Canvas = () => {
       u8arr[n] = bstr.charCodeAt(n);
     }
     return new Blob([u8arr], { type: mime });
+  };
+
+  const toggleCollectionVisibility = () => {
+    setShowCollection((prevVisibility) => !prevVisibility);
   };
   const handleDownload = () => {
     if (!canvasRef.current) return;
@@ -494,7 +503,13 @@ const Canvas = () => {
             {renderChildDivs()}
           </div>
         </div>
-        <div style={{ position: "relative", display: "flex" }}>
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <button
             style={{
               height: "30px",
@@ -518,29 +533,40 @@ const Canvas = () => {
             add to collection
           </button>
         </div>
-        <div
-          style={{
-            display: "flex",
-            zIndex: "10",
-            position: "relative",
-            flexDirection: "column",
-          }}
-        >
-          <h2>Saved Collection</h2>
-          {collectionItems.map((item, index) => (
-            <div key={index}>
-              <img
-                src={item.imageDataURL}
-                alt={`Collection Item ${index}`}
-                style={{ height: "100px" }}
-              />
+        <div className={`collection ${showCollection ? "" : "collapsed"}`}>
+          {" "}
+          <button
+            className="collectionbut"
+            onClick={toggleCollectionVisibility}
+          >
+            <img src={colection} alt="" style={{ height: "30px" }} />
+          </button>
+          <div
+            className={`collection-content ${
+              showCollection ? "expanded" : "collapsed"
+            }`}
+          >
+            <div>
+              {collectionItems.map((item, index) => (
+                <div key={index}>
+                  <img
+                    src={item.imageDataURL}
+                    alt={`Collection Item ${index}`}
+                    style={{ height: "100px" }}
+                    loading="lazy"
+                  />
+                  <button onClick={() => removeFromCollection(index)}>
+                    Remove
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-          {collectionItems.length > 0 && (
-            <button onClick={handleDownloadCollection}>
-              Download Collection
-            </button>
-          )}
+            {collectionItems.length > 0 && (
+              <button onClick={handleDownloadCollection}>
+                Download Collection
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </DndProvider>
