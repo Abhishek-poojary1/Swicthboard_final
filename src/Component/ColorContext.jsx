@@ -14,6 +14,10 @@ export const ColorProvider = ({ children }) => {
   const [light, setlight] = useState("");
   const [selectedimage, setSelectedimage] = useState([]); // Add this state
   const [img, setimg] = useState("");
+  const [collectionData, setCollectionData] = useState(null); // State to store canvas data for collection
+  const coldata = (e) => {
+    setCollectionData(e);
+  };
   const setSelectedLights = (e) => {
     setSelectedimage(e);
   };
@@ -65,10 +69,12 @@ export const ColorProvider = ({ children }) => {
     selectedimage,
     setSelectedimage,
     setSelectedLights,
-
     img,
     setimgglob,
     setimg,
+    collectionData,
+    setCollectionData,
+    coldata,
   };
 
   return (

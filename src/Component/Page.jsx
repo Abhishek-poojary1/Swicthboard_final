@@ -27,8 +27,7 @@ const Page = () => {
     selectedColor,
     setSelectedColor,
     setGlobalSize,
-    setGlobalimage,
-    setSelectedModuleImage,
+
     setframecolor,
   } = useColorContext();
 

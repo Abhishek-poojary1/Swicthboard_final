@@ -80,14 +80,15 @@ button:focus-visible {
   top: 0;
   right: 0;
   width: 7%; /* Adjust the width as needed */
-  height: 100%;
-  background-color: #f4f1f1;
-  border-left: 1px solid #ccc;
   border-radius: 10px;
   box-sizing: border-box;
   z-index: 1000;
   transition: right 0.3s ease;
   user-select: none;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .menu-fixed {
@@ -97,9 +98,14 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: #f5eeee;
+  background-color: #ffffff8c;
   border: 2px solid #615e5e28;
   transition: 0.3s;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  color: #000000;
 }
 
 .menu-fixed.selected {
@@ -108,7 +114,8 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   height: 70px;
-  background-color: #f0f0f0;
+  color: #0a0404;
+  border-bottom-left-radius: 10px;
 }
 
 .sizecomb {

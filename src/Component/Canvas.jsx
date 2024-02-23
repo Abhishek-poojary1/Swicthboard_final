@@ -1,15 +1,17 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useColorContext } from "./ColorContext";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
-import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
+// import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import dimup from "./assets/7.png";
 import dimdown from "./assets/8.png";
 const socket = "/src/Component/assets/socket.jpg";
 const fan = "/src/Component/assets/6.png";
+const bulb = "/src/Component/assets/1.png";
 import socketbutton from "./assets/5.png";
+import CollectionDisplay from "./CollectionDisplay";
 const Canvas = () => {
   const {
     color,
@@ -19,14 +21,72 @@ const Canvas = () => {
     frameclr,
     selectedimage,
     img,
+
+    setCollectionData,
   } = useColorContext();
   const canvasRef = useRef();
+
+  const [collectionItems, setCollectionItems] = useState([]);
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("collectionData"));
+    if (storedData) {
+      setCollectionData(storedData);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateCollectionItems();
+  }, [selectedimage]);
+
+  const updateCollectionItems = () => {
+    const socketCount = selectedimage.filter(
+      (item) => item.name === socket
+    ).length;
+    const fanCount = selectedimage.filter((item) => item.name === fan).length;
+    const bulbCount = selectedimage.filter((item) => item.name === bulb).length;
+
+    const newCollectionItems = [
+      {
+        type: "socket",
+        count: socketCount,
+        items: selectedimage.filter((item) => item.name === socket),
+      },
+      {
+        type: "fan",
+        count: fanCount,
+        items: selectedimage.filter((item) => item.name === fan),
+      },
+      {
+        type: "bulb",
+        count: bulbCount,
+        items: selectedimage.filter((item) => item.name === bulb),
+      },
+    ];
+
+    setCollectionItems(newCollectionItems);
+  };
+
+  const handleAddToCollection = () => {
+    if (!canvasRef.current) return;
+
+    html2canvas(canvasRef.current).then((canvas) => {
+      const collectionData = {
+        collectionItems,
+        canvasDataURL: canvas.toDataURL(),
+      };
+
+      localStorage.setItem("collectionData", JSON.stringify(collectionData));
+      setCollectionData(collectionData);
+    });
+  };
+
   const handleDownload = () => {
     if (!canvasRef.current) return;
 
     html2canvas(canvasRef.current).then((canvas) => {
       canvas.toBlob((blob) => {
-        saveAs(blob, "canvas.png");
+        saveAs(blob, "untitled.png");
       });
     });
   };
@@ -126,16 +186,11 @@ const Canvas = () => {
       filteredImages.splice(9, 0, { name: socketbutton });
     }
 
-    const fanObjects = filteredImages.filter((light) => light.name === fan);
-    const fanSelected = fanObjects.length > 0;
-
     // First array
     let firstArray = filteredImages.slice(0, 10);
 
     // Second array
     let secondArray = filteredImages.slice(10, 20);
-
-    const secondfan = secondArray.find((light) => light.name === fan);
 
     // Remove fan objects from firstArray if count is more than 2
     let moveFan = true;
@@ -170,6 +225,15 @@ const Canvas = () => {
         moveFan = true; // Set flag to indicate that fan was moved
       }
     }
+    while (firstArray.length < 10 && secondArray.length > 0) {
+      const bulbIndex = secondArray.findIndex((light) => light.name === bulb);
+      if (bulbIndex !== -1) {
+        // Check if a bulb is found
+        firstArray.push(...secondArray.splice(bulbIndex, 2)); // Push the bulb and its pair
+      } else {
+        break; // Break the loop if no bulb is found
+      }
+    }
 
     // Move all fan objects to the end of each array
     const firstFanss = firstArray.filter((light) => light.name === fan);
@@ -181,6 +245,8 @@ const Canvas = () => {
     secondArray = secondArray
       .filter((light) => light.name !== fan)
       .concat(secondFans);
+    const fanInFirstArray = firstArray.some((light) => light.name === fan);
+    const fanInSecondArray = secondArray.some((light) => light.name === fan);
     return (
       <div
         style={{
@@ -288,7 +354,7 @@ const Canvas = () => {
                 </div>
               )}
             </div>
-            {fanSelected && (
+            {fanInFirstArray && (
               <div
                 style={{
                   display: "flex",
@@ -355,7 +421,7 @@ const Canvas = () => {
                 ))}
             </div>
           )}{" "}
-          {secondfan && (
+          {fanInSecondArray && (
             <div
               style={{
                 display: "flex",
@@ -405,25 +471,26 @@ const Canvas = () => {
     );
   };
 
-  const ASPECT_RATIO = 1;
-  const MIN_DIMENSION = 150;
-  const [crop, setCrop] = useState();
-  const onImageLoad = (e) => {
-    const { width, height } = e.currentTarget;
-    const cropwithinpercent = (MIN_DIMENSION / width) * 100;
-    const crop = makeAspectCrop(
-      { unit: "%", width: cropwithinpercent },
-      ASPECT_RATIO,
-      width,
-      height
-    );
-    const centeredCrop = centerCrop(crop, width, height);
-    setCrop(centeredCrop);
-  };
+  // const ASPECT_RATIO = 1;
+  // const MIN_DIMENSION = 150;
+  // const [crop, setCrop] = useState();
+  // const onImageLoad = (e) => {
+  //   const { width, height } = e.currentTarget;
+  //   const cropwithinpercent = (MIN_DIMENSION / width) * 100;
+  //   const crop = makeAspectCrop(
+  //     { unit: "%", width: cropwithinpercent },
+  //     ASPECT_RATIO,
+  //     width,
+  //     height
+  //   );
+  //   const centeredCrop = centerCrop(crop, width, height);
+  //   setCrop(centeredCrop);
+  // };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div>
+        <CollectionDisplay />
         <div
           className="main glossy"
           style={{
@@ -470,8 +537,9 @@ const Canvas = () => {
               position: "relative",
               zIndex: "100",
             }}
+            onClick={handleAddToCollection}
           >
-            Send Files
+            add to collection
           </button>
         </div>
       </div>
