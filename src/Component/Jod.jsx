@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import lights from "./assets/1.png";
 import socket from "./assets/socket.jpg";
 import fan from "./assets/6.png";
+import reset from "./assets/undo.png";
 import { useColorContext } from "./ColorContext";
+
 const Jod = () => {
   const [selectedImages, setSelectedImages] = useState(() => {
     const storedImages = JSON.parse(localStorage.getItem("selectedImages"));
@@ -117,7 +119,11 @@ const Jod = () => {
         (selectedSize.size === "12" &&
           lightsCount === 7 &&
           socketCount === 1 &&
-          fanCount === 2)
+          fanCount === 2) ||
+        (selectedSize.size === "12" &&
+          lightsCount === 6 &&
+          socketCount === 3 &&
+          fanCount === 1)
     );
     setSocketDisable(
       socketCount === maxSockets ||
@@ -215,7 +221,11 @@ const Jod = () => {
         (selectedSize.size === "12" &&
           lightsCount === 7 &&
           socketCount === 1 &&
-          fanCount === 2)
+          fanCount === 2) ||
+        (selectedSize.size === "12" &&
+          lightsCount === 6 &&
+          socketCount === 3 &&
+          fanCount === 1)
     );
   }, [
     lightsCount,
@@ -343,7 +353,16 @@ const Jod = () => {
       setFanCount((prevCount) => prevCount + 1);
     }
   };
+  const { clearimage } = useColorContext();
 
+  const resetbuton = () => {
+    // Reset count variables here
+    setFanCount(0);
+    setLightsCount(0);
+    setSocketCount(0);
+
+    clearimage();
+  };
   return (
     <div>
       <div className="joddiv">
@@ -421,8 +440,11 @@ const Jod = () => {
           +
         </button>
       </div>
+
+      <button className="reset" onClick={resetbuton}>
+        <img src={reset} style={{ height: "30px" }} alt="" />
+      </button>
     </div>
   );
 };
-
 export default Jod;

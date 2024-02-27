@@ -346,20 +346,27 @@ input {
   z-index: 10;
   flex-direction: column;
   position: fixed;
-  background-color: rgb(205, 235, 162);
   margin-top: 3%;
   border-radius: 15px;
   align-items: center;
   justify-content: center;
   align-content: center;
-  width: 340px;
+  width: 40px;
 }
+
 .collection-content {
-  max-height: 1000px; /* Set a maximum height */
-  overflow-y: hidden; /* Only hide vertical overflow */
+  display: grid;
+  max-height: 400px; /* Set a maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
   transition: max-height 0.5s ease; /* Define transition properties */
   user-select: none;
+  width: 300px;
+  background-color: #ebd9d9d7;
+  border-radius: 20px;
+  position: relative;
+  left: 133px; /* Set position to relative for scrolling */
 }
+
 .collapsed {
   max-height: 0;
 }
@@ -367,4 +374,69 @@ input {
   background: transparent;
   border: none;
   outline: none;
+  user-select: none;
+}
+.linecontainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer; /* Add cursor pointer for better UX */
+}
+
+.lines {
+  height: 4px;
+  width: 30px;
+  background-color: #000000;
+  border-radius: 5px;
+  transition: all 0.3s ease; /* Add transition for smooth animation */
+  user-select: none;
+}
+
+.lines.collapsed {
+  height: 6px;
+  width: 40px;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+.imagerender {
+  margin: auto;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.insiderender {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.remove {
+  height: 20px;
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+.downloadall {
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  justify-self: right;
+  margin-bottom: 15px;
+}
+.send {
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  justify-self: right;
+  margin-bottom: 15px;
+}
+.reset {
+  background: none;
+  border: none;
+  cursor: pointer;
 }

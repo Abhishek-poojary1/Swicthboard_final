@@ -11,7 +11,10 @@ const socket = "/src/Component/assets/socket.jpg";
 const fan = "/src/Component/assets/6.png";
 const bulb = "/src/Component/assets/1.png";
 import socketbutton from "./assets/5.png";
-import colection from "./assets/collection.png";
+import trash from "./assets/trash.png";
+import Download from "./assets/download.png";
+import send from "./assets/send.png";
+
 const Canvas = () => {
   const {
     color,
@@ -21,12 +24,42 @@ const Canvas = () => {
     frameclr,
     selectedimage,
     img,
+    clearimage,
   } = useColorContext();
 
   const canvasRef = useRef();
-  const [showCollection, setShowCollection] = useState(true); // State variable to track the visibility of the collection
+  const [showCollection, setShowCollection] = useState(false); // State variable to track the visibility of the collection
   const [collectionItems, setCollectionItems] = useState([]);
+  const [imageTransition, setImageTransition] = useState(false);
 
+  const sendfiles = () => {
+    // Extract image URLs from the content (replace this with your logic)
+    const imageUrls = Array.from(document.querySelectorAll("img")).map(
+      (img) => img.src
+    );
+
+    // Send image URLs to the backend service using fetch API
+    fetch("/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        imageUrls: imageUrls,
+        emailAddress: "ap2867045@example.com", // Specify the recipient's email address
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Email sent successfully");
+        } else {
+          console.error("Failed to send email");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
   const handleAddToCollection = () => {
     if (!canvasRef.current) return;
 
@@ -38,8 +71,9 @@ const Canvas = () => {
       };
 
       setCollectionItems((prevItems) => [...prevItems, collectionItem]);
+      clearimage();
+      setImageTransition(true);
     });
-    setShowCollection((prevVisibility) => !prevVisibility);
   };
 
   const handleDownloadCollection = () => {
@@ -47,6 +81,8 @@ const Canvas = () => {
       const blob = dataURLtoBlob(item.imageDataURL);
       saveAs(blob, `collection_item_${index}.png`);
     });
+    clearimage();
+    console.log(selectedimage); // Call clearimage function with parentheses to invoke it
   };
   const removeFromCollection = (indexToRemove) => {
     setCollectionItems((prevItems) => {
@@ -508,6 +544,7 @@ const Canvas = () => {
             position: "relative",
             display: "flex",
             alignItems: "center",
+            gap: "20px",
           }}
         >
           <button
@@ -516,55 +553,86 @@ const Canvas = () => {
               width: "80px",
               position: "relative",
               zIndex: "100",
+              userSelect: "none",
             }}
             onClick={handleDownload}
+            disabled={
+              selectedSize === "defaultSize" || selectedimage.length < 1
+            }
           >
             Download
           </button>
           <button
             style={{
               height: "30px",
-              width: "80px",
+              width: "160px",
               position: "relative",
               zIndex: "100",
+              userSelect: "none",
             }}
             onClick={handleAddToCollection}
+            disabled={selectedimage.length < 1}
           >
             add to collection
           </button>
         </div>
-        <div className={`collection ${showCollection ? "" : "collapsed"}`}>
+        <div className="collection">
           {" "}
-          <button
-            className="collectionbut"
-            onClick={toggleCollectionVisibility}
-          >
-            <img src={colection} alt="" style={{ height: "30px" }} />
-          </button>
+          <div className="linecontainer" onClick={toggleCollectionVisibility}>
+            <div className="lines"></div>
+            <div className="lines"></div>
+            <div className="lines"></div>
+          </div>
           <div
             className={`collection-content ${
               showCollection ? "expanded" : "collapsed"
             }`}
           >
-            <div>
+            <div className="imagerender">
               {collectionItems.map((item, index) => (
-                <div key={index}>
+                <div key={index} className="insiderender">
                   <img
                     src={item.imageDataURL}
                     alt={`Collection Item ${index}`}
-                    style={{ height: "100px" }}
+                    style={{
+                      height: "70px",
+                      transition: "height 0.5s ease-in-out",
+                      opacity: imageTransition ? 0.5 : 1,
+                    }}
                     loading="lazy"
                   />
-                  <button onClick={() => removeFromCollection(index)}>
-                    Remove
+
+                  <button
+                    onClick={() => removeFromCollection(index)}
+                    className="remove"
+                  >
+                    <img src={trash} style={{ height: "20px" }} alt="" />
                   </button>
                 </div>
               ))}
             </div>
-            {collectionItems.length > 0 && (
-              <button onClick={handleDownloadCollection}>
-                Download Collection
-              </button>
+            {collectionItems.length > 0 ? (
+              <div style={{ display: "flex", justifyContent: "space-around" }}>
+                <button
+                  onClick={handleDownloadCollection}
+                  className="downloadall"
+                >
+                  <img src={Download} style={{ height: "20px" }} alt="" />
+                </button>
+                <button className="send" onClick={sendfiles}>
+                  <img src={send} style={{ height: "20px" }} alt="" />
+                </button>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignContent: "center ",
+                  justifyContent: "center",
+                }}
+              >
+                nothing to see here.......
+              </div>
             )}
           </div>
         </div>

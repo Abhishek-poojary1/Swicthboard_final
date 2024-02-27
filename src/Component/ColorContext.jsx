@@ -1,5 +1,5 @@
 // ColorContext.jsx
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const ColorContext = createContext();
 
@@ -15,8 +15,12 @@ export const ColorProvider = ({ children }) => {
   const [selectedimage, setSelectedimage] = useState([]); // Add this state
   const [img, setimg] = useState("");
   const [collectionData, setCollectionData] = useState(null); // State to store canvas data for collection
+
   const coldata = (e) => {
     setCollectionData(e);
+  };
+  const clearimage = () => {
+    setSelectedimage([]);
   };
   const setSelectedLights = (e) => {
     setSelectedimage(e);
@@ -75,6 +79,7 @@ export const ColorProvider = ({ children }) => {
     collectionData,
     setCollectionData,
     coldata,
+    clearimage,
   };
 
   return (

@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
-import Controls from "./Controls";
 import ImageCropper from "./Imagecrop";
 import Jod from "./Jod";
 
@@ -27,7 +26,7 @@ const Page = () => {
     selectedColor,
     setSelectedColor,
     setGlobalSize,
-
+    selectedimage,
     setframecolor,
   } = useColorContext();
 
@@ -93,13 +92,37 @@ const Page = () => {
     if (event) {
       event.stopPropagation();
     }
+    if (selectedimage.length > 4 && modulesize === "box1") {
+      // Display a message or handle it as per your requirement
+      alert(
+        "You cannot select size 2 when selected image count is more than 4"
+      );
+      return;
+    } else if (selectedimage.length > 6 && modulesize === "box2") {
+      // Display a message or handle it as per your requirement
+      alert(
+        "You cannot select size 4 when selected image count is more than 6"
+      );
+      return;
+    } else if (selectedimage.length > 10 && modulesize === "box3") {
+      // Display a message or handle it as per your requirement
+      alert(
+        "You cannot select size 6 when selected image count is more than 10"
+      );
+      return;
+    } else if (selectedimage.length > 10 && modulesize === "box4") {
+      // Display a message or handle it as per your requirement
+      alert(
+        "You cannot select size 8 when selected image count is more than 10"
+      );
+      return;
+    }
 
     // Set a default module type if module.type is undefined
     const moduleType = module.type || "module1";
 
     if (supportedModules[modulesize].includes(moduleType)) {
       // The module is supported, proceed with the logic
-      let moduleImageURL = ""; // Set the appropriate image URL based on the module type
 
       // Set the selected module image in the ColorContext
       setboardsize(modulesize);
