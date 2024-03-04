@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useRef } from "react";
 
 import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
 import ImageCropper from "./Imagecrop";
 import Jod from "./Jod";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const colorOptions = [
   "#ff0000", // red
@@ -39,7 +44,7 @@ const Page = () => {
     type: "module1", // Set a default module type
     color: "",
   });
-
+  const [open, setOpen] = useState(true);
   const handleMenuClick = (menu, event) => {
     event.stopPropagation();
 
@@ -87,34 +92,53 @@ const Page = () => {
       "module10",
     ],
   };
+  const [errorMessage, setErrorMessage] = useState(null);
+  useEffect(() => {
+    if (errorMessage) {
+      setOpen(true); // Set open to true when setting a new error message
 
+      const timer = setTimeout(() => {
+        setOpen(false); // Set open to false after 3 seconds
+      }, 3000);
+
+      return () => clearTimeout(timer); // Clear the timer on component unmount or when open changes
+    }
+  }, [errorMessage]); // Dependency on errorMessage
+  //
   const handleModuleClick = (modulesize, size, event) => {
     if (event) {
       event.stopPropagation();
     }
     if (selectedimage.length > 4 && modulesize === "box1") {
-      // Display a message or handle it as per your requirement
-      alert(
+      setErrorMessage(
         "You cannot select size 2 when selected image count is more than 4"
       );
+      setOpen(true); // Set open to true when setting a new error message
+
       return;
     } else if (selectedimage.length > 6 && modulesize === "box2") {
-      // Display a message or handle it as per your requirement
-      alert(
+      setErrorMessage(
         "You cannot select size 4 when selected image count is more than 6"
       );
+      setOpen(true); // Set open to true when setting a new error message
+
       return;
-    } else if (selectedimage.length > 10 && modulesize === "box3") {
-      // Display a message or handle it as per your requirement
-      alert(
-        "You cannot select size 6 when selected image count is more than 10"
-      );
-      return;
-    } else if (selectedimage.length > 10 && modulesize === "box4") {
-      // Display a message or handle it as per your requirement
-      alert(
+    } else if (selectedimage.length > 8 && modulesize === "box3") {
+      setErrorMessage(
         "You cannot select size 8 when selected image count is more than 10"
       );
+      setOpen(true); // Set open to true when setting a new error message
+
+      return;
+    } else if (
+      selectedimage.length > 10 &&
+      (modulesize === "box3" || modulesize === "box4")
+    ) {
+      setErrorMessage(
+        "You cannot select size 6 when selected image count is more than 10"
+      );
+      setOpen(true); // Set open to true when setting a new error message
+
       return;
     }
 
@@ -143,6 +167,27 @@ const Page = () => {
 
   return (
     <>
+      {errorMessage && (
+        <div className="alert">
+          <Collapse in={open}>
+            <Alert severity="error" style={{ backgroundColor: "#eb4848" }}>
+              <AlertTitle>Error</AlertTitle>
+              {errorMessage}
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            </Alert>
+          </Collapse>
+        </div>
+      )}
+
       <div className={`size ${isNavOpen ? "nav-open" : ""}`}>
         <div
           className={`menu-fixed ${selectedMenu === "size" ? "selected" : ""}`}
@@ -369,15 +414,16 @@ const Page = () => {
                   </div>
                 )}
                 {selectedMenu === "wall" && (
-                  <div>
+                  <>
                     <div className="color">
                       <SketchPicker
                         color={color}
                         disableAlpha
+                        enableHSB={false}
                         onChange={handleColorChange}
                       />
                     </div>
-                  </div>
+                  </>
                 )}
                 <div
                   className="overlay"

@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import lights from "./assets/1.png";
 import socket from "./assets/socket.jpg";
 import fan from "./assets/6.png";
-import reset from "./assets/undo.png";
 import { useColorContext } from "./ColorContext";
-
+import RestartAltTwoToneIcon from "@mui/icons-material/RestartAltTwoTone";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 const Jod = () => {
   const [selectedImages, setSelectedImages] = useState(() => {
     const storedImages = JSON.parse(localStorage.getItem("selectedImages"));
@@ -123,7 +124,12 @@ const Jod = () => {
         (selectedSize.size === "12" &&
           lightsCount === 6 &&
           socketCount === 3 &&
-          fanCount === 1)
+          fanCount === 1) ||
+        (selectedSize.size === "12" && lightsCount === 18 && fanCount === 2) ||
+        (selectedSize.size === "12" &&
+          lightsCount === 5 &&
+          fanCount === 2 &&
+          socketCount === 3)
     );
     setSocketDisable(
       socketCount === maxSockets ||
@@ -225,7 +231,8 @@ const Jod = () => {
         (selectedSize.size === "12" &&
           lightsCount === 6 &&
           socketCount === 3 &&
-          fanCount === 1)
+          fanCount === 1) ||
+        (selectedSize.size === "12" && lightsCount === 18 && fanCount === 2)
     );
   }, [
     lightsCount,
@@ -249,6 +256,21 @@ const Jod = () => {
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  const resetValuesOnUnload = () => {
+    localStorage.removeItem("selectedImages");
+    localStorage.removeItem("lightsCount");
+    localStorage.removeItem("socketCount");
+    localStorage.removeItem("fanCount");
+  };
+
+  useEffect(() => {
+    window.addEventListener("unload", resetValuesOnUnload);
+
+    return () => {
+      window.removeEventListener("unload", resetValuesOnUnload);
     };
   }, []);
 
@@ -360,7 +382,7 @@ const Jod = () => {
     setFanCount(0);
     setLightsCount(0);
     setSocketCount(0);
-
+    setSelectedImages([]);
     clearimage();
   };
   return (
@@ -440,10 +462,24 @@ const Jod = () => {
           +
         </button>
       </div>
-
-      <button className="reset" onClick={resetbuton}>
-        <img src={reset} style={{ height: "30px" }} alt="" />
-      </button>
+      <div
+        style={{
+          display: "flex",
+          alignContent: "center",
+          justifyContent: "center",
+          userSelect: "none",
+        }}
+      >
+        <Tooltip
+          title="Reset the count"
+          onClick={resetbuton}
+          style={{ height: "30px" }}
+        >
+          <IconButton>
+            <RestartAltTwoToneIcon />{" "}
+          </IconButton>
+        </Tooltip>{" "}
+      </div>
     </div>
   );
 };

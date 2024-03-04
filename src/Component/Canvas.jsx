@@ -11,10 +11,15 @@ const socket = "/src/Component/assets/socket.jpg";
 const fan = "/src/Component/assets/6.png";
 const bulb = "/src/Component/assets/1.png";
 import socketbutton from "./assets/5.png";
-import trash from "./assets/trash.png";
-import Download from "./assets/download.png";
-import send from "./assets/send.png";
-
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+import Badge from "@mui/material/Badge";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import DownloadIcon from "@mui/icons-material/Download";
 const Canvas = () => {
   const {
     color,
@@ -30,7 +35,6 @@ const Canvas = () => {
   const canvasRef = useRef();
   const [showCollection, setShowCollection] = useState(false); // State variable to track the visibility of the collection
   const [collectionItems, setCollectionItems] = useState([]);
-  const [imageTransition, setImageTransition] = useState(false);
 
   const sendfiles = () => {
     // Extract image URLs from the content (replace this with your logic)
@@ -71,8 +75,6 @@ const Canvas = () => {
       };
 
       setCollectionItems((prevItems) => [...prevItems, collectionItem]);
-      clearimage();
-      setImageTransition(true);
     });
   };
 
@@ -545,15 +547,20 @@ const Canvas = () => {
             display: "flex",
             alignItems: "center",
             gap: "20px",
+            top: "90vh",
+            left: "100vh",
           }}
         >
-          <button
+          <Button
+            variant="contained"
+            endIcon={<DownloadIcon style={{ height: "15px" }} />}
             style={{
               height: "30px",
-              width: "80px",
+              width: "100px",
               position: "relative",
-              zIndex: "100",
+              zIndex: "10",
               userSelect: "none",
+              fontSize: "10px",
             }}
             onClick={handleDownload}
             disabled={
@@ -561,28 +568,41 @@ const Canvas = () => {
             }
           >
             Download
-          </button>
-          <button
-            style={{
-              height: "30px",
-              width: "160px",
-              position: "relative",
-              zIndex: "100",
-              userSelect: "none",
-            }}
-            onClick={handleAddToCollection}
-            disabled={selectedimage.length < 1}
-          >
-            add to collection
-          </button>
+          </Button>
+          <Tooltip title="Add to collection" arrow>
+            <Fab
+              size="small"
+              color="secondary"
+              aria-label="add"
+              onClick={handleAddToCollection}
+              disabled={selectedimage.length < 1}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
         </div>
+
         <div className="collection">
           {" "}
-          <div className="linecontainer" onClick={toggleCollectionVisibility}>
-            <div className="lines"></div>
-            <div className="lines"></div>
-            <div className="lines"></div>
-          </div>
+          <Badge
+            badgeContent={collectionItems.length}
+            style={{ userSelect: "none" }}
+            color="info"
+            onClick={toggleCollectionVisibility}
+          >
+            <div className="linecontainer">
+              {" "}
+              <div
+                className={showCollection ? "line line1-cross" : "line"}
+              ></div>
+              <div
+                className={showCollection ? "line line2-hide" : "line"}
+              ></div>
+              <div
+                className={showCollection ? "line line3-cross" : "line"}
+              ></div>
+            </div>
+          </Badge>
           <div
             className={`collection-content ${
               showCollection ? "expanded" : "collapsed"
@@ -596,8 +616,6 @@ const Canvas = () => {
                     alt={`Collection Item ${index}`}
                     style={{
                       height: "70px",
-                      transition: "height 0.5s ease-in-out",
-                      opacity: imageTransition ? 0.5 : 1,
                     }}
                     loading="lazy"
                   />
@@ -606,22 +624,38 @@ const Canvas = () => {
                     onClick={() => removeFromCollection(index)}
                     className="remove"
                   >
-                    <img src={trash} style={{ height: "20px" }} alt="" />
+                    <Tooltip title="remove">
+                      <IconButton>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>{" "}
                   </button>
                 </div>
               ))}
             </div>
             {collectionItems.length > 0 ? (
-              <div style={{ display: "flex", justifyContent: "space-around" }}>
-                <button
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  marginBottom: "10px",
+                }}
+              >
+                <Button
+                  style={{ height: "25px", fontSize: "10px" }}
                   onClick={handleDownloadCollection}
-                  className="downloadall"
+                  variant="contained"
+                  endIcon={<DownloadIcon style={{ height: "15px" }} />}
                 >
-                  <img src={Download} style={{ height: "20px" }} alt="" />
-                </button>
-                <button className="send" onClick={sendfiles}>
-                  <img src={send} style={{ height: "20px" }} alt="" />
-                </button>
+                  Download collection
+                </Button>
+                <Button
+                  style={{ height: "25px", fontSize: "10px" }}
+                  variant="contained"
+                  endIcon={<SendIcon style={{ height: "15px" }} />}
+                >
+                  Send
+                </Button>
               </div>
             ) : (
               <div
