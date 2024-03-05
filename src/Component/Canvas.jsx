@@ -1,3 +1,4 @@
+import React from "react";
 import { useRef, useState } from "react";
 import { useColorContext } from "./ColorContext";
 import { DndProvider } from "react-dnd";
@@ -20,6 +21,9 @@ import Tooltip from "@mui/material/Tooltip";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadIcon from "@mui/icons-material/Download";
+import Snackbar from "@mui/material/Snackbar";
+import CloseIcon from "@mui/icons-material/Close";
+
 const Canvas = () => {
   const {
     color,
@@ -35,6 +39,7 @@ const Canvas = () => {
   const canvasRef = useRef();
   const [showCollection, setShowCollection] = useState(false); // State variable to track the visibility of the collection
   const [collectionItems, setCollectionItems] = useState([]);
+  const [open, setOpen] = React.useState(false);
 
   const sendfiles = () => {
     // Extract image URLs from the content (replace this with your logic)
@@ -76,7 +81,27 @@ const Canvas = () => {
 
       setCollectionItems((prevItems) => [...prevItems, collectionItem]);
     });
+    setOpen(true);
   };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
 
   const handleDownloadCollection = () => {
     collectionItems.forEach((item, index) => {
@@ -246,6 +271,13 @@ const Canvas = () => {
             1
           )[0]
         );
+        secondArray.push(
+          firstArray.splice(
+            secondArray.findIndex((light) => light.name === bulb),
+            1
+          )[0]
+        );
+
         moveFan = true; // Set flag to indicate that fan was moved
       }
     }
@@ -261,14 +293,33 @@ const Canvas = () => {
 
     // Move all fan objects to the end of each array
     const firstFanss = firstArray.filter((light) => light.name === fan);
-    firstArray = firstArray
-      .filter((light) => light.name !== fan)
-      .concat(firstFanss);
+    if (firstFanss.length === 1) {
+      // If only one fan is selected, move it to the last but second position
+      const fanIndex = firstArray.findIndex((light) => light.name === fan);
+      if (fanIndex !== -1 && fanIndex !== firstArray.length - 2) {
+        const fanToMove = firstArray.splice(fanIndex, 1)[0];
+        firstArray.splice(-1, 0, fanToMove); // Insert the fan at the last but second position
+      }
+    } else {
+      firstArray = firstArray
+        .filter((light) => light.name !== fan)
+        .concat(firstFanss);
+    }
 
     const secondFans = secondArray.filter((light) => light.name === fan);
-    secondArray = secondArray
-      .filter((light) => light.name !== fan)
-      .concat(secondFans);
+    if (secondFans.length === 1) {
+      // If only one fan is selected, move it to the last but second position
+      const fanIndex = secondArray.findIndex((light) => light.name === fan);
+      if (fanIndex !== -1 && fanIndex !== secondArray.length - 2) {
+        const fanToMove = secondArray.splice(fanIndex, 1)[0];
+        secondArray.splice(-1, 0, fanToMove); // Insert the fan at the last but second position
+      }
+    } else {
+      secondArray = secondArray
+        .filter((light) => light.name !== fan)
+        .concat(secondFans);
+    }
+
     const fanInFirstArray = firstArray.some((light) => light.name === fan);
     const fanInSecondArray = secondArray.some((light) => light.name === fan);
     return (
@@ -670,6 +721,14 @@ const Canvas = () => {
             )}
           </div>
         </div>
+        <Snackbar
+          open={open}
+          autoHideDuration={3000}
+          style={{ userSelect: "none" }}
+          onClose={handleClose}
+          message="Added"
+          action={action}
+        />
       </div>
     </DndProvider>
   );

@@ -129,7 +129,8 @@ const Jod = () => {
         (selectedSize.size === "12" &&
           lightsCount === 5 &&
           fanCount === 2 &&
-          socketCount === 3)
+          socketCount === 3) ||
+        (selectedSize.size === "12" && lightsCount === 19 && fanCount === 1)
     );
     setSocketDisable(
       socketCount === maxSockets ||
@@ -232,6 +233,7 @@ const Jod = () => {
           lightsCount === 6 &&
           socketCount === 3 &&
           fanCount === 1) ||
+        (selectedSize.size === "12" && lightsCount === 19 && fanCount === 1) ||
         (selectedSize.size === "12" && lightsCount === 18 && fanCount === 2)
     );
   }, [
