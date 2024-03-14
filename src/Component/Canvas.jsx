@@ -44,6 +44,72 @@ const Canvas = () => {
   const [secondsocket, setsecondsocket] = useState(false);
   const [thirdsocket, setthirdsocket] = useState(false);
   const [forthsocket, setforthsocket] = useState(false);
+  const [disablebutton, setbuttondisable] = useState(true);
+  useEffect(() => {
+    const socketSelected = selectedimage.some((light) => light.name === socket);
+    const lightsSelected = selectedimage.filter((light) => light.name === bulb);
+    const fanselected = selectedimage.filter((light) => light.name === fan);
+    setbuttondisable(
+      selectedSize.size === undefined ||
+        selectedimage.length === 0 ||
+        (selectedSize.size === "2" &&
+          !socketSelected &&
+          fanselected.length === 0 &&
+          lightsSelected.length < 6) ||
+        (selectedSize.size === "2" &&
+          !socketSelected &&
+          lightsSelected.length === 0) ||
+        (selectedSize.size === "4" &&
+          !socketSelected &&
+          fanselected.length === 0 &&
+          lightsSelected.length === 5) ||
+        (selectedSize.size === "4" && lightsSelected.length === 0) ||
+        (selectedSize.size === "4" &&
+          !socketSelected &&
+          lightsSelected.length === 3) ||
+        (selectedSize.size === "4" &&
+          socketSelected &&
+          lightsSelected.length === 2 &&
+          lightsSelected.length === 1) ||
+        (selectedSize.size === "4" &&
+          fanselected.length === 2 &&
+          lightsSelected.length < 4) ||
+        (selectedSize.size === "4" &&
+          socketSelected &&
+          lightsSelected.length < 3) ||
+        (selectedSize.size === "4" &&
+          fanselected.length === 1 &&
+          lightsSelected.length < 5) ||
+        (selectedSize.size === "6" &&
+          !socketSelected &&
+          fanselected.length === 0 &&
+          lightsSelected.length === 5) ||
+        (selectedSize.size === "6" && lightsSelected.length === 0) ||
+        (selectedSize.size === "6" &&
+          !socketSelected &&
+          lightsSelected.length === 3) ||
+        (selectedSize.size === "6" &&
+          socketSelected &&
+          lightsSelected.length === 2 &&
+          lightsSelected.length === 1) ||
+        (selectedSize.size === "6" &&
+          fanselected.length === 2 &&
+          lightsSelected.length < 4) ||
+        (selectedSize.size === "6" &&
+          socketSelected &&
+          lightsSelected.length < 3) ||
+        (selectedSize.size === "6" &&
+          fanselected.length === 1 &&
+          lightsSelected.length < 5) ||
+        (selectedSize.size === "6" &&
+          !socketSelected &&
+          lightsSelected.length === 7) ||
+        (selectedSize.size === "6" && lightsSelected.length === 9) ||
+        (selectedSize.size === "6" &&
+          socketSelected &&
+          (lightsSelected.length === 4 || lightsSelected.length === 6))
+    );
+  }, [selectedimage, selectedSize, socket, bulb]);
   const sendfiles = () => {
     // Extract image URLs from the content (replace this with your logic)
     const imageUrls = Array.from(document.querySelectorAll("img")).map(
@@ -678,7 +744,7 @@ const Canvas = () => {
               color="secondary"
               aria-label="add"
               onClick={handleAddToCollection}
-              disabled={selectedimage.length < 1}
+              disabled={disablebutton}
             >
               <AddIcon />
             </Fab>
