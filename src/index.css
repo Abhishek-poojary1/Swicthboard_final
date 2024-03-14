@@ -214,6 +214,10 @@ button:focus-visible {
   display: flex;
   justify-content: space-around;
 }
+.color-option {
+  transition: 0.1s;
+  border-radius: 10px;
+}
 .inputcontrols {
   display: flex;
   flex-wrap: wrap;
@@ -351,6 +355,7 @@ input {
   justify-content: center;
   align-content: center;
   width: 40px;
+  margin-top: -34px;
 }
 
 .collection-content {

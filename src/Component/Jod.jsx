@@ -46,9 +46,14 @@ const Jod = () => {
         setMaxFans(2);
         break;
       case "6":
+        setMaxLights(10);
+        setMaxSockets(2);
+        setMaxFans(2);
+        break;
+
       case "8":
         setMaxLights(10);
-        setMaxSockets(1);
+        setMaxSockets(2);
         setMaxFans(2);
         break;
       case "12":
@@ -68,7 +73,7 @@ const Jod = () => {
         (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
         (selectedSize.size === "4" && lightsCount === 5 && fanCount === 1) ||
         (selectedSize.size === "4" && socketCount === 1 && lightsCount === 3) ||
-        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 7) ||
+        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 5) ||
         (selectedSize.size === "6" &&
           fanCount === 2 &&
           socketCount === 1 &&
@@ -76,55 +81,67 @@ const Jod = () => {
         (selectedSize.size === "6" &&
           fanCount === 1 &&
           socketCount === 1 &&
-          lightsCount === 3) ||
+          lightsCount === 4) ||
         (selectedSize.size === "6" &&
           fanCount === 2 &&
           socketCount === 1 &&
           lightsCount === 5) ||
         (selectedSize.size === "6" &&
+          lightsCount === 2 &&
+          socketCount === 2 &&
+          lightsCount === 2) ||
+        (selectedSize.size === "6" &&
           fanCount === 1 &&
           socketCount === 1 &&
           lightsCount === 6) ||
         (selectedSize.size === "6" && fanCount === 2 && lightsCount === 8) ||
+        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 5) ||
         (selectedSize.size === "6" && fanCount === 1 && lightsCount === 9) ||
         (selectedSize.size === "8" && fanCount === 1 && lightsCount === 9) ||
+        (selectedSize.size === "8" &&
+          fanCount === 1 &&
+          socketCount === 1 &&
+          lightsCount === 9) ||
         (selectedSize.size === "8" && fanCount === 2 && lightsCount === 8) ||
-        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7) ||
         (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7) ||
         (selectedSize.size === "8" &&
           socketCount === 1 &&
           lightsCount === 6 &&
           fanCount === 1) ||
-        (selectedSize.size === "12" &&
-          socketCount === 3 &&
-          lightsCount === 7) ||
-        (selectedSize.size === "12" &&
-          socketCount === 2 &&
-          lightsCount === 8) ||
-        (selectedSize.size === "12" &&
-          socketCount === 3 &&
-          lightsCount === 9) ||
-        (selectedSize.size === "12" && lightsCount === 16 && fanCount === 4) ||
-        (selectedSize.size === "12" && lightsCount === 17 && fanCount === 3) ||
-        (selectedSize.size === "12" &&
-          socketCount === 2 &&
-          lightsCount === 7 &&
-          fanCount === 1) ||
-        (selectedSize.size === "12" &&
-          lightsCount === 9 &&
-          socketCount === 1) ||
-        (selectedSize.size === "12" &&
-          lightsCount === 8 &&
+        (selectedSize.size === "8" &&
           socketCount === 1 &&
-          fanCount === 1) ||
-        (selectedSize.size === "12" &&
           lightsCount === 7 &&
-          socketCount === 1 &&
           fanCount === 2) ||
-        (selectedSize.size === "12" &&
-          lightsCount === 6 &&
-          socketCount === 3 &&
-          fanCount === 1) ||
+        // (selectedSize.size === "12" &&
+        //   socketCount === 3 &&
+        //   lightsCount === 7) ||
+        // (selectedSize.size === "12" &&
+        //   socketCount === 2 &&
+        //   lightsCount === 8) ||
+        // (selectedSize.size === "12" &&
+        //   socketCount === 3 &&
+        //   lightsCount === 9) ||
+        // (selectedSize.size === "12" && lightsCount === 16 && fanCount === 4) ||
+        // (selectedSize.size === "12" && lightsCount === 17 && fanCount === 3) ||
+        // (selectedSize.size === "12" &&
+        //   socketCount === 2 &&
+        //   lightsCount === 7 &&
+        //   fanCount === 1) ||
+        // (selectedSize.size === "12" &&
+        //   lightsCount === 9 &&
+        //   socketCount === 1) ||
+        // (selectedSize.size === "12" &&
+        //   lightsCount === 8 &&
+        //   socketCount === 1 &&
+        //   fanCount === 1) ||
+        // (selectedSize.size === "12" &&
+        //   lightsCount === 7 &&
+        //   socketCount === 1 &&
+        //   fanCount === 2) ||
+        // (selectedSize.size === "12" &&
+        //   lightsCount === 6 &&
+        //   socketCount === 3 &&
+        //   fanCount === 1) ||
         (selectedSize.size === "12" && lightsCount === 18 && fanCount === 2) ||
         (selectedSize.size === "12" &&
           lightsCount === 5 &&
@@ -140,7 +157,8 @@ const Jod = () => {
         (selectedSize.size === "4" && lightsCount === 4 && fanCount === 2) ||
         (selectedSize.size === "4" && fanCount > 0) ||
         (selectedSize.size === "6" && socketCount === 1 && lightsCount === 7) ||
-        (selectedSize.size === "6" && lightsCount > 7) ||
+        (selectedSize.size === "6" && lightsCount > 5) ||
+        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 5) ||
         (selectedSize.size === "6" &&
           fanCount === 2 &&
           socketCount === 1 &&
@@ -149,35 +167,41 @@ const Jod = () => {
           fanCount === 1 &&
           socketCount === 1 &&
           lightsCount === 6) ||
+        (selectedSize.size === "6" &&
+          fanCount === 1 &&
+          socketCount === 1 &&
+          lightsCount === 4) ||
         (selectedSize.size === "8" && lightsCount === 10) ||
         (selectedSize.size === "8" && lightsCount === 7 && fanCount === 1) ||
         (selectedSize.size === "8" && lightsCount === 8 && fanCount === 2) ||
-        (selectedSize.size === "8" && lightsCount === 9) ||
-        (selectedSize.size !== "12" && lightsCount === 10) ||
-        (selectedSize.size === "12" &&
-          socketCount === 3 &&
-          lightsCount === 10) ||
-        (selectedSize.size === "12" && lightsCount === 20) ||
-        (selectedSize.size === "12" &&
-          socketCount === 2 &&
-          lightsCount === 8) ||
-        (selectedSize.size === "12" && lightsCount === 16 && fanCount === 4) ||
-        (selectedSize.size === "12" &&
-          socketCount === 2 &&
-          lightsCount === 7 &&
-          fanCount === 1) ||
-        (selectedSize.size === "12" && lightsCount > 9) ||
-        (selectedSize.size === "12" &&
-          socketCount === 1 &&
-          lightsCount === 9) ||
-        (selectedSize.size === "12" &&
-          lightsCount === 8 &&
-          socketCount === 1 &&
-          fanCount === 1) ||
-        (selectedSize.size === "12" &&
-          lightsCount === 7 &&
-          socketCount === 1 &&
-          fanCount === 2)
+        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7) ||
+        (selectedSize.size === "8" && lightsCount === 9)
+      // (selectedSize.size !== "12" && lightsCount === 10) ||
+      // (selectedSize.size === "12" &&
+      //   socketCount === 3 &&
+      //   lightsCount === 10) ||
+      // (selectedSize.size === "12" && lightsCount === 20) ||
+      // (selectedSize.size === "12" &&
+      //   socketCount === 2 &&
+      //   lightsCount === 8) ||
+      // (selectedSize.size === "12" && lightsCount === 16 && fanCount === 4) ||
+      // (selectedSize.size === "12" &&
+      //   socketCount === 2 &&
+      //   lightsCount === 7 &&
+      //   fanCount === 1) ||
+      // (selectedSize.size === "12" && lightsCount > 9) ||
+      // (selectedSize.size === "12" &&
+      //   socketCount === 1 &&
+      //   lightsCount === 9) ||
+      // (selectedSize.size === "12" &&
+      //   lightsCount === 8 &&
+      //   socketCount === 1 &&
+      //   fanCount === 1) ||
+      // (selectedSize.size === "12" &&
+      //   lightsCount === 7 &&
+      //   socketCount === 1 &&
+      //   fanCount === 2) ||
+      // (selectedSize.size === "12" && fanCount === 4)
     );
     setFanDisable(
       lightsCount === maxLights ||
@@ -190,9 +214,18 @@ const Jod = () => {
         (selectedSize.size === "6" && socketCount === 1 && lightsCount === 7) ||
         (selectedSize.size === "6" && fanCount === 2) ||
         (selectedSize.size === "6" &&
+          lightsCount === 2 &&
+          socketCount === 2 &&
+          lightsCount === 2) ||
+        (selectedSize.size === "6" &&
           fanCount === 1 &&
           socketCount === 1 &&
           lightsCount === 6) ||
+        (selectedSize.size === "6" &&
+          fanCount === 1 &&
+          socketCount === 1 &&
+          lightsCount === 4) ||
+        (selectedSize.size === "6" && socketCount === 1 && lightsCount === 5) ||
         (selectedSize.size === "8" &&
           socketCount === 1 &&
           lightsCount === 7 &&
@@ -202,6 +235,8 @@ const Jod = () => {
           lightsCount === 6 &&
           fanCount === 1) ||
         (selectedSize.size === "8" && lightsCount === 9 && fanCount === 1) ||
+        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 9) ||
+        (selectedSize.size === "8" && socketCount === 1 && lightsCount === 7) ||
         (selectedSize.size === "12" &&
           socketCount === 3 &&
           lightsCount === 9) ||

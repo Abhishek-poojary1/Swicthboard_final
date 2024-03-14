@@ -37,20 +37,83 @@ const Canvas = () => {
   } = useColorContext();
 
   const canvasRef = useRef();
-  const [showCollection, setShowCollection] = useState(false); // State variable to track the visibility of the collection
+  const [showCollection, setShowCollection] = useState(false);
   const [collectionItems, setCollectionItems] = useState([]);
   const [open, setOpen] = React.useState(false);
-  const [firstsocket, setfirstsocket] = useState(false);
-  const [secondsocket, setsecondsocket] = useState(false);
-  const [thirdsocket, setthirdsocket] = useState(false);
-  const [forthsocket, setforthsocket] = useState(false);
+  const [disablebutton, setbuttondisable] = useState(true);
+  useEffect(() => {
+    const socketSelected = selectedimage.some((light) => light.name === socket);
+    const lightsSelected = selectedimage.filter((light) => light.name === bulb);
+    const fanselected = selectedimage.filter((light) => light.name === fan);
+    setbuttondisable(
+      selectedSize.size === undefined ||
+        selectedimage.length === 0 ||
+        (selectedSize.size === "2" &&
+          !socketSelected &&
+          fanselected.length === 0 &&
+          lightsSelected.length < 6) ||
+        (selectedSize.size === "2" &&
+          !socketSelected &&
+          lightsSelected.length === 0) ||
+        (selectedSize.size === "4" &&
+          !socketSelected &&
+          fanselected.length === 0 &&
+          lightsSelected.length === 5) ||
+        (selectedSize.size === "4" && lightsSelected.length === 0) ||
+        (selectedSize.size === "4" &&
+          !socketSelected &&
+          lightsSelected.length === 3) ||
+        (selectedSize.size === "4" &&
+          socketSelected &&
+          lightsSelected.length === 2 &&
+          lightsSelected.length === 1) ||
+        (selectedSize.size === "4" &&
+          fanselected.length === 2 &&
+          lightsSelected.length < 4) ||
+        (selectedSize.size === "4" &&
+          socketSelected &&
+          lightsSelected.length < 3) ||
+        (selectedSize.size === "4" &&
+          fanselected.length === 1 &&
+          lightsSelected.length < 5) ||
+        (selectedSize.size === "6" &&
+          !socketSelected &&
+          fanselected.length === 0 &&
+          lightsSelected.length === 5) ||
+        (selectedSize.size === "6" && lightsSelected.length === 0) ||
+        (selectedSize.size === "6" &&
+          !socketSelected &&
+          lightsSelected.length === 3) ||
+        (selectedSize.size === "6" &&
+          socketSelected &&
+          lightsSelected.length === 2 &&
+          lightsSelected.length === 1) ||
+        (selectedSize.size === "6" &&
+          fanselected.length === 2 &&
+          lightsSelected.length < 4) ||
+        (selectedSize.size === "6" &&
+          socketSelected &&
+          lightsSelected.length < 3) ||
+        (selectedSize.size === "6" &&
+          fanselected.length === 1 &&
+          lightsSelected.length < 5) ||
+        (selectedSize.size === "6" &&
+          !socketSelected &&
+          lightsSelected.length === 7) ||
+        (selectedSize.size === "6" && lightsSelected.length === 9) ||
+        (selectedSize.size === "6" &&
+          socketSelected &&
+          (lightsSelected.length === 4 || lightsSelected.length === 6))
+    );
+  }, [selectedimage, selectedSize, socket, bulb]);
+
   const sendfiles = () => {
     // Extract image URLs from the content (replace this with your logic)
     const imageUrls = Array.from(document.querySelectorAll("img")).map(
       (img) => img.src
     );
 
-    // Send image URLs to the backend service using fetch API
+    // Send image URLs to the backend    using fetch API
     fetch("/send-email", {
       method: "POST",
       headers: {
@@ -199,13 +262,13 @@ const Canvas = () => {
               </div>
             );
           } else {
-            return Renderall();
+            return renderall();
           }
           // Render all selected items including the socket
         }
       } else {
         // Render all selected items if more than 4
-        return Renderall();
+        return renderall();
       }
     }
   };
@@ -220,7 +283,7 @@ const Canvas = () => {
   //   filteredImages.push(...fanObjects);
   // }
 
-  const Renderall = () => {
+  const renderall = () => {
     const socketIndexes = selectedimage
       .map((light, index) => (light.name === socket ? index : null))
       .filter((index) => index !== null);
@@ -229,58 +292,21 @@ const Canvas = () => {
     const otherimage = filteredImages.filter(
       (light) => light.name !== socketbutton
     );
-
+    if (socketIndexes.length === 1 && otherimage.length > 0) {
+      filteredImages.splice(1, 0, { name: socketbutton });
+    } else if (socketIndexes.length === 2 && otherimage.length > 0) {
+      filteredImages.splice(1, 0, { name: socketbutton });
+      filteredImages.splice(5, 0, { name: socketbutton });
+    } else if (socketIndexes.length === 3 && otherimage.length > 0) {
+      filteredImages.splice(1, 0, { name: socketbutton });
+      filteredImages.splice(5, 0, { name: socketbutton });
+      filteredImages.splice(9, 0, { name: socketbutton });
+    }
     // First array
     let firstArray = filteredImages.slice(0, 10);
 
     // Second array
     let secondArray = filteredImages.slice(10, 20);
-    // if (socketIndexes.length === 1 && otherimage.length > 0) {
-    //   filteredImages.splice(1, 0, { name: socketbutton });
-    // } else if (socketIndexes.length === 2 && otherimage.length > 0) {
-    //   filteredImages.splice(1, 0, { name: socketbutton });
-    //   filteredImages.splice(5, 0, { name: socketbutton });
-    // } else if (socketIndexes.length === 3 && otherimage.length > 0) {
-    //   filteredImages.splice(1, 0, { name: socketbutton });
-    //   filteredImages.splice(5, 0, { name: socketbutton });
-    //   filteredImages.splice(9, 0, { name: socketbutton });
-    // }
-    // Define a boolean flag to track if socketbutton has been inserted
-    let socketButtonInserted = false;
-
-    // If only one socket is selected and other images are present
-    if (
-      socketIndexes.length === 1 &&
-      otherimage.length > 0 &&
-      !socketButtonInserted
-    ) {
-      const socketIndex = socketIndexes[0];
-      const insertionIndex = socketIndex + 1; // Insert after the socket
-      if (firstArray.length < 7) {
-        firstArray.splice(insertionIndex, 0, { name: socketbutton });
-        socketButtonInserted = true;
-      } else if (firstArray.length >= 7 && firstArray.length < 10) {
-        // Insert into the secondArray if firstArray is between 7 and 10
-        secondArray.splice(1, 0, { name: socketbutton });
-        socketButtonInserted = true;
-      }
-    } else if (
-      socketIndexes.length > 1 &&
-      otherimage.length > 0 &&
-      !socketButtonInserted
-    ) {
-      const insertionIndexes = socketIndexes.map((index) => index + 1); // Insert after each socket
-      insertionIndexes.forEach((index) => {
-        if (index < 7 && !socketButtonInserted) {
-          firstArray.splice(index, 0, { name: socketbutton });
-          socketButtonInserted = true;
-        } else if (!socketButtonInserted) {
-          // Insert into the secondArray if index exceeds 7 and insertion hasn't been done yet
-          secondArray.splice(1, 0, { name: socketbutton });
-          socketButtonInserted = true;
-        }
-      });
-    }
 
     // Remove fan objects from firstArray if count is more than 2
     let moveFan = true;
@@ -322,6 +348,7 @@ const Canvas = () => {
         moveFan = true; // Set flag to indicate that fan was moved
       }
     }
+
     while (firstArray.length < 10 && secondArray.length > 0) {
       const bulbIndex = secondArray.findIndex((light) => light.name === bulb);
       if (bulbIndex !== -1) {
@@ -361,6 +388,19 @@ const Canvas = () => {
         .concat(secondFans);
     }
 
+    // if (socketIndexes.length === 1) {
+    //   firstArray.splice(1, 0, { name: socketbutton });
+    // } else if (socketIndexes.length === 2) {
+    //   firstArray.splice(1, 0, { name: socketbutton });
+    //   firstArray.splice(5, 0, { name: socketbutton });
+    // } else if (socketIndexes.length === 3) {
+    //   firstArray.splice(1, 0, { name: socketbutton });
+    //   firstArray.splice(5, 0, { name: socketbutton });
+    //   firstArray.splice(9, 0, { name: socketbutton });
+    // }
+    // Calculate otherimage after any potential splicing of filteredImages
+
+    console.log(filteredImages);
     const fanInFirstArray = firstArray.some((light) => light.name === fan);
     const fanInSecondArray = secondArray.some((light) => light.name === fan);
 
@@ -393,7 +433,7 @@ const Canvas = () => {
                 gap: "20px",
               }}
             >
-              {firstArray.length <= 4 && (
+              {filteredImages.length <= 4 && (
                 <div className="socketsizw">
                   <div
                     style={{
@@ -402,7 +442,7 @@ const Canvas = () => {
                       gap: "60px",
                     }}
                   >
-                    {firstArray.slice(0, 2).map((light, index) => (
+                    {filteredImages.slice(0, 2).map((light, index) => (
                       <div key={index} className="subdiv">
                         <img
                           src={light.name}
@@ -412,14 +452,14 @@ const Canvas = () => {
                       </div>
                     ))}
                   </div>
-                  {firstArray.length > 2 && (
+                  {filteredImages.length > 2 && (
                     <img
                       src={constantImage}
                       alt=""
                       style={{ height: "50px" }}
                     />
                   )}
-                  {firstArray.length > 2 && (
+                  {filteredImages.length > 2 && (
                     <div
                       style={{
                         display: "flex",
@@ -427,7 +467,7 @@ const Canvas = () => {
                         gap: "60px",
                       }}
                     >
-                      {firstArray.slice(2, 4).map((light, index) => (
+                      {filteredImages.slice(2, 4).map((light, index) => (
                         <div key={index} className="subdiv">
                           <img
                             src={light.name}
@@ -440,7 +480,7 @@ const Canvas = () => {
                   )}
                 </div>
               )}
-              {filteredImages.length > 3 && (
+              {filteredImages.length > 4 && (
                 <div className="socketsizw">
                   {firstArray
                     .reduce((rows, light, index) => {
@@ -499,19 +539,19 @@ const Canvas = () => {
                 <img src={constantImage} alt="" style={{ height: "50px" }} />
               )}
             </div>
+            {otherimage.length > 0 &&
+              socketIndexes.slice(1, 2).map((index) => (
+                <div key={index}>
+                  <img
+                    src={selectedimage[index].name}
+                    alt="Socket"
+                    style={{ height: "150px" }}
+                  />
+                </div>
+              ))}
           </div>
         </div>
         <div style={{ display: "flex", gap: "30px" }}>
-          {socketIndexes.length === 2 &&
-            socketIndexes.slice(1, 2).map((index) => (
-              <div key={index}>
-                <img
-                  src={selectedimage[index].name}
-                  alt="Socket"
-                  style={{ height: "150px" }}
-                />
-              </div>
-            ))}
           {secondArray.length > 0 && (
             <div
               className="notsocket"
@@ -524,6 +564,17 @@ const Canvas = () => {
                 gap: "14px",
               }}
             >
+              {otherimage.length > 0 &&
+                socketIndexes.slice(2, 4).map((index) => (
+                  <div key={index}>
+                    <img
+                      src={selectedimage[index].name}
+                      alt="Socket"
+                      style={{ height: "150px" }}
+                    />
+                  </div>
+                ))}
+
               {secondArray
                 .reduce((rows, light, index) => {
                   if (index % 2 === 0) rows.push([]);
@@ -576,6 +627,7 @@ const Canvas = () => {
             />
           )}
         </div>
+
         <div
           style={{
             display: "flex",
@@ -583,7 +635,7 @@ const Canvas = () => {
             width: "120%",
           }}
         >
-          {otherimage.length === 0 &&
+          {otherimage.length <= 0 &&
             socketIndexes.map((index) => (
               <div key={index}>
                 <img
@@ -678,7 +730,7 @@ const Canvas = () => {
               color="secondary"
               aria-label="add"
               onClick={handleAddToCollection}
-              disabled={selectedimage.length < 1}
+              disabled={disablebutton}
             >
               <AddIcon />
             </Fab>
@@ -714,6 +766,16 @@ const Canvas = () => {
             <div className="imagerender">
               {collectionItems.map((item, index) => (
                 <div key={index} className="insiderender">
+                  <label
+                    style={{
+                      display: "flex",
+                      fontSize: "10px",
+                      width: "15px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {index + 1} .
+                  </label>
                   <img
                     src={item.imageDataURL}
                     alt={`Collection Item ${index}`}
