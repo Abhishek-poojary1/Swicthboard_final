@@ -53,12 +53,12 @@ const Jod = () => {
 
       case "8":
         setMaxLights(10);
-        setMaxSockets(2);
+        setMaxSockets(3);
         setMaxFans(2);
         break;
       case "12":
         setMaxLights(20);
-        setMaxSockets(3);
+        setMaxSockets(4);
         setMaxFans(4);
         break;
       default:
@@ -86,10 +86,7 @@ const Jod = () => {
           fanCount === 2 &&
           socketCount === 1 &&
           lightsCount === 5) ||
-        (selectedSize.size === "6" &&
-          lightsCount === 2 &&
-          socketCount === 2 &&
-          lightsCount === 2) ||
+        (selectedSize.size === "6" && lightsCount === 3 && socketCount === 2) ||
         (selectedSize.size === "6" &&
           fanCount === 1 &&
           socketCount === 1 &&
@@ -226,6 +223,7 @@ const Jod = () => {
           socketCount === 1 &&
           lightsCount === 4) ||
         (selectedSize.size === "6" && socketCount === 1 && lightsCount === 5) ||
+        (selectedSize.size === "6" && lightsCount === 3 && socketCount === 2) ||
         (selectedSize.size === "8" &&
           socketCount === 1 &&
           lightsCount === 7 &&
@@ -424,6 +422,7 @@ const Jod = () => {
   };
   return (
     <div>
+      <div className="head">controls</div>
       <div className="joddiv">
         <div>
           <label>Lights</label>

@@ -5,6 +5,7 @@ import { SketchPicker } from "react-color";
 import { useColorContext } from "./ColorContext";
 import ImageCropper from "./Imagecrop";
 import Jod from "./Jod";
+import Input from "./Input";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Collapse from "@mui/material/Collapse";
@@ -24,7 +25,7 @@ const colorOptions = [
   "#a52a2a",
 ];
 
-const Page = () => {
+const Page = ({ onCanvasDataChange }) => {
   const {
     color,
     setColor,
@@ -163,6 +164,14 @@ const Page = () => {
   };
   const handleframecolor = (selectedColor) => {
     setframecolor(selectedColor);
+  };
+
+  const [canvasData, setCanvasData] = useState(null);
+
+  const handleCreateClick = (lights, fan, sockets) => {
+    const data = { lights, fan, sockets };
+    setCanvasData(data);
+    onCanvasDataChange(data); // Pass the data to the parent component
   };
 
   return (
@@ -319,7 +328,9 @@ const Page = () => {
                     </div>
                   </div>
                 )}
-                {selectedMenu === "module" && <Jod />}
+                {selectedMenu === "module" && (
+                  <Input onCreateClick={handleCreateClick} />
+                )}
                 {selectedMenu === "color" && (
                   <div>
                     <div

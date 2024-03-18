@@ -341,9 +341,10 @@ label {
 }
 
 input {
-  background: transparent;
+  background-color: white;
   border: none;
   outline: none;
+  width: 60px;
 }
 .collection {
   display: flex;
@@ -471,4 +472,18 @@ input {
 .hex-field,
 .rgb-field {
   display: none !important;
+}
+.head {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background-color: #5964df;
+
+  height: 50px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  border-radius: 4px;
+}
+.inputsofthecontrols {
+  display: flex;
 }
