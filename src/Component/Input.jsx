@@ -164,7 +164,7 @@ const Input = ({ onCreateClick }) => {
     console.log("Lights:", lights);
     console.log("Fan:", fan);
     console.log("Sockets:", sockets);
-    onCreateClick(lights, fan, sockets);
+    onCreateClick(lights, fan, sockets, maxlights);
   };
   const [resetHandled, setResetHandled] = useState(false); // Define resetHandled
 
@@ -173,9 +173,36 @@ const Input = ({ onCreateClick }) => {
     setLights(0);
     setFan(0);
     setSockets(0);
-    onCreateClick(0, 0, 0); // Pass 0 for all values
+    onCreateClick(0, 0, 0, 0); // Pass 0 for all values
     setResetHandled(true); // Set resetHandled to true after handling reset
   }, [onCreateClick, setLights, setFan, setSockets]);
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("lightsCount");
+      localStorage.removeItem("fanCount");
+      localStorage.removeItem("socketCount");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  const resetValuesOnUnload = () => {
+    localStorage.removeItem("lightsCount");
+    localStorage.removeItem("fanCount");
+    localStorage.removeItem("socketCount");
+  };
+
+  useEffect(() => {
+    window.addEventListener("unload", resetValuesOnUnload);
+
+    return () => {
+      window.removeEventListener("unload", resetValuesOnUnload);
+    };
+  }, []);
 
   return (
     <div style={{ gap: "20px", display: "grid" }}>

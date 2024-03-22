@@ -23,7 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DownloadIcon from "@mui/icons-material/Download";
 import Snackbar from "@mui/material/Snackbar";
 import CloseIcon from "@mui/icons-material/Close";
-
+import nullbutton from "./assets/none.png";
 const Canvas = ({ canvasData }) => {
   const {
     color,
@@ -109,7 +109,6 @@ const Canvas = ({ canvasData }) => {
       saveAs(blob, `collection_item_${index}.png`);
     });
     clearimage();
-    console.log(selectedimage); // Call clearimage function with parentheses to invoke it
   };
   const removeFromCollection = (indexToRemove) => {
     setCollectionItems((prevItems) => {
@@ -146,29 +145,62 @@ const Canvas = ({ canvasData }) => {
       return null; // If canvasData is null, return null
     }
 
-    const { lights, fan, sockets } = canvasData;
+    const { lights, fan, sockets, maxlights } = canvasData;
     if (selectedSize.size !== "12") {
       const lightsArray = Array.from(
         { length: lights },
         (_, index) => `${bulb}`
       );
-
       const fanArray = Array.from(
         { length: fan },
         (_, index) => `${fanbutton}`
+      );
+      const firstaray = [...lightsArray, ...fanArray];
+
+      let remainingSpaces = 0;
+      if (firstaray.length > 4 && firstaray.length < 6) {
+        remainingSpaces = 6 - firstaray.length;
+      } else if (firstaray.length > 6 && firstaray.length < 10) {
+        remainingSpaces = 10 - firstaray.length;
+      }
+
+      // Create an array of null buttons for the remaining spaces
+      const remaining = Array.from(
+        { length: remainingSpaces },
+        (_, index) => `${nullbutton}`
       );
 
       const socketsArray = Array.from(
         { length: sockets },
         (_, index) => `${socketcontrol}`
       ); // Concatenate arrays of controls
-      const allControls = [...lightsArray, ...fanArray];
+      const allControls = [...lightsArray, ...remaining, ...fanArray];
+      const firstFanss = allControls.filter((light) => light === fanbutton);
+      if (firstFanss.length === 1) {
+        // If only one fan is selected, move it to the last but second position
+        const fanIndex = allControls.findIndex((light) => light === fanbutton);
+        if (fanIndex !== -1 && fanIndex !== allControls.length - 2) {
+          const fanToMove = allControls.splice(fanIndex, 1)[0];
+          allControls.splice(-1, 0, fanToMove); // Insert the fan at the last but second position
+        }
+      }
+      if (socketsArray.length === 1 && lightsArray.length > 0) {
+        allControls.splice(1, 0, socketbutton);
+      }
       return (
         <>
           {selectedSize.size !== "12" && (
             <div className="childdiv">
-              <div style={{ display: "flex", gap: "30px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "30px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
                 {socketsArray.length > 0 &&
+                  socketsArray.length < 3 &&
                   socketsArray.slice(0, 1).map((index) => (
                     <div key={index}>
                       <img
@@ -290,8 +322,18 @@ const Canvas = ({ canvasData }) => {
                     )}
                   </div>
                 )}
-                {socketsArray.length > 0 &&
+                {socketsArray.length === 2 &&
                   socketsArray.slice(1, 2).map((index) => (
+                    <div key={index}>
+                      <img
+                        src={socketcontrol}
+                        alt="Socket"
+                        style={{ height: "150px" }}
+                      />
+                    </div>
+                  ))}
+                {socketsArray.length > 2 &&
+                  socketsArray.map((index) => (
                     <div key={index}>
                       <img
                         src={socketcontrol}
@@ -306,12 +348,332 @@ const Canvas = ({ canvasData }) => {
         </>
       );
     } else {
-      console.log("yeah daddy");
       const lightsArray = Array.from(
         { length: lights },
         (_, index) => `${bulb}`
       );
-      return <></>;
+      const socketarray = Array.from(
+        { length: sockets },
+        (_, index) => `${socketcontrol}`
+      );
+      let fanArray = Array.from({ length: fan }, (_, index) => `${fanbutton}`);
+      const temp = [...lightsArray, ...fanArray];
+
+      let firstarray = [];
+      let secondarray = [];
+
+      if (temp.length > 10) {
+        firstarray = temp.slice(0, 10);
+        secondarray = temp.slice(10);
+      } else {
+        firstarray = [...temp];
+      }
+
+      // Remove fan buttons from firstArray and secondArray
+
+      // Distribute fan buttons between firstArray and secondArray
+      let moveFan = true;
+      while (moveFan) {
+        moveFan = false; // Assume no more fan objects need to be moved
+
+        // Filter out fan objects from firstArray
+        const firstFans = firstarray.filter((light) => light === fanbutton);
+
+        // Filter out fan objects from secondArray
+        const secondFans = secondarray.filter((light) => light === fanbutton);
+
+        // Move fan objects from firstArray to secondArray if count is more than 2
+        if (firstFans.length > 2) {
+          const fanToMove = firstarray.splice(
+            firstarray.findIndex((light) => light === fanbutton),
+            1
+          )[0];
+          secondarray.push(fanToMove);
+          moveFan = true; // Set flag to indicate that fan was moved
+        }
+
+        // Move fan objects from secondArray to firstArray if count is more than 2
+        if (secondFans.length > 2) {
+          const fanToMove = secondarray.splice(
+            secondarray.findIndex((light) => light === fanbutton),
+            1
+          )[0];
+          firstarray.push(fanToMove);
+          moveFan = true; // Set flag to indicate that fan was moved
+        }
+      }
+
+      console.log("First Array:", firstarray);
+      console.log("Second Array:", secondarray);
+      const fanfirst = firstarray.filter((index) => index === fanbutton);
+      const fansecond = secondarray.filter((index) => index === fanbutton);
+
+      return (
+        <>
+          <div className="twelft">
+            <div className="firstseg">
+              {socketarray.length > 0 && socketarray.length < 3 && (
+                <div className="socket">
+                  {socketarray.slice(0, 1).map((con, index) => (
+                    <div key={index}>
+                      <img
+                        src={socketcontrol}
+                        alt=""
+                        style={{ height: "150px" }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {firstarray.length > 0 && firstarray.length <= 4 && (
+                <div className="socketsizw">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "60px",
+                    }}
+                  >
+                    {firstarray.slice(0, 2).map((light, index) => (
+                      <div key={index}>
+                        <img src={light} style={{ height: "50px" }} alt="" />
+                      </div>
+                    ))}
+                  </div>
+                  {firstarray.length > 2 && (
+                    <img
+                      src={constantImage}
+                      style={{ height: "50px" }}
+                      alt=""
+                    />
+                  )}
+                  {firstarray.length > 2 && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "60px",
+                      }}
+                    >
+                      {firstarray.slice(2, 4).map((light, index) => (
+                        <div key={index}>
+                          <img src={light} style={{ height: "50px" }} alt="" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {firstarray.length > 4 && (
+                <div className="scoketsizw">
+                  {firstarray
+                    .reduce((rows, light, index) => {
+                      if (index % 2 === 0) rows.push([]);
+                      rows[rows.length - 1].push(
+                        <div key={index} className="subdiv">
+                          <img src={light} style={{ height: "50px" }} alt="" />
+                        </div>
+                      );
+                      return rows;
+                    }, [])
+                    .map((row, rowIndex) => (
+                      <div
+                        key={rowIndex}
+                        style={{
+                          display: "flex",
+                          gap: "30px",
+                          flexDirection: "column",
+                        }}
+                      >
+                        {row}
+                      </div>
+                    ))}
+                  {fanfirst.length > 0 && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        gap: "30px",
+                        marginLeft: "5px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img src={dimup} alt="" style={{ height: "45px" }} />
+                      <img src={dimdown} alt="" style={{ height: "45px" }} />
+                    </div>
+                  )}
+                  {firstarray.length > 0 && (
+                    <img
+                      src={constantImage}
+                      alt=""
+                      style={{
+                        display: "flex",
+                        flexWrap: "unset",
+                        alignSelf: "flex-end",
+                        height: "50px",
+                      }}
+                    />
+                  )}
+                </div>
+              )}
+              {socketarray.length === 2 &&
+                socketarray.slice(1, 2).map((index) => (
+                  <div key={index}>
+                    <img
+                      src={socketcontrol}
+                      alt="Socket"
+                      style={{ height: "150px" }}
+                    />
+                  </div>
+                ))}
+            </div>
+            {secondarray.length > 0 && (
+              <div className="secondseg">
+                {socketarray.length > 2 && socketarray.length === 3 && (
+                  <div className="socket">
+                    {socketarray.slice(2, 3).map((con, index) => (
+                      <div key={index}>
+                        <img
+                          src={socketcontrol}
+                          alt=""
+                          style={{ height: "150px" }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {secondarray.length > 0 && secondarray.length <= 4 && (
+                  <div className="socketsizw">
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "60px",
+                      }}
+                    >
+                      {secondarray.slice(0, 2).map((light, index) => (
+                        <div key={index}>
+                          <img src={light} style={{ height: "50px" }} alt="" />
+                        </div>
+                      ))}
+                    </div>
+                    {secondarray.length > 2 && (
+                      <img
+                        src={constantImage}
+                        style={{ height: "50px" }}
+                        alt=""
+                      />
+                    )}
+                    {secondarray.length > 2 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "60px",
+                        }}
+                      >
+                        {secondarray.slice(2, 4).map((light, index) => (
+                          <div key={index}>
+                            <img
+                              src={light}
+                              style={{ height: "50px" }}
+                              alt=""
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {secondarray.length > 4 && (
+                  <div className="scoketsizw">
+                    {secondarray
+                      .reduce((rows, light, index) => {
+                        if (index % 2 === 0) rows.push([]);
+                        rows[rows.length - 1].push(
+                          <div key={index} className="subdiv">
+                            <img
+                              src={light}
+                              style={{ height: "50px" }}
+                              alt=""
+                            />
+                          </div>
+                        );
+                        return rows;
+                      }, [])
+                      .map((row, rowIndex) => (
+                        <div
+                          key={rowIndex}
+                          style={{
+                            display: "flex",
+                            gap: "30px",
+                            flexDirection: "column",
+                          }}
+                        >
+                          {row}
+                        </div>
+                      ))}
+                    {fansecond.length > 0 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          gap: "30px",
+                          marginLeft: "5px",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={dimup} alt="" style={{ height: "45px" }} />
+                        <img src={dimdown} alt="" style={{ height: "45px" }} />
+                      </div>
+                    )}
+                    {secondarray.length > 0 && (
+                      <img
+                        src={constantImage}
+                        alt=""
+                        style={{
+                          display: "flex",
+                          flexWrap: "unset",
+                          alignSelf: "flex-end",
+                          height: "50px",
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
+                {socketarray.length === 4 &&
+                  socketarray.slice(3, 4).map((index) => (
+                    <div key={index}>
+                      <img
+                        src={socketcontrol}
+                        alt="Socket"
+                        style={{ height: "150px" }}
+                      />
+                    </div>
+                  ))}
+              </div>
+            )}
+            {socketarray.length > 3 && (
+              <div className="maxsocket">
+                {socketarray.map((coontrol, index) => (
+                  <div key={index}>
+                    {" "}
+                    <img
+                      src={socketcontrol}
+                      alt="Socket"
+                      style={{ height: "150px" }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      );
     }
   };
 

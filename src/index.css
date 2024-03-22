@@ -6,7 +6,7 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
+socket
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -243,7 +243,7 @@ button:focus-visible {
 .child-div {
   height: 100%;
   width: 33.3%;
-  display: flex;
+  display: grid;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -486,4 +486,47 @@ input {
 }
 .inputsofthecontrols {
   display: flex;
+}
+
+.socketdiv {
+  display: flex;
+  gap: 20px;
+}
+.hello12 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: space-between;
+}
+
+.socket {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+.childdiv {
+  gap: 40px;
+  display: grid;
+}
+.scoketsizw {
+  display: flex;
+  gap: 20px;
+}
+.firstseg {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  place-content: center;
+}
+.twelft {
+  display: grid;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+.maxsocket {
+  display: flex;
+  gap: 20px;
 }

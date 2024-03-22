@@ -849,3 +849,43 @@ const Canvas = () => {
 };
 
 export default Canvas;
+
+<div className="controls">
+  <div>
+    {firstarray.length <= 4 && (
+      <div className="socketsizw">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "60px",
+          }}
+        >
+          {firstarray.slice(0, 2).map((light, index) => (
+            <div key={index}>
+              <img src={light} style={{ height: "50px" }} alt="" />
+            </div>
+          ))}
+        </div>
+        {firstarray.length > 2 && (
+          <img src={constantImage} alt="" style={{ height: "50px" }} />
+        )}
+        {firstarray.length > 2 && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "60px",
+            }}
+          >
+            {firstarray.slice(2, 4).map((light, index) => (
+              <div key={index}>
+                <img src={light} style={{ height: "50px" }} alt="" />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</div>;

@@ -168,8 +168,8 @@ const Page = ({ onCanvasDataChange }) => {
 
   const [canvasData, setCanvasData] = useState(null);
 
-  const handleCreateClick = (lights, fan, sockets) => {
-    const data = { lights, fan, sockets };
+  const handleCreateClick = (lights, fan, sockets, maxlights) => {
+    const data = { lights, fan, sockets, maxlights };
     setCanvasData(data);
     onCanvasDataChange(data); // Pass the data to the parent component
   };
