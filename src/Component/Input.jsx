@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import RotateLeftRoundedIcon from "@mui/icons-material/RotateLeftRounded";
 import Tooltip from "@mui/material/Tooltip";
+import { light } from "@mui/material/styles/createPalette";
 
 const Input = ({ onCreateClick }) => {
   const { selectedSize } = useColorContext();
@@ -38,20 +39,27 @@ const Input = ({ onCreateClick }) => {
   );
   const handlesizefour = useCallback(
     (lights, fan, sockets) => {
+      if (lights > 1) {
+        setmaxsocket(0);
+      }
       if (selectedSize.size === "4" && sockets > 0) {
         setmaxfan(0);
         setmaxlights(0);
-      } else if (selectedSize.size === "4" && fan === 2) {
-        setmaxlights(4);
+      } else if (fan === 1 && lights === 5) {
+        setmaxlights(0);
         setmaxsocket(0);
-      } else if (selectedSize.size === "4" && fan === 1) {
+        setmaxfan(0);
+      } else if (lights === 5) {
+        setmaxfan(1);
+        setmaxsocket(0);
+      } else if (fan === 1) {
         setmaxlights(5);
         setmaxsocket(0);
-      } else if (selectedSize.size === "4" && lights < 5 && sockets === 0) {
+      } else if (lights < 5 && sockets === 0) {
         setmaxfan(2);
-      } else if (selectedSize.size === "4" && lights < 6 && sockets === 0) {
+      } else if (lights < 6 && sockets === 0) {
         setmaxfan(1);
-      } else if (selectedSize.size === "4" && lights === 6) {
+      } else if (lights === 6) {
         setmaxfan(0);
         setmaxsocket(0);
       }
@@ -92,6 +100,13 @@ const Input = ({ onCreateClick }) => {
     },
     [selectedSize.size]
   );
+
+  const handleeightcontrol = useCallback((light, sockets, fan) => {
+    if (sockets >= 3) {
+      setmaxlights(0);
+      setmaxfan(0);
+    }
+  });
   useEffect(() => {
     switch (selectedSize.size) {
       case "2":
@@ -117,6 +132,7 @@ const Input = ({ onCreateClick }) => {
         setmaxlights(10);
         setmaxsocket(3);
         setmaxfan(2);
+        handleeightcontrol(lights, sockets, fan);
         break;
       case "12":
         setmaxlights(20);

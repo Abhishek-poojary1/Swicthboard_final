@@ -156,24 +156,30 @@ const Canvas = ({ canvasData }) => {
         (_, index) => `${fanbutton}`
       );
       const firstaray = [...lightsArray, ...fanArray];
-
+      const socketsArray = Array.from(
+        { length: sockets },
+        (_, index) => `${socketcontrol}`
+      ); // Concatenate arrays of controls
+      console.log(firstaray);
+      console.log(socketsArray);
       let remainingSpaces = 0;
-      if (firstaray.length > 4 && firstaray.length < 6) {
-        remainingSpaces = 6 - firstaray.length;
-      } else if (firstaray.length > 6 && firstaray.length < 10) {
-        remainingSpaces = 10 - firstaray.length;
+      if (
+        firstaray.length + socketsArray.length > 4 &&
+        firstaray.length + socketsArray.length < 6
+      ) {
+        remainingSpaces = 6 - (firstaray.length + socketsArray.length);
+      } else if (
+        firstaray.length + socketsArray.length > 6 &&
+        firstaray.length + socketsArray.length < 10
+      ) {
+        remainingSpaces = 10 - (firstaray.length + socketsArray.length);
       }
 
-      // Create an array of null buttons for the remaining spaces
       const remaining = Array.from(
         { length: remainingSpaces },
         (_, index) => `${nullbutton}`
       );
 
-      const socketsArray = Array.from(
-        { length: sockets },
-        (_, index) => `${socketcontrol}`
-      ); // Concatenate arrays of controls
       const allControls = [...lightsArray, ...remaining, ...fanArray];
       const firstFanss = allControls.filter((light) => light === fanbutton);
       if (firstFanss.length === 1) {
@@ -186,6 +192,9 @@ const Canvas = ({ canvasData }) => {
       }
       if (socketsArray.length === 1 && lightsArray.length > 0) {
         allControls.splice(1, 0, socketbutton);
+      } else if (socketsArray.length === 2 && lightsArray.length > 0) {
+        allControls.splice(1, 0, socketbutton);
+        allControls.splice(5, 0, socketbutton);
       }
       return (
         <>
@@ -348,17 +357,45 @@ const Canvas = ({ canvasData }) => {
         </>
       );
     } else {
-      const lightsArray = Array.from(
-        { length: lights },
-        (_, index) => `${bulb}`
-      );
+      let lightsArray = Array.from({ length: lights }, (_, index) => bulb);
       const socketarray = Array.from(
         { length: sockets },
         (_, index) => `${socketcontrol}`
       );
-      let fanArray = Array.from({ length: fan }, (_, index) => `${fanbutton}`);
-      const temp = [...lightsArray, ...fanArray];
-
+      const fanArray = Array.from({ length: fan }, (_, index) => fanbutton);
+      let temp = [...lightsArray, ...fanArray];
+      let remainingSpaces = 0;
+      if (
+        temp.length + socketarray.length > 4 &&
+        temp.length + socketarray.length < 6
+      ) {
+        remainingSpaces = 6 - (temp.length + socketarray.length);
+      } else if (
+        temp.length + socketarray.length > 6 &&
+        temp.length + socketarray.length < 10
+      ) {
+        remainingSpaces = 10 - (temp.length + socketarray.length);
+      } else if (
+        temp.length + socketarray.length > 10 &&
+        temp.length + socketarray.length < 14
+      ) {
+        remainingSpaces = 14 - (temp.length + socketarray.length);
+      } else if (
+        temp.length + socketarray.length > 14 &&
+        temp.length + socketarray.length < 16
+      ) {
+        remainingSpaces = 16 - (temp.length + socketarray.length);
+      } else if (
+        temp.length + socketarray.length > 16 &&
+        temp.length + socketarray.length < 20
+      ) {
+        remainingSpaces = 20 - (temp.length + socketarray.length);
+      }
+      const remaining = Array.from(
+        { length: remainingSpaces },
+        (_, index) => `${nullbutton}`
+      );
+      temp = [...lightsArray, ...remaining, ...fanArray];
       let firstarray = [];
       let secondarray = [];
 
@@ -369,42 +406,72 @@ const Canvas = ({ canvasData }) => {
         firstarray = [...temp];
       }
 
-      // Remove fan buttons from firstArray and secondArray
-
-      // Distribute fan buttons between firstArray and secondArray
-      let moveFan = true;
-      while (moveFan) {
-        moveFan = false; // Assume no more fan objects need to be moved
-
-        // Filter out fan objects from firstArray
-        const firstFans = firstarray.filter((light) => light === fanbutton);
-
-        // Filter out fan objects from secondArray
-        const secondFans = secondarray.filter((light) => light === fanbutton);
-
-        // Move fan objects from firstArray to secondArray if count is more than 2
-        if (firstFans.length > 2) {
-          const fanToMove = firstarray.splice(
-            firstarray.findIndex((light) => light === fanbutton),
-            1
-          )[0];
-          secondarray.push(fanToMove);
-          moveFan = true; // Set flag to indicate that fan was moved
-        }
-
-        // Move fan objects from secondArray to firstArray if count is more than 2
-        if (secondFans.length > 2) {
-          const fanToMove = secondarray.splice(
-            secondarray.findIndex((light) => light === fanbutton),
-            1
-          )[0];
-          firstarray.push(fanToMove);
-          moveFan = true; // Set flag to indicate that fan was moved
+      // Remove bulb element from firstarray and add it to secondarray if firstarray.length > 10
+      if (firstarray.length > 10) {
+        const bulbIndex = firstarray.findIndex((item) => item === bulb);
+        if (bulbIndex !== -1) {
+          secondarray.push(firstarray.splice(bulbIndex, 1)[0]);
         }
       }
 
-      console.log("First Array:", firstarray);
-      console.log("Second Array:", secondarray);
+      // Move fan objects from firstArray to secondArray if count is more than 2
+      while (firstarray.filter((item) => item === fanbutton).length > 2) {
+        const fanToMoveIndex = firstarray.findIndex(
+          (item) => item === fanbutton
+        );
+        const fanToMove = firstarray.splice(fanToMoveIndex, 1)[0];
+        secondarray.push(fanToMove);
+      }
+
+      // Move fan objects from secondArray to firstArray if count is more than 2
+      while (secondarray.filter((item) => item === fanbutton).length > 2) {
+        const fanToMoveIndex = secondarray.findIndex(
+          (item) => item === fanbutton
+        );
+        const fanToMove = secondarray.splice(fanToMoveIndex, 1)[0];
+        firstarray.push(fanToMove);
+      }
+      while (firstarray.length > 10) {
+        const bulbIndex = firstarray.findIndex((item) => item !== fanbutton);
+        if (bulbIndex !== -1) {
+          secondarray.push(firstarray.splice(bulbIndex, 1)[0]);
+        } else {
+          secondarray.push(firstarray.pop());
+        }
+      }
+
+      const fantomove = secondarray.filter((item) => item === fanbutton);
+
+      if (fantomove.length === 1) {
+        // If there's only one fan to move
+        const fanindex = secondarray.findIndex((item) => item === fanbutton);
+        const movedelement = secondarray.splice(fanindex, 1)[0];
+        const secondtolast = secondarray.length - 1;
+        secondarray.splice(secondtolast, 0, movedelement);
+      } else {
+        // If there are multiple fans to move
+        fantomove.forEach(() => {
+          const fantomoveindex = secondarray.findIndex(
+            (item) => item === fanbutton
+          );
+          if (fantomoveindex !== -1) {
+            const movedelement = secondarray.splice(fantomoveindex, 1)[0];
+            secondarray.push(movedelement); // Move each fan to the end of the array
+          }
+        });
+      }
+
+      if (socketarray.length === 1 && firstarray.length > 0) {
+        firstarray.splice(1, 0, socketbutton);
+      } else if (socketarray.length === 2 && firstarray.length > 0) {
+        firstarray.splice(5, 0, socketbutton);
+        firstarray.splice(1, 0, socketbutton);
+      } else if (socketarray.length === 3 && firstarray.length > 0) {
+        firstarray.splice(1, 0, socketbutton);
+        firstarray.splice(5, 0, socketbutton);
+        firstarray.splice(9, 0, socketbutton);
+      }
+
       const fanfirst = firstarray.filter((index) => index === fanbutton);
       const fansecond = secondarray.filter((index) => index === fanbutton);
 
@@ -657,7 +724,7 @@ const Canvas = ({ canvasData }) => {
                   ))}
               </div>
             )}
-            {socketarray.length > 3 && (
+            {socketarray.length >= 3 && (
               <div className="maxsocket">
                 {socketarray.map((coontrol, index) => (
                   <div key={index}>
