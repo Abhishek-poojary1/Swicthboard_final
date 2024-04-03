@@ -160,21 +160,35 @@ const Canvas = ({ canvasData }) => {
         { length: sockets },
         (_, index) => `${socketcontrol}`
       ); // Concatenate arrays of controls
-      console.log(firstaray);
-      console.log(socketsArray);
       let remainingSpaces = 0;
-      if (
-        firstaray.length + socketsArray.length > 4 &&
-        firstaray.length + socketsArray.length < 6
-      ) {
-        remainingSpaces = 6 - (firstaray.length + socketsArray.length);
-      } else if (
-        firstaray.length + socketsArray.length > 6 &&
-        firstaray.length + socketsArray.length < 10
-      ) {
-        remainingSpaces = 10 - (firstaray.length + socketsArray.length);
+      if (socketsArray.length === 0) {
+        if (firstaray.length <= 4 && firstaray.length === 3) {
+          remainingSpaces = 4 - firstaray.length;
+        }
+        if (firstaray.length > 4 && firstaray.length < 6) {
+          remainingSpaces = 6 - firstaray.length;
+        } else if (firstaray.length > 6 && firstaray.length < 10) {
+          remainingSpaces = 10 - firstaray.length;
+        }
+      } else {
+        if (
+          firstaray.length + socketsArray.length <= 4 &&
+          firstaray.length > 0
+        ) {
+          remainingSpaces = 4 - (firstaray.length + socketsArray.length);
+        }
+        if (
+          firstaray.length + socketsArray.length > 4 &&
+          firstaray.length + socketsArray.length <= 6
+        ) {
+          remainingSpaces = 6 - (firstaray.length + socketsArray.length);
+        } else if (
+          firstaray.length + socketsArray.length >= 7 &&
+          firstaray.length + socketsArray.length <= 10
+        ) {
+          remainingSpaces = 10 - (firstaray.length + socketsArray.length);
+        }
       }
-
       const remaining = Array.from(
         { length: remainingSpaces },
         (_, index) => `${nullbutton}`
@@ -190,9 +204,15 @@ const Canvas = ({ canvasData }) => {
           allControls.splice(-1, 0, fanToMove); // Insert the fan at the last but second position
         }
       }
-      if (socketsArray.length === 1 && lightsArray.length > 0) {
+      if (
+        socketsArray.length === 1 &&
+        fanArray.length + lightsArray.length > 0
+      ) {
         allControls.splice(1, 0, socketbutton);
-      } else if (socketsArray.length === 2 && lightsArray.length > 0) {
+      } else if (
+        socketsArray.length === 2 &&
+        fanArray.length + lightsArray.length > 0
+      ) {
         allControls.splice(1, 0, socketbutton);
         allControls.splice(5, 0, socketbutton);
       }
@@ -211,7 +231,10 @@ const Canvas = ({ canvasData }) => {
                 {socketsArray.length > 0 &&
                   socketsArray.length < 3 &&
                   socketsArray.slice(0, 1).map((index) => (
-                    <div key={index}>
+                    <div
+                      key={index}
+                      style={{ display: "flex", justifyContent: "center" }}
+                    >
                       <img
                         src={socketcontrol}
                         alt="Socket"
@@ -219,13 +242,13 @@ const Canvas = ({ canvasData }) => {
                       />
                     </div>
                   ))}
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "20px",
-                  }}
-                >
-                  {allControls.length <= 4 && (
+                {allControls.length <= 4 && allControls.length !== 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "20px",
+                    }}
+                  >
                     <div className="socketsizw">
                       <div
                         style={{
@@ -271,10 +294,10 @@ const Canvas = ({ canvasData }) => {
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
-                {allControls.length > 4 && (
+                {allControls.length > 4 && allControls.length !== 0 && (
                   <div className="socketsizw">
                     {allControls
                       .reduce((rows, light, index) => {
@@ -325,7 +348,8 @@ const Canvas = ({ canvasData }) => {
                           display: "flex",
                           flexWrap: "unset",
                           alignSelf: "flex-end",
-                          height: "50px",
+                          height: "48px",
+                          marginBottom: socketsArray.length > 0 ? "15px" : "",
                         }}
                       />
                     )}
@@ -365,21 +389,26 @@ const Canvas = ({ canvasData }) => {
       const fanArray = Array.from({ length: fan }, (_, index) => fanbutton);
       let temp = [...lightsArray, ...fanArray];
       let remainingSpaces = 0;
+      let excfan = 0;
+      if (fanArray.length > 2) {
+        excfan = fanArray.length - 2;
+      }
       if (
         temp.length + socketarray.length > 4 &&
-        temp.length + socketarray.length < 6
+        temp.length + socketarray.length < 6 &&
+        lightsArray.length !== 0
       ) {
-        remainingSpaces = 6 - (temp.length + socketarray.length);
+        remainingSpaces = 6 - (temp.length + socketarray.length) - excfan;
       } else if (
         temp.length + socketarray.length > 6 &&
         temp.length + socketarray.length < 10
       ) {
-        remainingSpaces = 10 - (temp.length + socketarray.length);
+        remainingSpaces = 10 - (temp.length + socketarray.length) - excfan;
       } else if (
         temp.length + socketarray.length > 10 &&
         temp.length + socketarray.length < 14
       ) {
-        remainingSpaces = 14 - (temp.length + socketarray.length);
+        remainingSpaces = 14 - (temp.length + socketarray.length) - excfan;
       } else if (
         temp.length + socketarray.length > 14 &&
         temp.length + socketarray.length < 16
@@ -391,7 +420,7 @@ const Canvas = ({ canvasData }) => {
       ) {
         remainingSpaces = 20 - (temp.length + socketarray.length);
       }
-      const remaining = Array.from(
+      let remaining = Array.from(
         { length: remainingSpaces },
         (_, index) => `${nullbutton}`
       );
@@ -415,13 +444,6 @@ const Canvas = ({ canvasData }) => {
       }
 
       // Move fan objects from firstArray to secondArray if count is more than 2
-      while (firstarray.filter((item) => item === fanbutton).length > 2) {
-        const fanToMoveIndex = firstarray.findIndex(
-          (item) => item === fanbutton
-        );
-        const fanToMove = firstarray.splice(fanToMoveIndex, 1)[0];
-        secondarray.push(fanToMove);
-      }
 
       // Move fan objects from secondArray to firstArray if count is more than 2
       while (secondarray.filter((item) => item === fanbutton).length > 2) {
@@ -431,15 +453,69 @@ const Canvas = ({ canvasData }) => {
         const fanToMove = secondarray.splice(fanToMoveIndex, 1)[0];
         firstarray.push(fanToMove);
       }
-      while (firstarray.length > 10) {
-        const bulbIndex = firstarray.findIndex((item) => item !== fanbutton);
-        if (bulbIndex !== -1) {
-          secondarray.push(firstarray.splice(bulbIndex, 1)[0]);
-        } else {
-          secondarray.push(firstarray.pop());
+
+      if (socketarray.length === 1) {
+        while (firstarray.length > 7) {
+          const bulbIndex = firstarray.findIndex((item) => item !== fanbutton);
+          if (bulbIndex !== -1) {
+            secondarray.push(firstarray.splice(bulbIndex, 1)[0]);
+          } else {
+            secondarray.push(firstarray.pop());
+          }
+        }
+      } else if (socketarray.length === 2) {
+        while (firstarray.length > 5) {
+          const bulbIndex = firstarray.findIndex((item) => item === bulb);
+          if (bulbIndex !== -1) {
+            secondarray.push(firstarray.splice(bulbIndex, 1)[0]);
+          } else {
+            secondarray.push(firstarray.pop());
+          }
         }
       }
 
+      if (socketarray.length === 1 && firstarray.length > 0) {
+        firstarray.splice(1, 0, socketbutton);
+      } else if (socketarray.length === 2 && firstarray.length > 0) {
+        firstarray.splice(5, 0, socketbutton);
+        firstarray.splice(1, 0, socketbutton);
+      } else if (socketarray.length === 3 && firstarray.length > 0) {
+        firstarray.splice(1, 0, socketbutton);
+        firstarray.splice(5, 0, socketbutton);
+        firstarray.splice(9, 0, socketbutton);
+      } else if (socketarray.length === 4 && firstarray.length > 0) {
+        firstarray.splice(1, 0, socketbutton);
+        firstarray.splice(5, 0, socketbutton);
+        firstarray.splice(9, 0, socketbutton);
+        secondarray.splice(1, 0, socketbutton);
+      } else if (socketarray.length === 5 && firstarray.length > 0) {
+        firstarray.splice(1, 0, socketbutton);
+        firstarray.splice(5, 0, socketbutton);
+        firstarray.splice(9, 0, socketbutton);
+        firstarray.splice(3, 0, socketbutton);
+        firstarray.splice(7, 0, socketbutton);
+      }
+      while (firstarray.filter((item) => item === fanbutton).length > 2) {
+        const fanToMoveIndex = firstarray.findIndex(
+          (item) => item === fanbutton
+        );
+        const fanToMove = firstarray.splice(fanToMoveIndex, 1)[0];
+        secondarray.push(fanToMove);
+      }
+      let bulbCountFirst10 = firstarray.length;
+      // If there are excess bulbs beyond the first 10 elements, move them to the second array
+      if (bulbCountFirst10 > 10) {
+        const excessBulbs = firstarray.filter((item) => item === bulb);
+        for (const bulbToMove of excessBulbs) {
+          secondarray.push(bulb);
+          const bulbIndex = firstarray.indexOf(bulbToMove);
+          firstarray.splice(bulbIndex, 1);
+          bulbCountFirst10--; // Decrement bulb count after moving each bulb
+          if (bulbCountFirst10 <= 10) {
+            break; // Break the loop if the count is reduced to fit within 10 elements
+          }
+        }
+      }
       const fantomove = secondarray.filter((item) => item === fanbutton);
 
       if (fantomove.length === 1) {
@@ -460,26 +536,44 @@ const Canvas = ({ canvasData }) => {
           }
         });
       }
+      // Find the indices of fanbutton, bulb, and nullbutton in secondarray
+      const fanIndex = secondarray.findIndex((item) => item === fanbutton);
+      const bulbIndex = secondarray.findIndex((item) => item === bulb);
+      const nullIndex = secondarray.findIndex((item) => item === nullbutton);
 
-      if (socketarray.length === 1 && firstarray.length > 0) {
-        firstarray.splice(1, 0, socketbutton);
-      } else if (socketarray.length === 2 && firstarray.length > 0) {
-        firstarray.splice(5, 0, socketbutton);
-        firstarray.splice(1, 0, socketbutton);
-      } else if (socketarray.length === 3 && firstarray.length > 0) {
-        firstarray.splice(1, 0, socketbutton);
-        firstarray.splice(5, 0, socketbutton);
-        firstarray.splice(9, 0, socketbutton);
+      if (fanIndex !== -1 && bulbIndex !== -1 && nullIndex !== -1) {
+        // Calculate the desired position for the nullbutton
+        const desiredNullIndex =
+          fanIndex + Math.ceil((bulbIndex - fanIndex) / 2);
+
+        // Move the existing nullbutton to the desired position
+        const nullbutton = secondarray.splice(nullIndex, 1)[0];
+
+        secondarray.splice(desiredNullIndex, 0, nullbutton);
+      }
+      if (socketarray.length >= 2) {
+        const bulbIndexInFirstArray = firstarray.indexOf(bulb);
+
+        // Check if the bulb is found in the first array
+        if (bulbIndexInFirstArray !== -1) {
+          // Remove the bulb from the first array and add it to the second array
+          const bulbToMove = firstarray.splice(bulbIndexInFirstArray, 1)[0];
+          secondarray.push(bulbToMove);
+        }
       }
 
       const fanfirst = firstarray.filter((index) => index === fanbutton);
       const fansecond = secondarray.filter((index) => index === fanbutton);
+      let nullsecond = secondarray.filter((but) => but === nullbutton);
+      secondarray = secondarray.filter((but) => but !== nullbutton);
+      secondarray = secondarray.filter((but) => but !== fanbutton);
+      secondarray = secondarray.concat(nullsecond, fansecond);
 
       return (
         <>
           <div className="twelft">
             <div className="firstseg">
-              {socketarray.length > 0 && socketarray.length < 3 && (
+              {socketarray.length > 0 && socketarray.length <= 6 && (
                 <div className="socket">
                   {socketarray.slice(0, 1).map((con, index) => (
                     <div key={index}>
@@ -580,12 +674,14 @@ const Canvas = ({ canvasData }) => {
                         flexWrap: "unset",
                         alignSelf: "flex-end",
                         height: "50px",
+                        marginBottom: socketarray.length > 2 ? "15px" : "",
                       }}
                     />
                   )}
                 </div>
               )}
-              {socketarray.length === 2 &&
+              {socketarray.length > 0 &&
+                socketarray.length <= 6 &&
                 socketarray.slice(1, 2).map((index) => (
                   <div key={index}>
                     <img
@@ -595,46 +691,43 @@ const Canvas = ({ canvasData }) => {
                     />
                   </div>
                 ))}
-            </div>
-            {secondarray.length > 0 && (
-              <div className="secondseg">
-                {socketarray.length > 2 && socketarray.length === 3 && (
-                  <div className="socket">
-                    {socketarray.slice(2, 3).map((con, index) => (
-                      <div key={index}>
-                        <img
-                          src={socketcontrol}
-                          alt=""
-                          style={{ height: "150px" }}
-                        />
-                      </div>
-                    ))}
+              {socketarray.length > 4 &&
+                socketarray.length <= 6 &&
+                firstarray.length < 1 &&
+                socketarray.slice(4, 5).map((index) => (
+                  <div key={index}>
+                    <img
+                      src={socketcontrol}
+                      alt="Socket"
+                      style={{ height: "150px" }}
+                    />
                   </div>
-                )}
-
-                {secondarray.length > 0 && secondarray.length <= 4 && (
-                  <div className="socketsizw">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "60px",
-                      }}
-                    >
-                      {secondarray.slice(0, 2).map((light, index) => (
-                        <div key={index}>
-                          <img src={light} style={{ height: "50px" }} alt="" />
-                        </div>
-                      ))}
-                    </div>
-                    {secondarray.length > 2 && (
+                ))}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "40px",
+              }}
+            >
+              {socketarray.length > 0 && socketarray.length <= 6 && (
+                <div className="socket">
+                  {socketarray.slice(2, 3).map((con, index) => (
+                    <div key={index}>
                       <img
-                        src={constantImage}
-                        style={{ height: "50px" }}
+                        src={socketcontrol}
                         alt=""
+                        style={{ height: "150px" }}
                       />
-                    )}
-                    {secondarray.length > 2 && (
+                    </div>
+                  ))}
+                </div>
+              )}
+              {secondarray.length > 0 && (
+                <div className="secondseg">
+                  {secondarray.length > 0 && secondarray.length <= 4 && (
+                    <div className="socketsizw">
                       <div
                         style={{
                           display: "flex",
@@ -642,7 +735,7 @@ const Canvas = ({ canvasData }) => {
                           gap: "60px",
                         }}
                       >
-                        {secondarray.slice(2, 4).map((light, index) => (
+                        {secondarray.slice(0, 2).map((light, index) => (
                           <div key={index}>
                             <img
                               src={light}
@@ -652,83 +745,102 @@ const Canvas = ({ canvasData }) => {
                           </div>
                         ))}
                       </div>
-                    )}
-                  </div>
-                )}
-                {secondarray.length > 4 && (
-                  <div className="scoketsizw">
-                    {secondarray
-                      .reduce((rows, light, index) => {
-                        if (index % 2 === 0) rows.push([]);
-                        rows[rows.length - 1].push(
-                          <div key={index} className="subdiv">
-                            <img
-                              src={light}
-                              style={{ height: "50px" }}
-                              alt=""
-                            />
-                          </div>
-                        );
-                        return rows;
-                      }, [])
-                      .map((row, rowIndex) => (
+                      {secondarray.length > 2 && (
+                        <img
+                          src={constantImage}
+                          style={{ height: "50px" }}
+                          alt=""
+                        />
+                      )}
+                      {secondarray.length > 2 && (
                         <div
-                          key={rowIndex}
                           style={{
                             display: "flex",
-                            gap: "30px",
                             flexDirection: "column",
+                            gap: "60px",
                           }}
                         >
-                          {row}
+                          {secondarray.slice(2, 4).map((light, index) => (
+                            <div key={index}>
+                              <img
+                                src={light}
+                                style={{ height: "50px" }}
+                                alt=""
+                              />
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    {fansecond.length > 0 && (
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          gap: "30px",
-                          marginLeft: "5px",
-                          alignItems: "center",
-                        }}
-                      >
-                        <img src={dimup} alt="" style={{ height: "45px" }} />
-                        <img src={dimdown} alt="" style={{ height: "45px" }} />
-                      </div>
-                    )}
-                    {secondarray.length > 0 && (
-                      <img
-                        src={constantImage}
-                        alt=""
-                        style={{
-                          display: "flex",
-                          flexWrap: "unset",
-                          alignSelf: "flex-end",
-                          height: "50px",
-                        }}
-                      />
-                    )}
-                  </div>
-                )}
-                {socketarray.length === 4 &&
-                  socketarray.slice(3, 4).map((index) => (
-                    <div key={index}>
-                      <img
-                        src={socketcontrol}
-                        alt="Socket"
-                        style={{ height: "150px" }}
-                      />
+                      )}
                     </div>
-                  ))}
-              </div>
-            )}
-            {socketarray.length >= 3 && (
-              <div className="maxsocket">
-                {socketarray.map((coontrol, index) => (
+                  )}
+                  {secondarray.length > 4 && (
+                    <div className="scoketsizw">
+                      {secondarray
+                        .reduce((rows, light, index) => {
+                          if (index % 2 === 0) rows.push([]);
+                          rows[rows.length - 1].push(
+                            <div key={index} className="subdiv">
+                              <img
+                                src={light}
+                                style={{ height: "50px" }}
+                                alt=""
+                              />
+                            </div>
+                          );
+                          return rows;
+                        }, [])
+                        .map((row, rowIndex) => (
+                          <div
+                            key={rowIndex}
+                            style={{
+                              display: "flex",
+                              gap: "30px",
+                              flexDirection: "column",
+                            }}
+                          >
+                            {row}
+                          </div>
+                        ))}
+                      {fansecond.length > 0 && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            gap: "30px",
+                            marginLeft: "5px",
+                            alignItems: "center",
+                          }}
+                        >
+                          <img src={dimup} alt="" style={{ height: "45px" }} />
+                          <img
+                            src={dimdown}
+                            alt=""
+                            style={{ height: "45px" }}
+                          />
+                        </div>
+                      )}
+                      {secondarray.length > 0 && (
+                        <img
+                          src={constantImage}
+                          alt=""
+                          style={{
+                            display: "flex",
+                            flexWrap: "unset",
+                            alignSelf: "flex-end",
+                            height: "50px",
+                            marginBottom: socketarray.length > 2 ? "15px" : "",
+                          }}
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+              {socketarray.length > 0 &&
+                socketarray.length <= 6 &&
+                socketarray.slice(3, 4).map((index) => (
                   <div key={index}>
-                    {" "}
                     <img
                       src={socketcontrol}
                       alt="Socket"
@@ -736,8 +848,30 @@ const Canvas = ({ canvasData }) => {
                     />
                   </div>
                 ))}
-              </div>
-            )}
+              {socketarray.length > 4 &&
+                socketarray.length <= 6 &&
+                socketarray.slice(5, 6).map((index) => (
+                  <div key={index}>
+                    <img
+                      src={socketcontrol}
+                      alt="Socket"
+                      style={{ height: "150px" }}
+                    />
+                  </div>
+                ))}{" "}
+              {socketarray.length > 4 &&
+                socketarray.length <= 6 &&
+                firstarray.length > 1 &&
+                socketarray.slice(4, 5).map((index) => (
+                  <div key={index}>
+                    <img
+                      src={socketcontrol}
+                      alt="Socket"
+                      style={{ height: "150px" }}
+                    />
+                  </div>
+                ))}
+            </div>
           </div>
         </>
       );
@@ -755,13 +889,14 @@ const Canvas = ({ canvasData }) => {
             flexDirection: "column",
           }}
         >
+          {/* `linear-gradient(105deg, ${selectedColor},#f1e8e873)` */}
           <div
             className="board glossy"
             style={{
               width: selectedSize.width,
               height: selectedSize.height,
               position: "relative",
-              backgroundColor: selectedColor,
+              backgroundColor: selectedColor, // Use selectedColor variable here
               backgroundImage: `url(${img})`, // Set the uploaded image as the background
               backgroundSize: "cover",
               backgroundPosition: "center",
@@ -796,9 +931,7 @@ const Canvas = ({ canvasData }) => {
               fontSize: "10px",
             }}
             onClick={handleDownload}
-            disabled={
-              selectedSize === "defaultSize" || selectedimage.length < 1
-            }
+            disabled={selectedSize === "defaultSize" || canvasData === null}
           >
             Download
           </Button>
@@ -889,6 +1022,7 @@ const Canvas = ({ canvasData }) => {
                   style={{ height: "25px", fontSize: "10px" }}
                   variant="contained"
                   endIcon={<SendIcon style={{ height: "15px" }} />}
+                  onClick={sendfiles}
                 >
                   Send
                 </Button>

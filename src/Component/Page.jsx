@@ -94,6 +94,8 @@ const Page = ({ onCanvasDataChange }) => {
     ],
   };
   const [errorMessage, setErrorMessage] = useState(null);
+  const [canvasData, setCanvasData] = useState(null);
+
   useEffect(() => {
     if (errorMessage) {
       setOpen(true); // Set open to true when setting a new error message
@@ -110,37 +112,44 @@ const Page = ({ onCanvasDataChange }) => {
     if (event) {
       event.stopPropagation();
     }
-    if (selectedimage.length > 4 && modulesize === "box1") {
-      setErrorMessage(
-        "You cannot select size 2 when selected image count is more than 4"
-      );
-      setOpen(true); // Set open to true when setting a new error message
-
-      return;
-    } else if (selectedimage.length > 6 && modulesize === "box2") {
-      setErrorMessage(
-        "You cannot select size 4 when selected image count is more than 6"
-      );
-      setOpen(true); // Set open to true when setting a new error message
-
-      return;
-    } else if (selectedimage.length > 8 && modulesize === "box3") {
-      setErrorMessage(
-        "You cannot select size 8 when selected image count is more than 10"
-      );
-      setOpen(true); // Set open to true when setting a new error message
-
-      return;
-    } else if (
-      selectedimage.length > 10 &&
-      (modulesize === "box3" || modulesize === "box4")
+    if (
+      canvasData &&
+      typeof canvasData === "object" &&
+      Object.keys(canvasData).length > 0
     ) {
-      setErrorMessage(
-        "You cannot select size 6 when selected image count is more than 10"
-      );
-      setOpen(true); // Set open to true when setting a new error message
+      const { lights, fan, sockets, maxlights } = canvasData;
+      const totallenght = lights + fan + sockets;
+      if ((totallenght > 4 || sockets == 2) && modulesize === "box1") {
+        setErrorMessage(
+          "You cannot select size 2 when selected image count is more than 4"
+        );
+        setOpen(true); // Set open to true when setting a new error message
 
-      return;
+        return;
+      } else if ((totallenght > 6 || sockets == 2) && modulesize === "box2") {
+        setErrorMessage(
+          "You cannot select size 4 when selected image count is more than 6"
+        );
+        setOpen(true); // Set open to true when setting a new error message
+
+        return;
+      } else if (totallenght > 10 && modulesize === "box3") {
+        setErrorMessage(
+          "You cannot select size 6 when selected image count is more than 10"
+        );
+        setOpen(true); // Set open to true when setting a new error message
+
+        return;
+      } else if (totallenght > 10 && modulesize === "box4") {
+        setErrorMessage(
+          "You cannot select size 8 when selected image count is more than 10"
+        );
+        setOpen(true); // Set open to true when setting a new error message
+
+        return;
+      }
+    } else {
+      console.error("canvasdata is not defined yet");
     }
 
     // Set a default module type if module.type is undefined
@@ -153,6 +162,7 @@ const Page = ({ onCanvasDataChange }) => {
       setboardsize(modulesize);
       setGlobalModule({ type: moduleType });
       setGlobalSize(size);
+      closeNav();
     } else {
       // The module is not supported for the selected size, you can show a message or handle it accordingly
       alert(`Module ${moduleType} is not supported for size ${modulesize}`);
@@ -166,8 +176,6 @@ const Page = ({ onCanvasDataChange }) => {
     setframecolor(selectedColor);
   };
 
-  const [canvasData, setCanvasData] = useState(null);
-
   const handleCreateClick = (lights, fan, sockets, maxlights) => {
     const data = { lights, fan, sockets, maxlights };
     setCanvasData(data);
@@ -180,7 +188,7 @@ const Page = ({ onCanvasDataChange }) => {
         <div className="alert">
           <Collapse in={open}>
             <Alert severity="error" style={{ backgroundColor: "#eb4848" }}>
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>!!!!!!</AlertTitle>
               {errorMessage}
               <IconButton
                 aria-label="close"
@@ -232,7 +240,7 @@ const Page = ({ onCanvasDataChange }) => {
               <div className={`sizecomb ${isNavOpen ? "open" : ""}`}>
                 {selectedMenu === "size" && (
                   <div>
-                    <div className="heading">Module</div>
+                    <div className="head">Module</div>
                     <div className="module-container">
                       <div
                         className={`module ${
@@ -333,6 +341,7 @@ const Page = ({ onCanvasDataChange }) => {
                 )}
                 {selectedMenu === "color" && (
                   <div>
+                    <div className="head">Color</div>
                     <div
                       className="color"
                       style={{
@@ -426,6 +435,8 @@ const Page = ({ onCanvasDataChange }) => {
                 )}
                 {selectedMenu === "wall" && (
                   <>
+                    <div className="head"> Wall Color</div>
+
                     <div className="color">
                       <SketchPicker
                         color={color}

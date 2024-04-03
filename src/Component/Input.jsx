@@ -63,12 +63,16 @@ const Input = ({ onCreateClick }) => {
         setmaxfan(0);
         setmaxsocket(0);
       }
+      if (fan === 2) {
+        setmaxlights(4);
+        setmaxsocket(0);
+      }
     },
     [selectedSize.size]
   );
   const handlesixsize = useCallback(
     (lights, sockets, fan) => {
-      if (selectedSize.size === "6" && lights > 1) {
+      if (selectedSize.size === "6" && lights > 2) {
         setmaxsocket(1);
       }
       if (sockets === 2) {
@@ -94,17 +98,148 @@ const Input = ({ onCreateClick }) => {
         setmaxlights(2);
       } else if (sockets === 1 && lights === 7) {
         setmaxfan(0);
-      } else if (lights > 5 && fan === 2) {
+      }
+      if (lights === 4 && sockets === 1) {
+        setmaxlights(4);
+        setmaxfan(0);
+      }
+      if (sockets === 1) {
+        setmaxlights(5);
+        setmaxfan(0);
+      }
+      if (fan === 2) {
+        setmaxlights(8);
         setmaxsocket(0);
+      }
+      if (fan === 1) {
+        setmaxlights(9);
+        setmaxsocket(0);
+      }
+      if (sockets === 2) {
+        setmaxlights(0);
+        setmaxfan(0);
       }
     },
     [selectedSize.size]
   );
 
   const handleeightcontrol = useCallback((light, sockets, fan) => {
-    if (sockets >= 3) {
+    if (sockets === 3) {
       setmaxlights(0);
       setmaxfan(0);
+    }
+    if (lights === 10) {
+      setmaxfan(0);
+      setmaxlights(0);
+      setmaxsocket(0);
+    } else if (lights > 0) {
+      setmaxsocket(2);
+    }
+    if (sockets === 2 && lights === 4) {
+      setmaxlights(4);
+      setmaxfan(2);
+    } else if (sockets === 2 && fan === 1) {
+      setmaxlights(1);
+      setmaxfan(1);
+    }
+    if (fan === 2) {
+      setmaxlights(8);
+      setmaxsocket(1);
+    } else if (fan === 1) {
+      setmaxlights(9);
+    }
+    if (sockets === 2) {
+      setmaxfan(0);
+      setmaxlights(4);
+    }
+    if (fan == 2 && sockets === 1) {
+      setmaxlights(7);
+    }
+    if (fan == 1 && sockets === 1) {
+      setmaxlights(6);
+    }
+    if (sockets === 1 && lights === 5) {
+      setmaxfan(1);
+    }
+    if (sockets === 1 && lights === 6 && fan === 1) {
+      setmaxfan(0);
+      setmaxlights(0);
+      setmaxsocket(0);
+    }
+    if (lights >= 6) {
+      setmaxsocket(0);
+    }
+    if (sockets === 1 && lights === 6) {
+      setmaxfan(1);
+    }
+    if (sockets === 1 && fan === 0) {
+      setmaxlights(9);
+    } else if (sockets === 1 && fan === 1) {
+      setmaxlights(6);
+    }
+    if (sockets === 1 && lights > 6) {
+      setmaxfan(0);
+    }
+  });
+  const handletwevecontrol = useCallback((lights, sockets, fan) => {
+    if (lights > 0) {
+      setmaxsocket(3);
+    }
+    if (lights === 20) {
+      setmaxfan(0);
+      setmaxsocket(0);
+    }
+    if (lights <= 16) {
+      setmaxfan(4);
+    } else if (lights === 17) {
+      setmaxsocket(1);
+      setmaxfan(3);
+    } else if (lights === 18) {
+      setmaxsocket(1);
+      setmaxfan(2);
+    } else if (lights === 19) {
+      setmaxsocket(1);
+      setmaxfan(1);
+    }
+    if (sockets === 1) {
+      setmaxlights(17);
+    }
+    if (sockets === 2) {
+      setmaxlights(14);
+    }
+    if (fan === 1) {
+      setmaxlights(19);
+    } else if (fan === 2) {
+      setmaxlights(18);
+    } else if (fan === 3) {
+      setmaxlights(17);
+    } else if (fan === 4) {
+      setmaxlights(16);
+    }
+    if (sockets === 6) {
+      setmaxlights(0);
+      setmaxfan(0);
+    }
+    if (lights > 10) {
+      setmaxsocket(2);
+    }
+    if (lights > 17) {
+      setmaxsocket(0);
+    }
+    if (lights === 14 && sockets === 2) {
+      setmaxlights(14);
+      setmaxfan(0);
+    } else if (lights === 14) {
+      setmaxsocket(2);
+    }
+    if (lights === 12 && fan === 2) {
+      setmaxsocket(2);
+      setmaxfan(2);
+    }
+    if (sockets > 4) {
+      setmaxfan(0);
+    } else if (sockets > 2) {
+      setmaxfan(2);
     }
   });
   useEffect(() => {
@@ -136,8 +271,10 @@ const Input = ({ onCreateClick }) => {
         break;
       case "12":
         setmaxlights(20);
-        setmaxsocket(4);
+        setmaxsocket(6);
         setmaxfan(4);
+        handletwevecontrol(lights, sockets, fan);
+
         break;
       default:
         break;
@@ -176,10 +313,6 @@ const Input = ({ onCreateClick }) => {
   };
 
   const handleButtonClick = () => {
-    // Here you can pass the values somewhere, such as an API call or another context
-    console.log("Lights:", lights);
-    console.log("Fan:", fan);
-    console.log("Sockets:", sockets);
     onCreateClick(lights, fan, sockets, maxlights);
   };
   const [resetHandled, setResetHandled] = useState(false); // Define resetHandled
@@ -221,7 +354,8 @@ const Input = ({ onCreateClick }) => {
   }, []);
 
   return (
-    <div style={{ gap: "20px", display: "grid" }}>
+    <div style={{ gap: "20px", display: "grid" }} className="inputs">
+      <div className="head">Controls</div>
       <div className="inputsofthecontrols">
         <label htmlFor="">Lights</label>
         <Tooltip

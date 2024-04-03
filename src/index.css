@@ -477,15 +477,23 @@ input {
   align-items: center;
   display: flex;
   justify-content: center;
-  background-color: #5964df;
+  background: linear-gradient(
+    55deg,
+    #0619f2,
+    #878391
+  ); /* Gradient background */
 
   height: 50px;
   font-weight: bold;
   margin-bottom: 30px;
   border-radius: 4px;
+  color: #fff;
+  width: 100%;
 }
 .inputsofthecontrols {
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .socketdiv {
@@ -529,4 +537,12 @@ input {
 .maxsocket {
   display: flex;
   gap: 20px;
+}
+.inputs {
+  align-items: center;
+  width: 100%;
+}
+
+input {
+  text-align: center;
 }
